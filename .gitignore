@@ -1,0 +1,10 @@
+# FOLDERS
+/dist
+/log
+/node_modules
+/upload
+/drizzle
+
+# FILES
+package-lock.json
+.env

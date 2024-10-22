@@ -1,0 +1,48 @@
+{
+  "name": "ts-backend-architecture",
+  "version": "1.0.2",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "cross-env NODE_ENV=production pm2 start dist/server.js --name project_name",
+    "restart": "pm2 restart project_name",
+    "delete": "pm2 delete project_name",
+    "build": "tsc --project tsconfig.json && tscpaths -p tsconfig.json -s ./src -o ./dist",
+    "start:dev": "nodemon",
+    "migration:generate": "dcross-env rizzle-kit generate:pg --schema=./src/database/schema.ts",
+    "migration:push": "cross-env node -r esbuild-register src/database/pg.ts",
+    "migration": "cross-env drizzle-kit generate:pg --schema=./src/database/schema.ts && node -r esbuild-register src/database/migration.ts"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@types/cors": "^2.8.17",
+    "@types/express": "^4.17.21",
+    "@types/express-fileupload": "^1.4.4",
+    "@types/jsonwebtoken": "^9.0.5",
+    "@types/node": "^20.11.5",
+    "@types/node-cron": "^3.0.11",
+    "@types/pg": "^8.11.4",
+    "drizzle-kit": "^0.20.14",
+    "nodemon": "^3.0.3",
+    "ts-node": "^10.9.2",
+    "tsconfig-paths": "^4.2.0",
+    "typescript": "^5.3.3"
+  },
+  "dependencies": {
+    "cors": "^2.8.5",
+    "cross-env": "^7.0.3",
+    "dotenv": "^16.3.2",
+    "drizzle-orm": "^0.30.4",
+    "express": "^4.18.2",
+    "express-fileupload": "^1.4.3",
+    "ioredis": "^5.3.2",
+    "jsonwebtoken": "^9.0.2",
+    "node-cron": "^3.0.3",
+    "pg": "^8.11.3",
+    "pm2": "^5.3.1",
+    "prettier": "^3.2.4",
+    "tscpaths": "^0.0.9"
+  }
+}
