@@ -31,13 +31,17 @@
     "paths": {
       "@config/*": ["src/config/*"],
       "@database/*": ["src/database/*"],
+      "@dto/*": ["src/dto/*"],
+      "@interface/*": ["src/interface/*"],
       "@lib/*": ["src/lib/*"],
       "@middleware/*": ["src/middleware/*"],
       "@module/*": ["src/module/*"],
+      "@query/*": ["src/query/*"],
       "@shared/*": ["src/shared/*"],
       "@sharedLib/*": ["src/shared/lib/*"],
       "@logger/*": ["src/shared/logger/*"],
-      "@errorCatcher/*": ["src/shared/logger/logger.internal.js"]
+      "@errorCatcher/*": ["src/shared/logger/logger.internal.js"],
+      "@util/*": ["src/util/*"]
     }
   },
   "include": ["src/**/*"],
