@@ -80,6 +80,12 @@ namespace DbTableSchema {
     export const requests = requestsLOGSTable
     export const internalErrors = internalErrorsLOGSTable
     export const cronJobs = cronJobsLOGSTable
+
+    export const users = usersTable
+    export const projects = projectsTable
+    export const apis = apisTable
+    export const responses = responsesTable
+    export const payloads = payloadsTable
 }
 
 export default DbTableSchema
