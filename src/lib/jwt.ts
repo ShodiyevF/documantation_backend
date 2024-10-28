@@ -6,7 +6,7 @@ namespace JWT {
 
     export function requestJwtToken(payload: jwt.JwtPayload) {
         try {
-            const token = jwt.sign({ id: payload }, process.env.JWT_SECRET || 'test', {
+            const token = jwt.sign(payload, process.env.JWT_SECRET || 'test', {
                 expiresIn: process.env.JWT_EXPIRATION,
             });
             return token;
