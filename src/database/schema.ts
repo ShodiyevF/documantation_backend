@@ -41,10 +41,17 @@ export const usersTable = pgTable('users', {
 
 export const projectsTable = pgTable('projects', {
     projectId: uuid('project_id').defaultRandom().primaryKey(),
-    projectFirstName: varchar('project_full_name', { length: 32 }).notNull(),
+    projectName: varchar('project_name', { length: 32 }).notNull(),
     projectDescription: text('project_description'),
     projectOwnerId: uuid('project_owner_id').notNull().references(() => usersTable.userId),
     projectCreatedAt: timestamp('project_created_at').notNull().defaultNow(),
+})
+
+export const projectUsersTable = pgTable('project_users', {
+    puId: uuid('pu_id').defaultRandom().primaryKey(),
+    puProjectId: uuid('pu_project_id').notNull().references(() => projectsTable.projectId),
+    puUserId: uuid('pu_user_id').notNull().references(() => usersTable.userId),
+    puCreatedAt: timestamp('pu_created_at').notNull().defaultNow(),
 })
 
 export const apisTable = pgTable('apis', {
@@ -83,6 +90,7 @@ namespace DbTableSchema {
 
     export const users = usersTable
     export const projects = projectsTable
+    export const projectUsers = projectUsersTable
     export const apis = apisTable
     export const responses = responsesTable
     export const payloads = payloadsTable
