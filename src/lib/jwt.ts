@@ -18,12 +18,20 @@ namespace JWT {
     export function verifyJwtToken(token: string) {
         try {
             const verifed = jwt.verify(token, process.env.JWT_SECRET || 'test');
-            return verifed;
+            if (typeof verifed != 'object' || !verifed.id) {
+                return false
+            }
+            
+            return verifed.id;
         } catch (error: any) {
             if (error.expiredAt) {
                 return {
                     status: 402,
                 };
+            } else {
+                return {
+                    status: 402,
+                }
             }
         }
     }
