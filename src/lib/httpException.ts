@@ -10,6 +10,7 @@ namespace Exception {
         UNAUTHORIZED = 'UNAUTHORIZED',
         UPLOAD_ERROR = 'UPLOAD_ERROR',
         BAD_JSON_FORMAT = 'BAD_JSON_FORMAT',
+        ALREADY_EXISTS = 'ALREADY_EXISTS',
     };
     
     export class HttpException {
