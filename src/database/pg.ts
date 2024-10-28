@@ -7,7 +7,7 @@ const pool = new Pool({
     password: process.env.DB_PASSWORD,
     database: process.env.DB_DATABASE_NAME,
     host: process.env.DB_HOST,
-    port: 5432 || process.env.DB_PORT,
+    port: process.env.DB_PORT ? +process.env.DB_PORT : 5432,
 })
 
 export const db = drizzle(pool)
