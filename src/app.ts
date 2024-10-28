@@ -11,7 +11,7 @@ import initDefaultFolders from '@config/defaultfiles';
 import ExpressFunctions from '@lib/express.function';
 import CORS_OPTIONS from '@config/cors';
 
-export default function app(routes: []) {
+export default function app(routes: express.Router[]) {
     const app: express.Application = express();
     const port: string = process.env.PORT || '3000';
 
@@ -48,7 +48,7 @@ export default function app(routes: []) {
         initDefaultFolders();
     }
 
-    function initRoutes(routes: []) {
+    function initRoutes(routes: express.Router[]) {
         routes.forEach(route => {
             app.use(route);
         });
