@@ -14,6 +14,19 @@ namespace ProjectsCtrl {
             controllerError(res, error)
         }
     }
+
+    export async function createProject(req: express.Request, res: express.Response) {
+        try {
+            await ProjectsModel.createProject(req.body, req.headers.authorization as string)
+
+            return res.status(201).json({
+                status: 201,
+                message: 'Project succesfully created'
+            })
+        } catch (error) {
+            controllerError(res, error)
+        }
+    }
     
 }
 
