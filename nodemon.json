@@ -2,5 +2,5 @@
     "watch": ["src"],
     "ext": "ts",
     "ignore": ["src/**/*.spec.ts"],
-    "exec": "npx ts-node src/server.ts"
+    "exec": "cross-env MODE=DEV npx ts-node src/server.ts"
 }
