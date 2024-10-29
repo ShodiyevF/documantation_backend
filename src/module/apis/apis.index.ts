@@ -13,5 +13,11 @@ app.get('/api/apis/:project_id',
     ApisCtrl.getApis
 )
 
+app.post('/api/apis/',
+    authorizationMiddleware,
+    validationMiddleware(ApisDto.createApiBody, 'body'),
+    ApisCtrl.createApi
+)
+
 
 export default app

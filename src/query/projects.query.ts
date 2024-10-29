@@ -62,10 +62,17 @@ namespace ProjectsQuery {
         return await db.select({
             project_id: DbTableSchema.projects.projectId,
             project_name: DbTableSchema.projects.projectName,
+            project_owner: {
+                user_id: DbTableSchema.users.userId,
+                user_first_name: DbTableSchema.users.userFirstName,
+                user_last_name: DbTableSchema.users.userLastName,
+                user_created_at: DbTableSchema.users.userCreatedAt
+            },
             project_description: DbTableSchema.projects.projectDescription,
             project_created_at: DbTableSchema.projects.projectCreatedAt,
         })
         .from(DbTableSchema.projects)
+        .innerJoin(DbTableSchema.users, eq(DbTableSchema.users.userId, DbTableSchema.projects.projectOwnerId))
         .where(and(
             eq(DbTableSchema.projects.projectOwnerId, user_id),
             eq(DbTableSchema.projects.projectId, project_id),
