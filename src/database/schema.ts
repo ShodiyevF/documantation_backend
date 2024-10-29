@@ -59,6 +59,7 @@ export const apisTable = pgTable('apis', {
     apiRoute: varchar('api_route', { length: 128 }).notNull(),
     apiMethod: varchar('api_method', { enum: apiMethods }).notNull(),
     apiOwnerId: uuid('api_owner_id').notNull().references(() => usersTable.userId),
+    apiProjectId: uuid('api_project_id').notNull().references(() => projectsTable.projectId),
     apiCreatedAt: timestamp('api_created_at').notNull().defaultNow(),
 })
 
