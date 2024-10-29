@@ -5,6 +5,11 @@ namespace ProjectsInterface {
         user_id: string;
     }
 
+    export interface IGetProjectById {
+        project_id: string;
+        user_id: string;
+    }
+
     export interface ICreateProjectBody {
         project_name: string;
         project_description: string;

@@ -13,13 +13,17 @@ namespace Exception {
         UPLOAD_ERROR = 'UPLOAD_ERROR',
         NO_ACCESS = 'NO_ACCESS',
     };
+
+    export enum FRONT {
+        PROJECT_NOT_FOUND = 'PROJECT_NOT_FOUND',
+    };
     
     export class HttpException {
         status: number;
         message: string;
-        error: Errors;
+        error: Errors | FRONT;
         
-        constructor(status: number, message: string, error: Errors) {
+        constructor(status: number, message: string, error: Errors | FRONT) {
             this.status = status;
             this.message = message || '';
             this.error = error;

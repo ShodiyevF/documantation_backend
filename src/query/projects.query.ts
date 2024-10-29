@@ -18,6 +18,21 @@ namespace ProjectsQuery {
         .where(eq(DbTableSchema.projectUsers.puUserId, userId))
     }
 
+    export async function checkProjectByUserId(userId: string, projectId: string) {
+        return await db.select({
+            project_id: DbTableSchema.projects.projectId,
+            project_name: DbTableSchema.projects.projectName,
+            project_description: DbTableSchema.projects.projectDescription,
+            project_created_at: DbTableSchema.projects.projectCreatedAt,
+        })
+        .from(DbTableSchema.projectUsers)
+        .innerJoin(DbTableSchema.projects, eq(DbTableSchema.projects.projectId, DbTableSchema.projectUsers.puProjectId))
+        .where(and(
+            eq(DbTableSchema.projectUsers.puUserId, userId),
+            eq(DbTableSchema.projectUsers.puProjectId, projectId),
+        ))
+    }
+
     export async function getProjectsByName(payloads: ProjectsInterface.IGetProjectByName) {
         const {
             project_name,
@@ -34,6 +49,26 @@ namespace ProjectsQuery {
         .where(and(
             eq(DbTableSchema.projects.projectOwnerId, user_id),
             eq(DbTableSchema.projects.projectName, project_name),
+        ))
+        .then(data => data[0])
+    }
+
+    export async function getProjectsById(payloads: ProjectsInterface.IGetProjectById) {
+        const {
+            project_id,
+            user_id
+        } = payloads
+        
+        return await db.select({
+            project_id: DbTableSchema.projects.projectId,
+            project_name: DbTableSchema.projects.projectName,
+            project_description: DbTableSchema.projects.projectDescription,
+            project_created_at: DbTableSchema.projects.projectCreatedAt,
+        })
+        .from(DbTableSchema.projects)
+        .where(and(
+            eq(DbTableSchema.projects.projectOwnerId, user_id),
+            eq(DbTableSchema.projects.projectId, project_id),
         ))
         .then(data => data[0])
     }
