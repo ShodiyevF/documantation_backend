@@ -56,7 +56,7 @@ export const projectUsersTable = pgTable('project_users', {
 
 export const apisTable = pgTable('apis', {
     apiId: uuid('api_id').defaultRandom().primaryKey(),
-    apiName: varchar('api_name', { length: 64 }).notNull().default('.'),
+    apiName: varchar('api_name', { length: 64 }).notNull(),
     apiRoute: varchar('api_route', { length: 128 }).notNull(),
     apiMethod: varchar('api_method', { enum: apiMethods }).notNull(),
     apiDescription: varchar('api_description', { length: 128 }),
