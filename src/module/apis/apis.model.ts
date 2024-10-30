@@ -32,8 +32,10 @@ namespace ApisModel {
     export async function createApi(body: ApisInterface.ICreateApiBody, token: string) {
         const {
             project_id,
+            api_name,
             api_route,
-            api_method
+            api_method,
+            api_description
         } = body
 
         const userId = JWT.verifyJwtToken(token)
@@ -51,8 +53,10 @@ namespace ApisModel {
         }
 
         await ApisQuery.insertApi({
-            apiMethod: api_method,
+            apiName: api_name,
             apiRoute: api_route,
+            apiMethod: api_method,
+            apiDescription: api_description,
             apiOwnerId: userId,
             apiProjectId: project_id
         })

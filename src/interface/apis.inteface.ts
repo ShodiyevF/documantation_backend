@@ -6,8 +6,10 @@ namespace ApisInterface {
 
     export interface ICreateApiBody {
         project_id: string;
+        api_name: string;
         api_route: string;
         api_method: string;
+        api_description: string;
     }
 
     export interface IGetApiByRoute {
@@ -16,8 +18,10 @@ namespace ApisInterface {
     }
 
     export interface IInsertApi {
+        apiName: string;
         apiMethod: string;
         apiRoute: string;
+        apiDescription: string;
         apiOwnerId: string;
         apiProjectId: string;
     }

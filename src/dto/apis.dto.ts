@@ -19,6 +19,12 @@ namespace ApisDto {
             type: 'string',
             pattern: [RegexUtil.UUID]
         },
+        api_name: {
+            required: true,
+            type: 'string',
+            minLength: 1,
+            maxLength: 64
+        },
         api_route: {
             required: true,
             type: 'string',
@@ -33,9 +39,15 @@ namespace ApisDto {
                 if (!check) {
                     return false
                 }
-
+                
                 return true
             }, `Only these values should be present ${methods}`]
+        },
+        api_description: {
+            required: false,
+            type: 'string',
+            minLength: 1,
+            maxLength: 128
         },
     }
     
