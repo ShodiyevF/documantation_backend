@@ -1,0 +1,140 @@
+[
+    {
+        "keys": null,
+        "key_name": "api_id",
+        "key_types": [
+            "uuid"
+        ],
+        "key_mock_value": "6105afd6-ec1e-4bc9-9d1d-d7fb9141d234",
+        "key_description": "API identifier"
+    },
+    {
+        "keys": null,
+        "key_name": "api_name",
+        "key_types": [
+            "text"
+        ],
+        "key_mock_value": ".",
+        "key_description": "API name"
+    },
+    {
+        "keys": null,
+        "key_name": "api_route",
+        "key_types": [
+            "text"
+        ],
+        "key_mock_value": "/api/users",
+        "key_description": "Route of the API"
+    },
+    {
+        "keys": null,
+        "key_name": "api_method",
+        "key_types": [
+            "text"
+        ],
+        "key_mock_value": "GET",
+        "key_description": "HTTP method used by the API"
+    },
+    {
+        "keys": null,
+        "key_name": "api_description",
+        "key_types": [
+            "text"
+        ],
+        "key_mock_value": null,
+        "key_description": "Description of the API"
+    },
+    {
+        "keys": [
+            {
+                "keys": null,
+                "key_name": "project_id",
+                "key_types": [
+                    "uuid"
+                ],
+                "key_mock_value": "b6592148-3f70-4e5c-bd08-c69d2e091d5f",
+                "key_description": "ID of the associated project"
+            },
+            {
+                "keys": null,
+                "key_name": "project_name",
+                "key_types": [
+                    "text"
+                ],
+                "key_mock_value": "Kassa nazorati",
+                "key_description": "Name of the associated project"
+            },
+            {
+                "keys": [
+                    {
+                        "keys": null,
+                        "key_name": "platform_name",
+                        "key_types": [
+                            "text"
+                        ],
+                        "key_mock_value": "Twitter",
+                        "key_description": "Name of registered platform"
+                    },
+                    {
+                        "keys": null,
+                        "key_name": "platform_date",
+                        "key_types": [
+                            "text"
+                        ],
+                        "key_mock_value": "20-01-2023",
+                        "key_description": "Date of registered platform"
+                    },
+                    {
+                        "keys": [
+                            {
+                                "keys": null,
+                                "key_name": "url",
+                                "key_types": [
+                                    "text"
+                                ],
+                                "key_mock_value": "https://name.com",
+                                "key_description": ".com url"
+                            },
+                            {
+                                "keys": null,
+                                "key_name": "url",
+                                "key_types": [
+                                    "text"
+                                ],
+                                "key_mock_value": "https://name.uz",
+                                "key_description": ".uz url"
+                            }
+                        ],
+                        "key_name": "platform_urls",
+                        "key_types": [
+                            "jsonb"
+                        ],
+                        "key_mock_value": "{'platform_name': 'Twitter', 'platform_date': '20-01-2023'}",
+                        "key_description": "Platform urls"
+                    }
+                ],
+                "key_name": "project_platforms",
+                "key_types": [
+                    "text"
+                ],
+                "key_mock_value": "{'platform_name': 'Twitter', 'platform_date': '20-01-2023'}",
+                "key_description": "Name of the associated project"
+            }
+        ],
+        "key_name": "project",
+        "key_types": [
+            "jsonb"
+        ],
+        "key_mock_value": "{'project_id': 'b6592148-3f70-4e5c-bd08-c69d2e091d5f', 'project_name': 'Kassa nazorati'}",
+        "key_description": "Project details as a JSON object"
+    },
+    {
+        "keys": null,
+        "key_name": "api_created_at",
+        "key_types": [
+            "text"
+        ],
+        "key_mock_value": "2024-10-29T18:52:27.333Z",
+        "key_description": "Timestamp of API creation"
+    }
+]

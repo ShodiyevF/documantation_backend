@@ -1,0 +1,104 @@
+[
+    {
+        "keys": null,
+        "key_name": "status",
+        "key_types": [
+            "string"
+        ],
+        "key_mock_value": "200",
+        "key_description": null
+    },
+    {
+        "keys": null,
+        "key_name": "message",
+        "key_types": [
+            "string"
+        ],
+        "key_mock_value": "Logged",
+        "key_description": null
+    },
+    {
+        "keys": [
+            {
+                "keys": null,
+                "key_name": "authorization_id",
+                "key_types": [
+                    "string"
+                ],
+                "key_mock_value": "9f558ee3-aae2-453a-8a42-817b60d53725",
+                "key_description": null
+            },
+            {
+                "keys": null,
+                "key_name": "login_type",
+                "key_types": [
+                    "string"
+                ],
+                "key_mock_value": "sms",
+                "key_description": null
+            },
+            {
+                "keys": null,
+                "key_name": "is_new_user",
+                "key_types": [
+                    "boolean"
+                ],
+                "key_mock_value": "false",
+                "key_description": null
+            },
+            {
+                "keys": null,
+                "key_name": "password_hint",
+                "key_types": [
+                    "string",
+                    "null"
+                ],
+                "key_mock_value": "maktabimdagi sevgim",
+                "key_description": null
+            },
+            {
+                "keys": [
+                    {
+                        "keys": null,
+                        "key_name": "id",
+                        "key_types": [
+                            "string"
+                        ],
+                        "key_mock_value": "9f558ee3-aae2-453a-8a42-817b60d53725",
+                        "key_description": null
+                    },
+                    {
+                        "keys": null,
+                        "key_name": "name",
+                        "key_types": [
+                            "string"
+                        ],
+                        "key_mock_value": "fayzulloh",
+                        "key_description": null
+                    },
+                    {
+                        "keys": null,
+                        "key_name": "created_at",
+                        "key_types": [
+                            "string"
+                        ],
+                        "key_mock_value": "20.10.2024",
+                        "key_description": null
+                    }
+                ],
+                "key_name": "datas",
+                "key_types": [
+                    "object"
+                ],
+                "key_mock_value": "{\n    id: \"9f558ee3-aae2-453a-8a42-817b60d53725\",\n    name: \"fayzulloh\",\n    created_at: \"20.10.2024\"\n}",
+                "key_description": null
+            }
+        ],
+        "key_name": "data",
+        "key_types": [
+            "object"
+        ],
+        "key_mock_value": "{\n    authorization_id: \"9f558ee3-aae2-453a-8a42-817b60d53725\",\n    login_type: \"sms\",\n    is_new_user: false,\n    password_hint: \"test\"\n}",
+        "key_description": null
+    }
+]
