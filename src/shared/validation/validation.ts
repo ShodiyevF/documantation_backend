@@ -10,7 +10,7 @@ namespace Validation {
         minLength?: number;
         maxLength?: number;
         pattern?: RegExp[];
-        custom_validation?: [((value: any) => boolean), string];
+        custom_validation?: [((value: any) => boolean | string), string];
     }
     
     export interface DTO {
@@ -35,6 +35,10 @@ namespace Validation {
     
                     if (value === undefined || value === null || value === '') {
                         continue;
+                    }
+                    
+                    if (typeof value !== rules.type) {
+                        return { status: 400, error: `${key}: Expected type ${rules.type}, but got ${typeof value}` };
                     }
     
                     if (rules.type === 'boolean') {   
@@ -66,8 +70,8 @@ namespace Validation {
                         return { status: 400, error: `${key}: Value does not match the required pattern ${rules.pattern[0]}` };
                     }
     
-                    if (rules.custom_validation && !rules.custom_validation[0](value)) {
-                        return { status: 400, error: `${key}: ${rules.custom_validation[1]}` };
+                    if (rules.custom_validation && (!rules.custom_validation[0](value) || typeof rules.custom_validation[0](value) === 'string')) {
+                        return { status: 400, error: `${key}: ${typeof rules.custom_validation[0](value) === 'string' ? rules.custom_validation[0](value) : rules.custom_validation[1]}` };
                     }
                 }
             }

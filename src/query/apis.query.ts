@@ -24,6 +24,13 @@ namespace ApisQuery {
         .where(eq(DbTableSchema.projects.projectId, projectId))
     }
 
+    export async function getApiById(apiId: string) {
+        return await db.select()
+        .from(DbTableSchema.apis)
+        .where(eq(DbTableSchema.apis.apiId, apiId))
+        .then(data => data[0])
+    }
+
     export async function getApiByRoute(payloads: ApisInterface.IGetApiByRoute) {
         const {
             projectId,
@@ -40,6 +47,22 @@ namespace ApisQuery {
 
     export async function insertApi(payloads: ApisInterface.IInsertApi) {
         return await db.insert(DbTableSchema.apis)
+        .values(payloads)
+        .returning()
+        .then(data => data[0])
+    }
+
+    export async function insertResponse(payloads: ApisInterface.IInsertApiResponse) {
+        return await db.insert(DbTableSchema.responses)
+        .values(payloads)
+        .returning()
+        .then(data => data[0])
+    }
+
+    export async function insertResponseKey(payloads: ApisInterface.IInsertResponseKey) {
+        console.log(payloads);
+        
+        return await db.insert(DbTableSchema.responseKeys)
         .values(payloads)
         .returning()
         .then(data => data[0])

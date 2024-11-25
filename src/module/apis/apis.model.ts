@@ -62,6 +62,48 @@ namespace ApisModel {
         })
     }
 
+    export async function createApiResponse(body: ApisInterface.IApiResponseBody, token: string) {
+        const {
+            api_id,
+            response_status,
+            response_status_code,
+            response_description,
+            response_keys
+        } = body
+
+        const userId = JWT.verifyJwtToken(token)
+
+        const getApi = await ApisQuery.getApiById(api_id)
+        if (!getApi) {
+            throw new Exception.HttpException(404, 'Api not found', Exception.FRONT.API_NOT_FOUND)
+        }
+
+        if (getApi.apiOwnerId !== userId) {
+            throw new Exception.HttpException(404, 'You are not allowed to add api to this api!', Exception.Errors.NO_ACCESS)
+        }
+
+        const response = await ApisQuery.insertResponse({
+            responseStatus: response_status,
+            responseStatusCode: response_status_code,
+            responseDescription: response_description,
+            responseApiId: api_id,
+            responseOwnerId: userId,
+        })
+
+        for (const key of response_keys) {
+            console.log(key.key_types);
+            
+            await ApisQuery.insertResponseKey({
+                rkName: key.key_name,
+                rkTypes: key.key_types,
+                rkMockData: key.key_mock_data,
+                rkDescription: key.key_description,
+                rkOwnerId: userId,
+                rkResponseId: response.responseId,
+            })
+        }
+    }
+
 }
 
 export default ApisModel

@@ -1,3 +1,4 @@
+import ApisInterface from "@interface/apis.inteface";
 import Validation from "@shared/validation/validation";
 import RegexUtil from "@util/regex.util";
 
@@ -48,6 +49,84 @@ namespace ApisDto {
             type: 'string',
             minLength: 1,
             maxLength: 128
+        },
+    }
+
+    export const createKey: Validation.DTO = {
+        key_name: {
+            required: true,
+            type: 'string',
+            minLength: 3,
+            maxLength: 128,
+        },
+        key_types: {
+            required: true,
+            type: 'object',
+            custom_validation: [(types: string[]) => {
+                const check = types.every(value => types.includes(value))
+
+                if (!check) {
+                    return false
+                }
+
+                return true
+            }, 'An array can only contain string, number, and boolean types.']
+        },
+        key_mock_data: {
+            required: true,
+            type: 'string',
+            minLength: 1,
+            maxLength: 128
+        },
+        key_description: {
+            required: false,
+            type: 'string',
+            minLength: 1,
+            maxLength: 128
+        },
+    } 
+
+    export const createApiResponseBody: Validation.DTO = {
+        api_id: {
+            required: true,
+            type: 'string',
+            pattern: [RegexUtil.UUID]
+        },
+        response_status: {
+            required: true,
+            type: 'boolean'
+        },
+        response_status_code: {
+            required: true,
+            type: 'number',
+            min: 100,
+            max: 599
+        },
+        response_description: {
+            required: false,
+            type: 'string',
+            minLength: 1,
+            maxLength: 128
+        },
+        response_keys: {
+            required: true,
+            type: 'object',
+            custom_validation: [(list: ApisInterface.IResponseKey[]) => {
+                
+                if (!Array.isArray(list)) {
+                    return false
+                }
+                
+                for (const value of list) {
+                    const validatorResponse = Validation.validator(createKey, value);
+                    
+                    if (validatorResponse.status != 200) {
+                        return validatorResponse.error || ''
+                    }
+                }
+                
+                return true
+            }, 'test']
         },
     }
     

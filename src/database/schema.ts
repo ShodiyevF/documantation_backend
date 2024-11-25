@@ -1,4 +1,4 @@
-import { boolean, integer, json, jsonb, pgTable, smallint, text, timestamp, uuid, varchar } from "drizzle-orm/pg-core";
+import { boolean, integer, json, jsonb, pgTable, smallint, PgArray, text, timestamp, uuid, varchar } from "drizzle-orm/pg-core";
 
 const requestTypes: [string, ...string[]] = [ "SUCCESS", "ERROR" ]
 const apiMethods: [string, ...string[]] = ["GET", "POST", "PUT", "PATCH", "DELETE", "HEAD", "OPTIONS", "CONNECT", "TRACE"]
@@ -69,21 +69,42 @@ export const responsesTable = pgTable('responses', {
     responseId: uuid('response_id').defaultRandom().primaryKey(),
     responseStatus: boolean('response_status').notNull(),
     responseStatusCode: integer('response_status_code').notNull(),
-    responseDescription: text('response_description'),
-    responseKeys: jsonb('response_keys').notNull(),
+    responseDescription: varchar('response_description', { length: 128 }),
     responseOwnerId: uuid('response_owner_id').notNull().references(() => usersTable.userId),
     responseApiId: uuid('response_api_id').notNull().references(() => apisTable.apiId),
     responseCreatedAt: timestamp('response_created_at').notNull().defaultNow(),
 })
 
+export const responseKeysTable = pgTable('response_keys', {
+    rkId: uuid('rk_id').defaultRandom().primaryKey(),
+    rkName: varchar('rk_name', { length: 128 }).notNull(),
+    rkTypes: varchar('rk_types').array().notNull(),
+    rkMockData: varchar('rk_mock_data', { length: 128 }),
+    rkDescription: varchar('rk_description', { length: 128 }),
+    rkOwnerId: uuid('rk_owner_id').notNull().references(() => usersTable.userId),
+    rkResponseId: uuid('rk_response_id').notNull().references(() => responsesTable.responseId),
+    rkCreatedAt: timestamp('rk_created_at').notNull().defaultNow()
+})
+
 export const payloadsTable = pgTable('payloads', {
     payloadId: uuid('payload_id').defaultRandom().primaryKey(),
     payloadType: varchar('payload_type', { length: 6 }).notNull(),
-    payloadDescription: text('payload_description'),
+    payloadDescription: varchar('payload_description', { length: 128 }),
     payloadKeys: jsonb('payload_keys').notNull(),
     payloadOwnerId: uuid('payload_owner_id').notNull().references(() => usersTable.userId),
     payloadApiId: uuid('payload_api_id').notNull().references(() => apisTable.apiId),
     payloadCreatedAt: timestamp('payload_created_at').notNull().defaultNow(),
+})
+
+export const payloadKeysTable = pgTable('payload_keys', {
+    pkId: uuid('pk_id').defaultRandom().primaryKey(),
+    pkName: varchar('pk_name', { length: 128 }).notNull(),
+    pkTypes: varchar('pk_types').array().notNull(),
+    pkMockData: varchar('pk_mock_data', { length: 128 }),
+    pkDescription: varchar('pk_description', { length: 128 }),
+    pkOwnerId: uuid('pk_owner_id').notNull().references(() => usersTable.userId),
+    pkPayloadId: uuid('pk_payload_id').notNull().references(() => payloadsTable.payloadId),
+    pkCreatedAt: timestamp('pk_created_at').notNull().defaultNow()
 })
 
 namespace DbTableSchema {
@@ -96,7 +117,9 @@ namespace DbTableSchema {
     export const projectUsers = projectUsersTable
     export const apis = apisTable
     export const responses = responsesTable
+    export const responseKeys = responseKeysTable
     export const payloads = payloadsTable
+    export const payloadKeys = payloadKeysTable
 }
 
 export default DbTableSchema

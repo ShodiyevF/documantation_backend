@@ -29,6 +29,19 @@ namespace ApisCtrl {
             controllerError(res, error)
         }
     }
+
+    export async function createApiResponse(req: express.Request, res: express.Response) {
+        try {
+            await ApisModel.createApiResponse(req.body, req.headers.authorization as string)
+
+            return res.status(201).json({
+                status: 201,
+                message: 'Response successfully created'
+            })
+        } catch (error) {
+            controllerError(res, error)
+        }
+    }
     
 }
 
