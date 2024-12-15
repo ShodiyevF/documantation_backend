@@ -5,6 +5,7 @@ import RegexUtil from "@util/regex.util";
 namespace ApisDto {
 
     const methods = ["GET", "POST", "PUT", "PATCH", "DELETE", "HEAD", "OPTIONS", "CONNECT", "TRACE"]
+    const payloadType = ['params', 'query', 'form-data', 'form-urlencoded', 'body', 'text', 'javascript', 'html', 'xml']
     
     export const getApisParams: Validation.DTO = {
         project_id: {
@@ -112,6 +113,46 @@ namespace ApisDto {
             required: true,
             type: 'object',
             custom_validation: [(list: ApisInterface.IResponseKey[]) => {
+                
+                if (!Array.isArray(list)) {
+                    return false
+                }
+                
+                for (const value of list) {
+                    const validatorResponse = Validation.validator(createKey, value);
+                    
+                    if (validatorResponse.status != 200) {
+                        return validatorResponse.error || ''
+                    }
+                }
+                
+                return true
+            }, 'test']
+        },
+    }
+    
+    export const createApiPayloadBody: Validation.DTO = {
+        api_id: {
+            required: true,
+            type: 'string',
+            pattern: [RegexUtil.UUID]
+        },
+        payload_type: {
+            required: true,
+            type: 'string',
+            minLength: 1,
+            maxLength: 15
+        },
+        payload_description: {
+            required: false,
+            type: 'string',
+            minLength: 1,
+            maxLength: 128
+        },
+        payload_keys: {
+            required: true,
+            type: 'object',
+            custom_validation: [(list: ApisInterface.IPayloadKey[]) => {
                 
                 if (!Array.isArray(list)) {
                     return false

@@ -25,5 +25,11 @@ app.post('/api/apis/response',
     ApisCtrl.createApiResponse
 )
 
+app.post('/api/apis/payload',
+    authorizationMiddleware,
+    validationMiddleware(ApisDto.createApiPayloadBody, 'body'),
+    ApisCtrl.createApiPayload
+)
+
 
 export default app

@@ -57,6 +57,33 @@ namespace ApisInterface {
         key_mock_data: string;
         key_description: string | null;
     }
+
+    export interface IPayloadKey {
+        payload_types: string[];
+        payload_mock_data: string;
+        payload_description: string | null;
+    }
+
+    export interface IApiPayloadBody {
+        api_id: string;
+        payload_type: string;
+        payload_description: string | null;
+        payload_keys: IPayloadKey[];
+    }
+
+    export interface IInsertPayload {
+        payloadType: string;
+        payloadDescription: string;
+        payloadOwnerId: string;
+        payloadApiId: string;
+    }
+
+    export interface IApiPayloadBody {
+        api_id: string;
+        payload_type: string;
+        payload_description: string | null;
+        payload_keys: IPayloadKey[];
+    }
     
 }
 

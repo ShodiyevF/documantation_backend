@@ -60,8 +60,20 @@ namespace ApisQuery {
     }
 
     export async function insertResponseKey(payloads: ApisInterface.IInsertResponseKey) {
-        console.log(payloads);
-        
+        return await db.insert(DbTableSchema.responseKeys)
+        .values(payloads)
+        .returning()
+        .then(data => data[0])
+    }
+
+    export async function insertPayload(payloads: ApisInterface.IInsertApiResponse) {
+        return await db.insert(DbTableSchema.responses)
+        .values(payloads)
+        .returning()
+        .then(data => data[0])
+    }
+
+    export async function insertPayloadKey(payloads: ApisInterface.IInsertResponseKey) {
         return await db.insert(DbTableSchema.responseKeys)
         .values(payloads)
         .returning()

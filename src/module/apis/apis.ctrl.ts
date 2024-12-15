@@ -42,6 +42,19 @@ namespace ApisCtrl {
             controllerError(res, error)
         }
     }
+
+    export async function createApiPayload(req: express.Request, res: express.Response) {
+        try {
+            await ApisModel.createApiPayload(req.body, req.headers.authorization as string)
+
+            return res.status(201).json({
+                status: 201,
+                message: 'Payload successfully created'
+            })
+        } catch (error) {
+            controllerError(res, error)
+        }
+    }
     
 }
 

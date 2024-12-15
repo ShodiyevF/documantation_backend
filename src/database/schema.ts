@@ -88,9 +88,8 @@ export const responseKeysTable = pgTable('response_keys', {
 
 export const payloadsTable = pgTable('payloads', {
     payloadId: uuid('payload_id').defaultRandom().primaryKey(),
-    payloadType: varchar('payload_type', { length: 6 }).notNull(),
+    payloadType: varchar('payload_type', { length: 15 }).notNull(),
     payloadDescription: varchar('payload_description', { length: 128 }),
-    payloadKeys: jsonb('payload_keys').notNull(),
     payloadOwnerId: uuid('payload_owner_id').notNull().references(() => usersTable.userId),
     payloadApiId: uuid('payload_api_id').notNull().references(() => apisTable.apiId),
     payloadCreatedAt: timestamp('payload_created_at').notNull().defaultNow(),
