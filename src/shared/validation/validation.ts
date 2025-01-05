@@ -71,6 +71,9 @@ namespace Validation {
                     }
     
                     if (rules.custom_validation && (!rules.custom_validation[0](value) || typeof rules.custom_validation[0](value) === 'string')) {
+                        
+                        console.log(`${key}: ${typeof rules.custom_validation[0](value) === 'string' ? rules.custom_validation[0](value) : rules.custom_validation[1]}`);
+                        
                         return { status: 400, error: `${key}: ${typeof rules.custom_validation[0](value) === 'string' ? rules.custom_validation[0](value) : rules.custom_validation[1]}` };
                     }
                 }

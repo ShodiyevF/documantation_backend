@@ -1,11 +1,13 @@
 import { and, eq } from "drizzle-orm"
 
+import ApisInterface from "@interface/apis.inteface"
 import DbTableSchema from "@database/schema"
 import { db } from "@database/pg"
-import ApisInterface from "@interface/apis.inteface"
 
 namespace ApisQuery {
 
+    //! APIS_START
+    
     export async function getApisByProjectId(projectId: string) {
         return await db.select({
             api_id: DbTableSchema.apis.apiId,
@@ -52,6 +54,11 @@ namespace ApisQuery {
         .then(data => data[0])
     }
 
+    //! APIS_END
+
+
+    //! RESPONSE_START
+    
     export async function insertResponse(payloads: ApisInterface.IInsertApiResponse) {
         return await db.insert(DbTableSchema.responses)
         .values(payloads)
@@ -65,20 +72,28 @@ namespace ApisQuery {
         .returning()
         .then(data => data[0])
     }
+    
+    //! RESPONSE_END
 
-    export async function insertPayload(payloads: ApisInterface.IInsertApiResponse) {
-        return await db.insert(DbTableSchema.responses)
+
+    //! PAYLOAD_END
+
+    export async function insertPayload(payloads: ApisInterface.IInsertPayload) {
+        return await db.insert(DbTableSchema.payloads)
         .values(payloads)
         .returning()
         .then(data => data[0])
     }
 
-    export async function insertPayloadKey(payloads: ApisInterface.IInsertResponseKey) {
-        return await db.insert(DbTableSchema.responseKeys)
+    export async function insertPayloadKey(payloads: ApisInterface.IInsertPayloadKey) {
+        return await db.insert(DbTableSchema.payloadKeys)
         .values(payloads)
         .returning()
         .then(data => data[0])
     }
+
+    //! PAYLOAD_END
+
     
 }
 

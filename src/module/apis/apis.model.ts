@@ -123,24 +123,21 @@ namespace ApisModel {
             throw new Exception.HttpException(404, 'You are not allowed to add api to this api!', Exception.Errors.NO_ACCESS)
         }
 
-        const response = await ApisQuery.insertPayload({
-            responseStatus: response_status,
-            responseStatusCode: response_status_code,
-            responseDescription: response_description,
-            responseApiId: api_id,
-            responseOwnerId: userId,
+        const payload = await ApisQuery.insertPayload({
+            payloadType: payload_type,
+            payloadDescription: payload_description,
+            payloadOwnerId: userId,
+            payloadApiId: api_id,
         })
 
-        for (const key of response_keys) {
-            console.log(key.key_types);
-            
-            await ApisQuery.insertResponseKey({
-                rkName: key.key_name,
-                rkTypes: key.key_types,
-                rkMockData: key.key_mock_data,
-                rkDescription: key.key_description,
-                rkOwnerId: userId,
-                rkResponseId: response.responseId,
+        for (const key of payload_keys) {
+            await ApisQuery.insertPayloadKey({
+                pkName: key.pk_name,
+                pkTypes: key.pk_types,
+                pkMockData: key.pk_mock_data,
+                pkDescription: key.pk_description,
+                pkOwnerId: userId,
+                pkPayloadId: payload.payloadId,
             })
         }
     }

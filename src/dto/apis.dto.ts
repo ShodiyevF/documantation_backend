@@ -140,8 +140,14 @@ namespace ApisDto {
         payload_type: {
             required: true,
             type: 'string',
-            minLength: 1,
-            maxLength: 15
+            custom_validation: [(value: string) => {
+                
+                if (!payloadType.includes(value)) {
+                    return false
+                }
+                
+                return true
+            }, `Includes ${payloadType}`]
         },
         payload_description: {
             required: false,
@@ -157,11 +163,18 @@ namespace ApisDto {
                 if (!Array.isArray(list)) {
                     return false
                 }
+
+                if (!list.length) {
+                    return false
+                }
                 
                 for (const value of list) {
                     const validatorResponse = Validation.validator(createKey, value);
                     
+                    console.log(validatorResponse);
+                    
                     if (validatorResponse.status != 200) {
+
                         return validatorResponse.error || ''
                     }
                 }

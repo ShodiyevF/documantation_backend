@@ -1,7 +1,14 @@
 namespace ApisInterface {
 
+    //! APIS_START
+    
     export interface IGetApis {
         projectId: string;
+    }
+
+    export interface IGetApiByRoute {
+        projectId: string;
+        apiRoute: string;
     }
 
     export interface ICreateApiBody {
@@ -10,11 +17,6 @@ namespace ApisInterface {
         api_route: string;
         api_method: string;
         api_description: string;
-    }
-
-    export interface IGetApiByRoute {
-        projectId: string;
-        apiRoute: string;
     }
 
     export interface IInsertApi {
@@ -26,6 +28,18 @@ namespace ApisInterface {
         apiProjectId: string;
     }
 
+    //! APIS_END
+
+
+    //! RESPONSE_START
+    
+    export interface IResponseKey {
+        key_name: string;
+        key_types: string[];
+        key_mock_data: string;
+        key_description: string | null;
+    }
+    
     export interface IApiResponseBody {
         api_id: string;
         response_status: boolean;
@@ -33,7 +47,7 @@ namespace ApisInterface {
         response_description: string;
         response_keys: IResponseKey[];
     }
-
+    
     export interface IInsertApiResponse {
         responseStatus: boolean;
         responseStatusCode: number;
@@ -41,7 +55,7 @@ namespace ApisInterface {
         responseOwnerId: string;
         responseApiId: string;
     }
-
+    
     export interface IInsertResponseKey {
         rkName: string;
         rkTypes: string[];
@@ -50,18 +64,19 @@ namespace ApisInterface {
         rkOwnerId: string;
         rkResponseId: string;
     }
+    
+    //! RESPONSE_END
 
-    export interface IResponseKey {
-        key_name: string;
-        key_types: string[];
-        key_mock_data: string;
-        key_description: string | null;
-    }
+    
+    //! PAYLOAD_START
 
     export interface IPayloadKey {
-        payload_types: string[];
-        payload_mock_data: string;
-        payload_description: string | null;
+        pk_name: string;
+        pk_types: string[];
+        pk_mock_data: string | null;
+        pk_description: string | null;
+        pk_owner_id: string;
+        pk_payload_id: string;
     }
 
     export interface IApiPayloadBody {
@@ -73,17 +88,21 @@ namespace ApisInterface {
 
     export interface IInsertPayload {
         payloadType: string;
-        payloadDescription: string;
+        payloadDescription: string | null;
         payloadOwnerId: string;
         payloadApiId: string;
     }
 
-    export interface IApiPayloadBody {
-        api_id: string;
-        payload_type: string;
-        payload_description: string | null;
-        payload_keys: IPayloadKey[];
+    export interface IInsertPayloadKey {
+        pkName: string;
+        pkTypes: string[];
+        pkMockData: string | null;
+        pkDescription: string | null;
+        pkOwnerId: string;
+        pkPayloadId: string;
     }
+
+    //! PAYLOAD_END
     
 }
 
