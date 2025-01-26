@@ -6,6 +6,7 @@ namespace ApisDto {
 
     const methods = ["GET", "POST", "PUT", "PATCH", "DELETE", "HEAD", "OPTIONS", "CONNECT", "TRACE"]
     const payloadType = ['params', 'query', 'form-data', 'form-urlencoded', 'body', 'text', 'javascript', 'html', 'xml']
+    const keyTypes = ['boolean', 'number', 'int', 'object', 'null', 'string']
     
     export const getApisParams: Validation.DTO = {
         project_id: {
@@ -64,10 +65,10 @@ namespace ApisDto {
             required: true,
             type: 'object',
             custom_validation: [(types: string[]) => {
-                const check = types.every(value => types.includes(value))
+                const check = types.every(value => keyTypes.includes(value))
 
                 if (!check) {
-                    return false
+                    return `${keyTypes}`
                 }
 
                 return true
@@ -171,10 +172,7 @@ namespace ApisDto {
                 for (const value of list) {
                     const validatorResponse = Validation.validator(createKey, value);
                     
-                    console.log(validatorResponse);
-                    
                     if (validatorResponse.status != 200) {
-
                         return validatorResponse.error || ''
                     }
                 }

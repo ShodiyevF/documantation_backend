@@ -71,12 +71,10 @@ namespace ApisInterface {
     //! PAYLOAD_START
 
     export interface IPayloadKey {
-        pk_name: string;
-        pk_types: string[];
-        pk_mock_data: string | null;
-        pk_description: string | null;
-        pk_owner_id: string;
-        pk_payload_id: string;
+        key_name: string;
+        key_types: string[];
+        key_mock_data: string | null;
+        key_description: string | null;
     }
 
     export interface IApiPayloadBody {

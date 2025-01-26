@@ -91,8 +91,6 @@ namespace ApisModel {
         })
 
         for (const key of response_keys) {
-            console.log(key.key_types);
-            
             await ApisQuery.insertResponseKey({
                 rkName: key.key_name,
                 rkTypes: key.key_types,
@@ -129,13 +127,13 @@ namespace ApisModel {
             payloadOwnerId: userId,
             payloadApiId: api_id,
         })
-
+        
         for (const key of payload_keys) {
             await ApisQuery.insertPayloadKey({
-                pkName: key.pk_name,
-                pkTypes: key.pk_types,
-                pkMockData: key.pk_mock_data,
-                pkDescription: key.pk_description,
+                pkName: key.key_name,
+                pkTypes: key.key_types,
+                pkMockData: key.key_mock_data,
+                pkDescription: key.key_description,
                 pkOwnerId: userId,
                 pkPayloadId: payload.payloadId,
             })
