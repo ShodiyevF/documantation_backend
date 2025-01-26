@@ -4,10 +4,10 @@ import internalErrorCatcher from '@shared/logger/logger.internal';
 
 namespace JWT {
 
-    export function requestJwtToken(payload: jwt.JwtPayload) {
+    export function requestJwtToken(payload: object) {
         try {
-            const token = jwt.sign(payload, process.env.JWT_SECRET || 'test', {
-                expiresIn: process.env.JWT_EXPIRATION,
+            const token = jwt.sign(payload, process.env.JWT_SECRET ? process.env.JWT_SECRET : 'test', {
+                expiresIn: process.env.JWT_EXPIRATION ? +process.env.JWT_EXPIRATION : 0,
             });
             return token;
         } catch (error) {
