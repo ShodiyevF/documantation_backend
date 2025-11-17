@@ -6,10 +6,10 @@ import express from 'express'
 import cors from 'cors'
 
 import LoggerMiddleware from '@middleware/logger.middleware';
+import ExpressFunctions from '@lib/express_functions.lib';
 import runConfigCronJobs from '@config/cronjobs.config';
-import initDefaultFolders from '@config/defaultfiles';
-import ExpressFunctions from '@lib/express.function';
-import CORS_OPTIONS from '@config/cors';
+import CORS_OPTIONS from '@config/cors.config';
+import FS from '@config/fs.config';
 
 export default function app(routes: express.Router[]) {
     const app: express.Application = express();
@@ -45,7 +45,7 @@ export default function app(routes: express.Router[]) {
     }
 
     function defaultFiles() {
-        initDefaultFolders();
+        FS.runner();
     }
 
     function initRoutes(routes: express.Router[]) {
