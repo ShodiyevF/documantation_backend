@@ -1,6 +1,5 @@
-import { and, eq } from "drizzle-orm"
+import { eq } from "drizzle-orm"
 
-import ApisInterface from "@interface/apis.inteface"
 import DbTableSchema from "@database/schema.database"
 import { db } from "@database/pg.database"
 
@@ -33,66 +32,7 @@ namespace ApisQuery {
         .then(data => data[0])
     }
 
-    export async function getApiByRoute(payloads: ApisInterface.IGetApiByRoute) {
-        const {
-            projectId,
-            apiRoute
-        } = payloads
-        
-        return await db.select()
-        .from(DbTableSchema.apis)
-        .where(and(
-            eq(DbTableSchema.apis.apiRoute, apiRoute),
-            eq(DbTableSchema.apis.apiProjectId, projectId),
-        ))
-    }
-
-    export async function insertApi(payloads: ApisInterface.IInsertApi) {
-        return await db.insert(DbTableSchema.apis)
-        .values(payloads)
-        .returning()
-        .then(data => data[0])
-    }
-
     //! APIS_END
-
-
-    //! RESPONSE_START
-    
-    export async function insertResponse(payloads: ApisInterface.IInsertApiResponse) {
-        return await db.insert(DbTableSchema.responses)
-        .values(payloads)
-        .returning()
-        .then(data => data[0])
-    }
-
-    export async function insertResponseKey(payloads: ApisInterface.IInsertResponseKey) {
-        return await db.insert(DbTableSchema.responseKeys)
-        .values(payloads)
-        .returning()
-        .then(data => data[0])
-    }
-    
-    //! RESPONSE_END
-
-
-    //! PAYLOAD_END
-
-    export async function insertPayload(payloads: ApisInterface.IInsertPayload) {
-        return await db.insert(DbTableSchema.payloads)
-        .values(payloads)
-        .returning()
-        .then(data => data[0])
-    }
-
-    export async function insertPayloadKey(payloads: ApisInterface.IInsertPayloadKey) {
-        return await db.insert(DbTableSchema.payloadKeys)
-        .values(payloads)
-        .returning()
-        .then(data => data[0])
-    }
-
-    //! PAYLOAD_END
 
     
 }

@@ -1,34 +1,34 @@
-import Validation from "@shared/validation/validation";
+import ValidationInterface from "@shared/validation/validation.interface";
 import RegexUtil from "@util/regex.util";
 
 namespace ProjectsDto {
 
-    export const createProject: Validation.DTO = {
+    export const createProject: ValidationInterface.DTO = {
         project_name: {
             required: true,
             type: 'string',
-            minLength: 1,
-            maxLength: 32
+            min_length: 1,
+            max_length: 32
         },
         project_description: {
             required: false,
             type: 'string',
-            minLength: 1,
-            maxLength: 1024
+            min_length: 1,
+            max_length: 1024
         },
     }
 
-    export const login: Validation.DTO = {
+    export const login: ValidationInterface.DTO = {
         user_email: {
             required: true,
             type: 'string',
-            pattern: [RegexUtil.email]
+            pattern: RegexUtil.email
         },
         user_password: {
             required: true,
             type: 'string',
-            minLength: 8,
-            maxLength: 32
+            min_length: 8,
+            max_length: 32
         },
     }
     

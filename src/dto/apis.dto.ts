@@ -1,5 +1,4 @@
-import ApisInterface from "@interface/apis.inteface";
-import Validation from "@shared/validation/validation";
+import ValidationInterface from "@shared/validation/validation.interface";
 import RegexUtil from "@util/regex.util";
 
 namespace ApisDto {
@@ -8,91 +7,82 @@ namespace ApisDto {
     const payloadType = ['params', 'query', 'form-data', 'body']
     const keyTypes = ['boolean', 'number', 'int', 'object', 'null', 'string']
     
-    export const getApisParams: Validation.DTO = {
+    export const getApisParams: ValidationInterface.DTO = {
         project_id: {
             required: true,
             type: 'string',
-            pattern: [RegexUtil.UUID]
+            pattern: RegexUtil.UUID
         }
     }
 
-    export const createApiBody: Validation.DTO = {
+    export const createApiBody: ValidationInterface.DTO = {
         project_id: {
             required: true,
             type: 'string',
-            pattern: [RegexUtil.UUID]
+            pattern: RegexUtil.UUID
+        },
+        module_id: {
+            required: true,
+            type: 'string',
+            pattern: RegexUtil.UUID
         },
         api_name: {
             required: true,
             type: 'string',
-            minLength: 1,
-            maxLength: 64
+            min_length: 1,
+            max_length: 64
         },
         api_route: {
             required: true,
             type: 'string',
-            minLength: 1,
-            maxLength: 128
+            min_length: 1,
+            max_length: 128
         },
         api_method: {
             required: true,
             type: 'string',
-            custom_validation: [(value) => {
-                const check = methods.find(method => method === value)
-                if (!check) {
-                    return false
-                }
-                
-                return true
-            }, `Only these values should be present ${methods}`]
+            enum: methods,
         },
         api_description: {
             required: false,
             type: 'string',
-            minLength: 1,
-            maxLength: 128
+            min_length: 1,
+            max_length: 128
         },
     }
 
-    export const createKey: Validation.DTO = {
+    export const createKey: ValidationInterface.DTO = {
         key_name: {
             required: true,
             type: 'string',
-            minLength: 3,
-            maxLength: 128,
+            min_length: 3,
+            max_length: 128,
         },
         key_types: {
             required: true,
-            type: 'object',
-            custom_validation: [(types: string[]) => {
-                const check = types.every(value => keyTypes.includes(value))
-
-                if (!check) {
-                    return `${keyTypes}`
-                }
-
-                return true
-            }, 'An array can only contain string, number, and boolean types.']
+            type: 'array',
+            element_type: 'string',
+            element_enum: keyTypes,
         },
         key_mock_data: {
             required: true,
             type: 'string',
-            minLength: 1,
-            maxLength: 128
+            min_length: 1,
+            max_length: 128
         },
         key_description: {
             required: false,
             type: 'string',
-            minLength: 1,
-            maxLength: 128
+            min_length: 1,
+            max_length: 128
         },
     } 
 
-    export const createApiResponseBody: Validation.DTO = {
+    export const createApiResponseBody: ValidationInterface.DTO = {
         api_id: {
             required: true,
             type: 'string',
-            pattern: [RegexUtil.UUID]
+            pattern: RegexUtil.UUID
         },
         response_status: {
             required: true,
@@ -107,78 +97,39 @@ namespace ApisDto {
         response_description: {
             required: false,
             type: 'string',
-            minLength: 1,
-            maxLength: 128
+            min_length: 1,
+            max_length: 128
         },
         response_keys: {
             required: true,
-            type: 'object',
-            custom_validation: [(list: ApisInterface.IResponseKey[]) => {
-                
-                if (!Array.isArray(list)) {
-                    return false
-                }
-                
-                for (const value of list) {
-                    const validatorResponse = Validation.validator(createKey, value);
-                    
-                    if (validatorResponse.status != 200) {
-                        return validatorResponse.error || ''
-                    }
-                }
-                
-                return true
-            }, 'test']
+            type: 'array',
+            element_type: 'object',
+            element_dto: createKey
         },
     }
     
-    export const createApiPayloadBody: Validation.DTO = {
+    export const createApiPayloadBody: ValidationInterface.DTO = {
         api_id: {
             required: true,
             type: 'string',
-            pattern: [RegexUtil.UUID]
+            pattern: RegexUtil.UUID
         },
         payload_type: {
             required: true,
             type: 'string',
-            custom_validation: [(value: string) => {
-                
-                if (!payloadType.includes(value)) {
-                    return false
-                }
-                
-                return true
-            }, `Includes ${payloadType}`]
+            enum: payloadType
         },
         payload_description: {
             required: false,
             type: 'string',
-            minLength: 1,
-            maxLength: 128
+            min_length: 1,
+            max_length: 128
         },
         payload_keys: {
             required: true,
-            type: 'object',
-            custom_validation: [(list: ApisInterface.IPayloadKey[]) => {
-                
-                if (!Array.isArray(list)) {
-                    return false
-                }
-
-                if (!list.length) {
-                    return false
-                }
-                
-                for (const value of list) {
-                    const validatorResponse = Validation.validator(createKey, value);
-                    
-                    if (validatorResponse.status != 200) {
-                        return validatorResponse.error || ''
-                    }
-                }
-                
-                return true
-            }, 'test']
+            type: 'array',
+            element_type: 'object',
+            element_dto: createKey
         },
     }
     

@@ -16,7 +16,7 @@ namespace AuthModel {
 
         const checkEmail = await UsersQuery.getUserByEmail(user_email)
         if (checkEmail) {
-            throw new Exception.HttpException(409, 'Email already exists', Exception.Errors.ALREADY_EXISTS)
+            throw new Exception.HttpException(409, 'Email already exists', Exception.Errors.EMAIL_ALREADY_EXISTS)
         }
 
         await UsersQuery.insertUser({
@@ -37,7 +37,7 @@ namespace AuthModel {
 
         const user = await UsersQuery.getUserByEmail(user_email)
         if (!user || user.userPassword !== user_password) {
-            throw new Exception.HttpException(400, 'Wrong email or password', Exception.Errors.UNAUTHORIZED)
+            throw new Exception.HttpException(400, 'Wrong email or password', Exception.Errors.WRONG_EMAIL_OR_PASSWORD)
         }
 
         return JWT.requestJwtToken({

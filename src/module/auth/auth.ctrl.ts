@@ -1,6 +1,7 @@
 import express from 'express'
 
-import controllerError from '@lib/controllerError'
+
+import ExpressFunctions from '@lib/express_functions.lib'
 import AuthModel from './auth.model'
 
 namespace AuthCtrl {
@@ -14,7 +15,7 @@ namespace AuthCtrl {
                 message: 'User successfully registered'
             })
         } catch (error) {
-            controllerError(res, error)
+            ExpressFunctions.controllerError(res, error)
         }
     }
 
@@ -28,7 +29,7 @@ namespace AuthCtrl {
                 token: model
             })
         } catch (error) {
-            controllerError(res, error)
+            ExpressFunctions.controllerError(res, error)
         }
     }
     

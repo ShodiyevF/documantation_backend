@@ -4,7 +4,8 @@ namespace Exception {
 
         //! ALREADY_EXISTS_START
 
-
+            PROJECT_ALREADY_EXISTS = 'PROJECT_ALREADY_EXISTS',
+            EMAIL_ALREADY_EXISTS = 'EMAIL_ALREADY_EXISTS',
 
         //! ALREADY_EXISTS_END
 
@@ -45,6 +46,9 @@ namespace Exception {
         
         //! BAD_VALUES_START
             
+            NO_ACCESS_TO_THIS_PROJECT = 'NO_ACCESS_TO_THIS_PROJECT',
+            WRONG_EMAIL_OR_PASSWORD = 'WRONG_EMAIL_OR_PASSWORD',
+            NO_ACCESS_TO_THIS_API = 'NO_ACCESS_TO_THIS_API',
             UPLOAD_ERROR = 'UPLOAD_ERROR',
         
         //! BAD_VALUES_END

@@ -13,6 +13,7 @@ namespace ApisInterface {
 
     export interface ICreateApiBody {
         project_id: string;
+        module_id: string;
         api_name: string;
         api_route: string;
         api_method: string;
