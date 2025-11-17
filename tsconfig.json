@@ -1,6 +1,6 @@
 {
   "ts-node": {
-      "require": ["tsconfig-paths/register"]
+    "require": ["tsconfig-paths/register"]
   },
   "compilerOptions": {
     "target": "ES6",
@@ -32,6 +32,7 @@
       "@config/*": ["src/config/*"],
       "@database/*": ["src/database/*"],
       "@dto/*": ["src/dto/*"],
+      "@helper/*": ["src/helper/*"],
       "@interface/*": ["src/interface/*"],
       "@lib/*": ["src/lib/*"],
       "@middleware/*": ["src/middleware/*"],
@@ -41,7 +42,8 @@
       "@sharedLib/*": ["src/shared/lib/*"],
       "@logger/*": ["src/shared/logger/*"],
       "@errorCatcher/*": ["src/shared/logger/logger.internal.js"],
-      "@util/*": ["src/util/*"]
+      "@util/*": ["src/util/*"],
+      "@customTypes/*": ["src/types/*"]
     }
   },
   "include": ["src/**/*"],
