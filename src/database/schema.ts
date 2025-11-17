@@ -54,6 +54,15 @@ export const projectUsersTable = pgTable('project_users', {
     puCreatedAt: timestamp('pu_created_at').notNull().defaultNow(),
 })
 
+export const modulesTable = pgTable('modules', {
+    moduleId: uuid('module_id').defaultRandom().primaryKey(),
+    moduleName: varchar('module_name', { length: 32 }).notNull(),
+    moduleDescription: text('module_description'),
+    moduleOwnerId: uuid('module_owner_id').notNull().references(() => usersTable.userId),
+    moduleProjectId: uuid('module_project_id').notNull().references(() => projectsTable.projectId),
+    moduleCreatedAt: timestamp('module_created_at').notNull().defaultNow(),
+})
+
 export const apisTable = pgTable('apis', {
     apiId: uuid('api_id').defaultRandom().primaryKey(),
     apiName: varchar('api_name', { length: 64 }).notNull(),
@@ -61,6 +70,7 @@ export const apisTable = pgTable('apis', {
     apiMethod: varchar('api_method', { enum: apiMethods }).notNull(),
     apiDescription: varchar('api_description', { length: 128 }),
     apiOwnerId: uuid('api_owner_id').notNull().references(() => usersTable.userId),
+    apiModuleId: uuid('api_module_id').notNull().references(() => modulesTable.moduleId),
     apiProjectId: uuid('api_project_id').notNull().references(() => projectsTable.projectId),
     apiCreatedAt: timestamp('api_created_at').notNull().defaultNow(),
 })
