@@ -1,6 +1,6 @@
 {
-    "watch": ["src"],
+    "watch": ["src", "./.env", "./.env.example"],
     "ext": "ts",
-    "ignore": ["src/**/*.spec.ts"],
-    "exec": "cross-env MODE=DEV npx ts-node src/server.ts"
+    "ignore": ["src/**/*.spec.ts", "src/types/env_variables.d.ts"],
+    "exec": "cross-env MODE=DEV npx ts-node ./src/config/env_generator.config.ts && cross-env MODE=DEV npx ts-node ./src/server.ts"
 }
