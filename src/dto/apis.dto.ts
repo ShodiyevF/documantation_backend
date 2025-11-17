@@ -5,7 +5,7 @@ import RegexUtil from "@util/regex.util";
 namespace ApisDto {
 
     const methods = ["GET", "POST", "PUT", "PATCH", "DELETE", "HEAD", "OPTIONS", "CONNECT", "TRACE"]
-    const payloadType = ['params', 'query', 'form-data', 'form-urlencoded', 'body', 'text', 'javascript', 'html', 'xml']
+    const payloadType = ['params', 'query', 'form-data', 'body']
     const keyTypes = ['boolean', 'number', 'int', 'object', 'null', 'string']
     
     export const getApisParams: Validation.DTO = {

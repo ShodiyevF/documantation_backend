@@ -1,8 +1,8 @@
 import { and, eq } from "drizzle-orm"
 
 import ApisInterface from "@interface/apis.inteface"
-import DbTableSchema from "@database/schema"
-import { db } from "@database/pg"
+import DbTableSchema from "@database/schema.database"
+import { db } from "@database/pg.database"
 
 namespace ApisQuery {
 

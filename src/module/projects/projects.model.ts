@@ -1,7 +1,7 @@
 import ProjectsInterface from "@interface/projects.inteface"
 import ProjectsQuery from "@query/projects.query"
-import Exception from "@lib/httpException"
-import JWT from "@lib/jwt"
+import Exception from "@lib/http_exception.lib"
+import JWT from "@lib/jwt.lib"
 
 namespace ProjectsModel {
 

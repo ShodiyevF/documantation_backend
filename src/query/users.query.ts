@@ -1,8 +1,8 @@
 import { eq } from "drizzle-orm"
 
 import UsersInterface from "@interface/users.interface"
-import DbTableSchema from "@database/schema"
-import { db } from "@database/pg"
+import DbTableSchema from "@database/schema.database"
+import { db } from "@database/pg.database"
 
 namespace UsersQuery {
 

@@ -2,7 +2,7 @@ import express from "express";
 
 import internalErrorCatcher from "@shared/logger/logger.internal";
 import { logWriter } from "@logger/logger.request";
-import Exception from "@lib/httpException";
+import Exception from "@lib/http_exception.lib";
 
 namespace LoggerMiddleware {
     function writeLog(res: express.Response, req: express.Request, body: any) {

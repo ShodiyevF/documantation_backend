@@ -1,7 +1,8 @@
 import express from 'express'
 
-import controllerError from '@lib/controllerError'
+
 import ProjectsModel from './projects.model'
+import ExpressFunctions from '@lib/express_functions.lib'
 
 namespace ProjectsCtrl {
 
@@ -11,7 +12,7 @@ namespace ProjectsCtrl {
 
             return res.status(200).json(model)
         } catch (error) {
-            controllerError(res, error)
+            ExpressFunctions.controllerError(res, error)
         }
     }
 
@@ -24,7 +25,7 @@ namespace ProjectsCtrl {
                 message: 'Project succesfully created'
             })
         } catch (error) {
-            controllerError(res, error)
+            ExpressFunctions.controllerError(res, error)
         }
     }
     

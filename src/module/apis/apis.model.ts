@@ -1,8 +1,8 @@
 import ApisInterface from "@interface/apis.inteface"
 import ProjectsQuery from "@query/projects.query"
-import Exception from "@lib/httpException"
+import Exception from "@lib/http_exception.lib"
 import ApisQuery from "@query/apis.query"
-import JWT from "@lib/jwt"
+import JWT from "@lib/jwt.lib"
 
 namespace ApisModel {
 
