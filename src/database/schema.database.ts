@@ -1,32 +1,33 @@
-import { boolean, integer, json, jsonb, pgTable, smallint, PgArray, text, timestamp, uuid, varchar } from "drizzle-orm/pg-core";
+import { boolean, integer, json, jsonb, pgTable, smallint, PgArray, text, timestamp, uuid, varchar, pgEnum } from "drizzle-orm/pg-core";
+import { Table } from "drizzle-orm";
 
-const requestTypes: [string, ...string[]] = [ "SUCCESS", "ERROR" ]
-const apiMethods: [string, ...string[]] = ["GET", "POST", "PUT", "PATCH", "DELETE", "HEAD", "OPTIONS", "CONNECT", "TRACE"]
+export const requestLogsRlTypeEnum = pgEnum('request_logs_rl_type_enum', [ "SUCCESS", "ERROR" ]);
+export const apisApiMethodEnum = pgEnum('apis_api_method_enum', ["GET", "POST", "PUT", "PATCH", "DELETE", "HEAD", "OPTIONS", "CONNECT", "TRACE"]);
 
 export const requestsLOGSTable = pgTable('requests_logs', {
-    requestId: uuid('request_id').defaultRandom().primaryKey(),
-    requestType: varchar('request_type', { enum: requestTypes }).notNull(),
-    requestMethod: varchar('request_method', { length: 32 }).notNull(),
-    requestRoute: text('request_route').notNull(),
-    requestHost: text('request_host').notNull(),
-    requestUserAgent: text('request_user_agent').notNull(),
-    requestBody: json('request_body').notNull(),
-    requestResponseStatus: smallint('request_response_status').notNull(),
-    requestResponseBody: text('request_response_body').notNull(),
-    requestCreatedAt: timestamp('request_created_at').notNull().defaultNow(),
+    rlId: uuid('rl_id').defaultRandom().primaryKey(),
+    rlType: requestLogsRlTypeEnum('rl_type').notNull(),
+    rlMethod: varchar('rl_method', { length: 32 }).notNull(),
+    rlRoute: text('rl_route').notNull(),
+    rlHost: text('rl_host').notNull(),
+    rlUserAgent: text('rl_user_agent').notNull(),
+    rlBody: json('rl_body').notNull(),
+    rlResponseStatus: smallint('rl_response_status').notNull(),
+    rlResponseBody: text('rl_response_body').notNull(),
+    rlCreatedAt: timestamp('rl_created_at').notNull().defaultNow(),
 })
 
 export const internalErrorsLOGSTable = pgTable('internal_errors_logs', {
-    ieId: uuid('ie_id').defaultRandom().primaryKey(),
-    ieDescription: text('ie_description').notNull(),
-    ieStack: text('ie_stack').notNull(),
-    ieCreatedAt: timestamp('ie_created_at').notNull().defaultNow(),
+    ielId: uuid('iel_id').defaultRandom().primaryKey(),
+    ielDescription: text('iel_description').notNull(),
+    ielStack: text('iel_stack').notNull(),
+    ielCreatedAt: timestamp('iel_created_at').notNull().defaultNow(),
 })
 
 export const cronJobsLOGSTable = pgTable('cron_jobs_logs', {
-    cjId: uuid('cj_id').defaultRandom().primaryKey(),
-    cjName: text('cj_name').notNull(),
-    cjCreatedAt: timestamp('cj_created_at').notNull().defaultNow(),
+    cjlId: uuid('cjl_id').defaultRandom().primaryKey(),
+    cjlName: text('cjl_name').notNull(),
+    cjlCreatedAt: timestamp('cjl_created_at').notNull().defaultNow(),
 })
 
 
@@ -67,7 +68,7 @@ export const apisTable = pgTable('apis', {
     apiId: uuid('api_id').defaultRandom().primaryKey(),
     apiName: varchar('api_name', { length: 64 }).notNull(),
     apiRoute: varchar('api_route', { length: 128 }).notNull(),
-    apiMethod: varchar('api_method', { enum: apiMethods }).notNull(),
+    apiMethod: apisApiMethodEnum('api_method').notNull(),
     apiDescription: varchar('api_description', { length: 128 }),
     apiOwnerId: uuid('api_owner_id').notNull().references(() => usersTable.userId),
     apiModuleId: uuid('api_module_id').notNull().references(() => modulesTable.moduleId),
@@ -117,9 +118,9 @@ export const payloadKeysTable = pgTable('payload_keys', {
 })
 
 namespace DbTableSchema {
-    export const requests = requestsLOGSTable
-    export const internalErrors = internalErrorsLOGSTable
-    export const cronJobs = cronJobsLOGSTable
+    export const requestsLOGS = requestsLOGSTable
+    export const internalErrorsLOGS = internalErrorsLOGSTable
+    export const cronJobsLOGS = cronJobsLOGSTable
 
     export const users = usersTable
     export const projects = projectsTable
@@ -129,6 +130,16 @@ namespace DbTableSchema {
     export const responseKeys = responseKeysTable
     export const payloads = payloadsTable
     export const payloadKeys = payloadKeysTable
+
+    export const requestLogsRlTypeEnumList = requestLogsRlTypeEnum.enumValues
+    export const apisApiMethodEnumList = apisApiMethodEnum.enumValues
+    
+    export type TRequestLogsRlTypeEnum = typeof requestLogsRlTypeEnum.enumValues[number]
+    export type TApisApiMethodEnum = typeof apisApiMethodEnum.enumValues[number]
+
+    export type InferSelectType<T extends Table, P extends boolean | null = null> = P extends true ? Partial<T['_']['inferSelect']> : T['_']['inferSelect'];
+    export type InferInsertType<T extends Table> = T['_']['inferInsert'];
+    export type InferUpdateType<T extends Table> = Partial<InferInsertType<T>>;
 }
 
 export default DbTableSchema
