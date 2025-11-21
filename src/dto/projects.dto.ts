@@ -30,7 +30,7 @@ namespace ProjectsDto {
         },
     }
 
-    export const inviteUsers: ValidationInterface.DTO = {
+    export const createInvite: ValidationInterface.DTO = {
         project_id: {
             required: true,
             type: 'string',

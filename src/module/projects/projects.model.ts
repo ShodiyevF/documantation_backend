@@ -65,7 +65,7 @@ namespace ProjectsModel {
         })
     }
 
-    export async function inviteUsers(body: ProjectsInterface.IInviteUserBody, token: string) {
+    export async function createInvite(body: ProjectsInterface.IInviteUserBody, token: string) {
         const {
             project_id,
             user_ids,
