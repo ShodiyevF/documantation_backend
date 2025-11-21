@@ -1,5 +1,5 @@
+import DatabaseFunctions from "@database/functions.database";
 import AuthInterface from "@interface/auth.interface";
-import UsersQuery from "@query/users.query";
 import Exception from "@lib/http_exception.lib";
 import JWT from "@lib/jwt.lib";
 
@@ -14,18 +14,25 @@ namespace AuthModel {
         } = body
 
 
-        const checkEmail = await UsersQuery.getUserByEmail(user_email)
+        const checkEmail = await DatabaseFunctions.select({
+            tableName: 'users',
+            filter: {
+                userEmail: user_email
+            }
+        })
         if (checkEmail) {
             throw new Exception.HttpException(409, 'Email already exists', Exception.Errors.EMAIL_ALREADY_EXISTS)
         }
 
-        await UsersQuery.insertUser({
-            userFirstName: user_first_name,
-            userLastName: user_last_name,
-            userEmail: user_email,
-            userPassword: user_password
+        await DatabaseFunctions.insert({
+            tableName: 'users',
+            data: {
+                userFirstName: user_first_name,
+                userLastName: user_last_name,
+                userEmail: user_email,
+                userPassword: user_password
+            }
         })
-        
     }
 
     export async function login(body: AuthInterface.IRegisterBody) {
