@@ -23,6 +23,16 @@ namespace ProjectsInterface {
 
     //! CREATE_PROJECT_INVITATIONS_END
 
+
+    //! CONFIRM_PROJECT_INVITATION_START
+    
+    export interface IConfirmProjectInvitationBody {
+        invitation_id: string;
+        is_confirmed: boolean;
+    }
+
+    //! CONFIRM_PROJECT_INVITATION_END
+
 }
 
 export default ProjectsInterface

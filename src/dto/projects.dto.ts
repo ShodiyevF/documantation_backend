@@ -43,6 +43,18 @@ namespace ProjectsDto {
             element_pattern: RegexUtil.UUID
         },
     }
+
+    export const confirmProjectInvitation: ValidationInterface.DTO = {
+        invitation_id: {
+            required: true,
+            type: 'string',
+            pattern: RegexUtil.UUID
+        },
+        is_confirmed: {
+            required: true,
+            type: 'boolean',
+        }
+    }
     
 }
 

@@ -29,4 +29,10 @@ app.post('/api/projects/invitation/create',
     ProjectsCtrl.createProjectInvitations
 )
 
+app.post('/api/projects/invitation/confirm',
+    authorizationMiddleware,
+    validationMiddleware(ProjectsDto.confirmProjectInvitation, 'body'),
+    ProjectsCtrl.confirmProjectInvitation
+)
+
 export default app

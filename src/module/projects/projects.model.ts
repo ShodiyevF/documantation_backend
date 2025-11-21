@@ -133,6 +133,58 @@ namespace ProjectsModel {
         })
     }
 
+    export async function confirmProjectInvitation(body: ProjectsInterface.IConfirmProjectInvitationBody, token: string) {
+        const {
+            invitation_id,
+            is_confirmed
+        } = body
+
+        const userId = await FinderLib.findUser(token)
+        if (userId === 'ERROR') {
+            throw new Exception.HttpException(401, 'Authorization error', Exception.Errors.AUTHORIZATION_ERROR)
+        }
+
+        const invitation = await DatabaseFunctions.select({
+            tableName: 'projectInvitations',
+            filter: {
+                piId: invitation_id,
+                piUserId: userId
+            }
+        })
+        if (!invitation) {
+            throw new Exception.HttpException(404, 'Project invitation not found', Exception.Errors.PROJECT_INVITATION_NOT_FOUND)
+        }
+
+        if (invitation.piAccepted || invitation.piIsDeleted) {
+            throw new Exception.HttpException(404, 'Project invitation not found', Exception.Errors.PROJECT_INVITATION_NOT_FOUND)
+        }
+
+        await DatabaseFunctions.insert({
+            tableName: 'projectUsers',
+            data: {
+                puProjectId: invitation.piProjectId,
+                puUserId: userId
+            }
+        })
+        
+        const data = is_confirmed ? {
+            piAccepted: true
+        } : {
+            piIsDeleted: false
+        }
+        
+        await DatabaseFunctions.update({
+            tableName: 'projectInvitations',
+            data: data,
+            targets: [
+                {
+                    targetColumn: 'piId',
+                    targetValue: invitation_id
+                }
+            ]
+        })
+    }
+
 }
 
 export default ProjectsModel
