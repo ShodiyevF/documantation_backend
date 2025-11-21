@@ -9,7 +9,7 @@ const app = express.Router()
 
 app.get('/api/projects',
     authorizationMiddleware,
-    ProjectsCtrl.projects
+    ProjectsCtrl.getProjects
 )
 
 app.post('/api/projects',

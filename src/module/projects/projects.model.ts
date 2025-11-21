@@ -5,13 +5,13 @@ import FinderLib from "@lib/finder.lib"
 
 namespace ProjectsModel {
 
-    export async function projects(token: string) {
+    export async function getProjects(token: string) {
         const userId = await FinderLib.findUser(token)
         if (userId === 'ERROR') {
             throw new Exception.HttpException(401, 'Authorization error', Exception.Errors.AUTHORIZATION_ERROR)
         }
 
-        return await ProjectsQuery.getProjectsByUserId(userId)
+        return await ProjectsQuery.getUserProjects(userId)
     }
 
     export async function createProject(body: ProjectsInterface.ICreateProjectBody, token: string) {
@@ -33,16 +33,16 @@ namespace ProjectsModel {
             throw new Exception.HttpException(409, 'Project name already exists', Exception.Errors.PROJECT_ALREADY_EXISTS)
         }
 
-        const project = await ProjectsQuery.insertProject({
-            projectName: project_name,
-            projectDescription: project_description,
-            projectOwnerId: userId
-        })
+        // const project = await ProjectsQuery.insertProject({
+        //     projectName: project_name,
+        //     projectDescription: project_description,
+        //     projectOwnerId: userId
+        // })
 
-        await ProjectsQuery.attachUserToProject({
-            puProjectId: project.projectId,
-            puUserId: userId
-        })
+        // await ProjectsQuery.attachUserToProject({
+        //     puProjectId: project.projectId,
+        //     puUserId: userId
+        // })
     }
 
 }

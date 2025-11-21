@@ -6,9 +6,9 @@ import ExpressFunctions from '@lib/express_functions.lib'
 
 namespace ProjectsCtrl {
 
-    export async function projects(req: express.Request, res: express.Response) {
+    export async function getProjects(req: express.Request, res: express.Response) {
         try {
-            const model = await ProjectsModel.projects(req.headers.authorization as string)
+            const model = await ProjectsModel.getProjects(req.headers.authorization!)
 
             return res.status(200).json(model)
         } catch (error) {

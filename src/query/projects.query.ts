@@ -1,4 +1,4 @@
-import { and, eq } from "drizzle-orm"
+import { and, desc, eq } from "drizzle-orm"
 
 import ProjectsInterface from "@interface/projects.inteface"
 import DbTableSchema from "@database/schema.database"
@@ -6,16 +6,27 @@ import { db } from "@database/pg.database"
 
 namespace ProjectsQuery {
 
-    export async function getProjectsByUserId(userId: string) {
+    export async function getUserProjects(userId: string) {
         return await db.select({
             project_id: DbTableSchema.projects.projectId,
             project_name: DbTableSchema.projects.projectName,
             project_description: DbTableSchema.projects.projectDescription,
             project_created_at: DbTableSchema.projects.projectCreatedAt,
         })
-        .from(DbTableSchema.projectUsers)
-        .innerJoin(DbTableSchema.projects, eq(DbTableSchema.projects.projectId, DbTableSchema.projectUsers.puProjectId))
-        .where(eq(DbTableSchema.projectUsers.puUserId, userId))
+        .from(DbTableSchema.projects)
+        .innerJoin(DbTableSchema.projectUsers, and(
+            eq(DbTableSchema.projectUsers.puProjectId, DbTableSchema.projects.projectId),
+            eq(DbTableSchema.projectUsers.puUserId, userId),
+        ))
+        .where(
+            and(
+                eq(DbTableSchema.projects.projectIsDeleted, false),
+                eq(DbTableSchema.projects.projectOwnerId, userId),
+            )
+        )
+        .orderBy(
+            desc(DbTableSchema.projects.projectCreatedAt)
+        )
     }
 
     export async function checkProjectByUserId(userId: string, projectId: string) {
@@ -80,7 +91,7 @@ namespace ProjectsQuery {
         .then(data => data[0])
     }
 
-    export async function insertProject(payloads: ProjectsInterface.ICreateProject) {
+    export async function insertProject(payloads: DbTableSchema.InferInsertType<typeof DbTableSchema.projects>) {
         return await db.insert(DbTableSchema.projects)
         .values(payloads)
         .returning()
