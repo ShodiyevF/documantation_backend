@@ -50,7 +50,7 @@ export const projectsTable = pgTable('projects', {
     projectId: uuid('project_id').defaultRandom().primaryKey(),
     projectName: varchar('project_name', { length: 32 }).notNull(),
     projectBaseUrl: varchar('project_base_url', { length: 128 }),
-    projectAuthorization: projectsProjectAuthorizationTypeEnum('project_authorization_type').notNull(),
+    projectAuthorization: projectsProjectAuthorizationTypeEnum('project_authorization_type'),
     projectDescription: text('project_description'),
     projectIsDeleted: boolean('project_is_deleted').notNull().default(false),
     projectOwnerId: uuid('project_owner_id').notNull().references(() => usersTable.userId),
