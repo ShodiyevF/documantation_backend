@@ -63,6 +63,7 @@ export const projectInvitationsTable = pgTable('project_invitations', {
     piIsDeleted: boolean('pi_is_deleted').notNull().default(false),
     piProjectId: uuid('pi_project_id').notNull().references(() => projectsTable.projectId),
     piUserId: uuid('pi_user_id').notNull().references(() => usersTable.userId),
+    piUpdatedAt: timestamp('pi_updated_at', { withTimezone: true }).notNull().defaultNow(),
     piCreatedAt: timestamp('pi_created_at', { withTimezone: true }).notNull().defaultNow(),
 })
 
