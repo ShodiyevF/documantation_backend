@@ -1,10 +1,13 @@
-import { and, desc, eq, or } from "drizzle-orm"
+import { and, desc, eq, inArray, or } from "drizzle-orm"
 
+import ProjectsInterface from "@interface/projects.inteface"
 import DbTableSchema from "@database/schema.database"
 import { db } from "@database/pg.database"
 
 namespace ProjectsQuery {
 
+    //! SELECT_START
+    
     export async function getUserProjects(userId: string) {
         return await db.select({
             project_id: DbTableSchema.projects.projectId,
@@ -29,6 +32,61 @@ namespace ProjectsQuery {
             desc(DbTableSchema.projects.projectCreatedAt)
         )
     }
+    
+    export async function getActiveProjectInvitationsByUserIds(payloads: ProjectsInterface.IGetProjectInvitationsByUserIdsQuery) {
+        const {
+            projectId,
+            userIds
+        } = payloads
+        
+        return await db.select({
+            piId: DbTableSchema.projectInvitations.piId,
+            userId: DbTableSchema.projectInvitations.piUserId
+        })
+        .from(DbTableSchema.projectInvitations)
+        .where(
+            and(
+                eq(DbTableSchema.projectInvitations.piProjectId, projectId),
+                inArray(DbTableSchema.projectInvitations.piUserId, userIds),
+                eq(DbTableSchema.projectInvitations.piIsDeleted, false),
+                eq(DbTableSchema.projectInvitations.piAccepted, false),
+            )
+        )
+    }
+    
+    export async function getProjectUsers(projectId: string) {
+        return await db.select({
+            puId: DbTableSchema.projectUsers.puId,
+            userId: DbTableSchema.projectUsers.puUserId,
+        })
+        .from(DbTableSchema.projectUsers)
+        .where(
+            eq(DbTableSchema.projectUsers.puProjectId, projectId)
+        )
+    }
+
+    //! SELECT_END
+
+    
+    //! INSERT_START
+    
+    //! INSERT_END
+
+    
+    //! UPDATE_START
+    
+    export async function updateProjectInvitationsUpdatedAt(piIds: string[]) {
+        return await db.update(DbTableSchema.projectInvitations)
+        .set({
+            piUpdatedAt: new Date()
+        })
+        .where(
+            inArray(DbTableSchema.projectInvitations.piId, piIds)
+        )
+        .returning()
+    }
+
+    //! UPDATE_END
     
 }
 

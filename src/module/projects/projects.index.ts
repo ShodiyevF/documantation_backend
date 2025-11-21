@@ -18,4 +18,10 @@ app.post('/api/projects/create',
     ProjectsCtrl.createProject
 )
 
+app.post('/api/projects/invite-users',
+    authorizationMiddleware,
+    validationMiddleware(ProjectsDto.inviteUsers, 'body'),
+    ProjectsCtrl.inviteUsers
+)
+
 export default app

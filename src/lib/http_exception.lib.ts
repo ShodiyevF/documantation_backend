@@ -12,6 +12,7 @@ namespace Exception {
 
         //! NOT_FOUND_START
 
+            USER_NOT_FOUND_BY_IDS = 'USER_NOT_FOUND_BY_IDS',
             PROJECT_NOT_FOUND = 'PROJECT_NOT_FOUND',
             API_NOT_FOUND = 'API_NOT_FOUND',
 

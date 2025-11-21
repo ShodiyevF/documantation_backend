@@ -27,6 +27,19 @@ namespace ProjectsCtrl {
             ExpressFunctions.controllerError(res, error)
         }
     }
+
+    export async function inviteUsers(req: express.Request, res: express.Response) {
+        try {
+            await ProjectsModel.inviteUsers(req.body, req.headers.authorization!)
+
+            return res.status(200).json({
+                status: 200,
+                message: 'Project invitations successfully created'
+            })
+        } catch (error) {
+            ExpressFunctions.controllerError(res, error)
+        }
+    }
     
 }
 

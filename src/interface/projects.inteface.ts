@@ -9,6 +9,20 @@ namespace ProjectsInterface {
         project_description?: string;
     }
 
+    //! INVITE_USER_START
+    
+    export interface IInviteUserBody {
+        project_id: string;
+        user_ids: string[];
+    }
+
+    export interface IGetProjectInvitationsByUserIdsQuery {
+        projectId: string;
+        userIds: string[];
+    }
+
+    //! INVITE_USER_END
+
 }
 
 export default ProjectsInterface

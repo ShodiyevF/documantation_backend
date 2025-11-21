@@ -30,17 +30,17 @@ namespace ProjectsDto {
         },
     }
 
-    export const login: ValidationInterface.DTO = {
-        user_email: {
+    export const inviteUsers: ValidationInterface.DTO = {
+        project_id: {
             required: true,
             type: 'string',
-            pattern: RegexUtil.email
+            pattern: RegexUtil.UUID
         },
-        user_password: {
+        user_ids: {
             required: true,
-            type: 'string',
-            min_length: 8,
-            max_length: 32
+            type: 'array',
+            element_type: 'string',
+            element_pattern: RegexUtil.UUID
         },
     }
     
