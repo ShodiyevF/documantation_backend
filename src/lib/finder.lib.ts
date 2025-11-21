@@ -1,11 +1,12 @@
 import DatabaseFunctions from "@database/functions.database";
 import JwtLib from "./jwt.lib";
 
-
 namespace FinderLib {
 
     export async function findUser(token: string) {
-        const tokenVerifier: JwtLib.IVerifyJwtToken<{ id: string }> = JwtLib.verifyJwtToken(token);
+        const splitToken = token.split(' ')[1]
+        
+        const tokenVerifier: JwtLib.IVerifyJwtToken<{ id: string }> = JwtLib.verifyJwtToken(splitToken);
         if (tokenVerifier.result !== 'VERIFIED') {
             return 'ERROR'
         }
