@@ -1,0 +1,5 @@
+1. Postman export (One click redirect, file export)
+2. Codes import (json, js, ts)
+3. Project page (alohida o'zini saytida ishlatsa bo'ladi)
+4. Version control (Ohirgi versiya hozirgi holati bo'ladi. Eski versiyalar esa o'zgartirishidan oldingi versiyalar bo'ladi. Ya'na o'zgarishi mumkin.)
+5. Data models (data modellarda narsalarni modellari saqlanadi.)

@@ -92,6 +92,9 @@ const array: IArrayPayload = {
     items: {
         type: 'object',
         properties: {
+            user_id: {
+                type: 'string'
+            },
             user_first_name: {
                 type: 'string',
             },
@@ -159,7 +162,7 @@ const array: IArrayPayload = {
                     ],
                 }
             ],
-        }
+        },
     ]
 }
 
@@ -177,6 +180,7 @@ const object: IObjectPayload = {
         },
         user_age: {
             type: 'number',
+            is_required: false,
         },
         user_phone_numbers: {
             type: 'array',
