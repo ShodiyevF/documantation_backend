@@ -23,10 +23,10 @@ app.get('/api/projects/invitation/get',
     ProjectsCtrl.getProjectInvitations
 )
 
-app.post('/api/projects/invite/create',
+app.post('/api/projects/invitation/create',
     authorizationMiddleware,
-    validationMiddleware(ProjectsDto.createInvite, 'body'),
-    ProjectsCtrl.createInvite
+    validationMiddleware(ProjectsDto.createProjectInvitations, 'body'),
+    ProjectsCtrl.createProjectInvitations
 )
 
 export default app

@@ -9,9 +9,9 @@ namespace ProjectsInterface {
         project_description?: string;
     }
 
-    //! INVITE_USER_START
+    //! CREATE_PROJECT_INVITATIONS_START
     
-    export interface IInviteUserBody {
+    export interface ICreateProjectInvitationBody {
         project_id: string;
         user_ids: string[];
     }
@@ -21,7 +21,7 @@ namespace ProjectsInterface {
         userIds: string[];
     }
 
-    //! INVITE_USER_END
+    //! CREATE_PROJECT_INVITATIONS_END
 
 }
 

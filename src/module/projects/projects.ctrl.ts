@@ -38,9 +38,9 @@ namespace ProjectsCtrl {
         }
     }
 
-    export async function createInvite(req: express.Request, res: express.Response) {
+    export async function createProjectInvitations(req: express.Request, res: express.Response) {
         try {
-            await ProjectsModel.createInvite(req.body, req.headers.authorization!)
+            await ProjectsModel.createProjectInvitations(req.body, req.headers.authorization!)
 
             return res.status(200).json({
                 status: 200,

@@ -74,7 +74,7 @@ namespace ProjectsModel {
         return await ProjectsQuery.getProjectInvitations(userId)
     }
 
-    export async function createInvite(body: ProjectsInterface.IInviteUserBody, token: string) {
+    export async function createProjectInvitations(body: ProjectsInterface.ICreateProjectInvitationBody, token: string) {
         const {
             project_id,
             user_ids,
