@@ -42,7 +42,12 @@ namespace AuthModel {
         } = body
 
 
-        const user = await UsersQuery.getUserByEmail(user_email)
+        const user = await DatabaseFunctions.select({
+            tableName: 'users',
+            filter: {
+                userEmail: user_email
+            }
+        })
         if (!user || user.userPassword !== user_password) {
             throw new Exception.HttpException(400, 'Wrong email or password', Exception.Errors.WRONG_EMAIL_OR_PASSWORD)
         }

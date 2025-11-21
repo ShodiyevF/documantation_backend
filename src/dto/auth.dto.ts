@@ -40,7 +40,7 @@ namespace AuthDto {
             required: true,
             type: 'string',
             min_length: 8,
-            max_length: 32
+            max_length: 64
         },
     }
     
