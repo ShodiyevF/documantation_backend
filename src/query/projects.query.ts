@@ -17,15 +17,12 @@ namespace ProjectsQuery {
             project_description: DbTableSchema.projects.projectDescription,
             project_created_at: DbTableSchema.projects.projectCreatedAt,
         })
-        .from(DbTableSchema.projects)
-        .fullJoin(DbTableSchema.projectUsers, eq(DbTableSchema.projectUsers.puUserId, userId))
+        .from(DbTableSchema.projectUsers)
+        .leftJoin(DbTableSchema.projects, eq(DbTableSchema.projects.projectId, DbTableSchema.projectUsers.puProjectId))
         .where(
             and(
                 eq(DbTableSchema.projects.projectIsDeleted, false),
-                or(
-                    eq(DbTableSchema.projects.projectOwnerId, userId),
-                    eq(DbTableSchema.projectUsers.puUserId, userId),
-                )
+                eq(DbTableSchema.projectUsers.puUserId, userId),
             )
         )
         .orderBy(
