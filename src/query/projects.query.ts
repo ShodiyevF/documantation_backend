@@ -15,16 +15,13 @@ namespace ProjectsQuery {
             project_created_at: DbTableSchema.projects.projectCreatedAt,
         })
         .from(DbTableSchema.projects)
-        .innerJoin(DbTableSchema.projectUsers, and(
-            eq(DbTableSchema.projectUsers.puProjectId, DbTableSchema.projects.projectId),
-            eq(DbTableSchema.projectUsers.puUserId, userId),
-        ))
+        .fullJoin(DbTableSchema.projectUsers, eq(DbTableSchema.projectUsers.puUserId, userId))
         .where(
             and(
                 eq(DbTableSchema.projects.projectIsDeleted, false),
                 or(
                     eq(DbTableSchema.projects.projectOwnerId, userId),
-                    eq(DbTableSchema.projectUsers.puUserId, userId)
+                    eq(DbTableSchema.projectUsers.puUserId, userId),
                 )
             )
         )
