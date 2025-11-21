@@ -1,4 +1,4 @@
-import { and, desc, eq } from "drizzle-orm"
+import { and, desc, eq, or } from "drizzle-orm"
 
 import DbTableSchema from "@database/schema.database"
 import { db } from "@database/pg.database"
@@ -9,6 +9,8 @@ namespace ProjectsQuery {
         return await db.select({
             project_id: DbTableSchema.projects.projectId,
             project_name: DbTableSchema.projects.projectName,
+            project_base_url: DbTableSchema.projects.projectBaseUrl,
+            project_authorization_type: DbTableSchema.projects.projectAuthorizationType,
             project_description: DbTableSchema.projects.projectDescription,
             project_created_at: DbTableSchema.projects.projectCreatedAt,
         })
@@ -20,7 +22,10 @@ namespace ProjectsQuery {
         .where(
             and(
                 eq(DbTableSchema.projects.projectIsDeleted, false),
-                eq(DbTableSchema.projects.projectOwnerId, userId),
+                or(
+                    eq(DbTableSchema.projects.projectOwnerId, userId),
+                    eq(DbTableSchema.projectUsers.puUserId, userId)
+                )
             )
         )
         .orderBy(
