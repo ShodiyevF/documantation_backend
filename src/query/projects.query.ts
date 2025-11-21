@@ -34,6 +34,7 @@ namespace ProjectsQuery {
         return await db.select({
             invitation_id: DbTableSchema.projectInvitations.piId,
             project_id: DbTableSchema.projects.projectId,
+            project_name: DbTableSchema.projects.projectName,
             project_created_at: DbTableSchema.projectInvitations.piUpdatedAt
         })
         .from(DbTableSchema.projectInvitations)
