@@ -4,7 +4,8 @@ import { Table } from "drizzle-orm";
 export const requestLogsRlTypeEnum = pgEnum('request_logs_rl_type_enum', [ "SUCCESS", "ERROR" ]);
 export const apisApiMethodEnum = pgEnum('apis_api_method_enum', ["GET", "POST", "PUT", "PATCH", "DELETE", "HEAD", "OPTIONS", "CONNECT", "TRACE"]);
 export const payloadsPayloadTypeEnum = pgEnum('payloads_payload_type_enum', ['params', 'query', 'form-data', 'json']);
-export const responsesResponseTypeEnum = pgEnum('responses_response_type_enum', ['params', 'query', 'form-data', 'json']);
+export const responsesResponseTypeEnum = pgEnum('responses_response_type_enum', ['json']);
+export const projectsProjectAuthorizationTypeEnum = pgEnum('projects_project_authorization_type_enum', ['bearer', 'basic', 'digest']);
 
 
 export const requestsLOGSTable = pgTable('requests_logs', {
@@ -33,6 +34,7 @@ export const cronJobsLOGSTable = pgTable('cron_jobs_logs', {
     cjlCreatedAt: timestamp('cjl_created_at').notNull().defaultNow(),
 })
 
+
 export const usersTable = pgTable('users', {
     userId: uuid('user_id').defaultRandom().primaryKey(),
     userFirstName: varchar('user_first_name', { length: 32 }).notNull(),
@@ -47,11 +49,23 @@ export const usersTable = pgTable('users', {
 export const projectsTable = pgTable('projects', {
     projectId: uuid('project_id').defaultRandom().primaryKey(),
     projectName: varchar('project_name', { length: 32 }).notNull(),
+    projectBaseUrl: varchar('project_base_url', { length: 128 }),
+    projectAuthorization: projectsProjectAuthorizationTypeEnum('project_authorization_type').notNull(),
     projectDescription: text('project_description'),
     projectOwnerId: uuid('project_owner_id').notNull().references(() => usersTable.userId),
     projectCreatedAt: timestamp('project_created_at').notNull().defaultNow(),
 }, table => ({
     uniqueProjectName: unique().on(table.projectName, table.projectOwnerId)
+}))
+
+export const projectInvitationsTable = pgTable('project_invitations', {
+    piId: uuid('pi_id').defaultRandom().primaryKey(),
+    piAccepted: boolean('pi_accepted').notNull().default(false),
+    piProjectId: uuid('pi_project_id').notNull().references(() => projectsTable.projectId),
+    piUserId: uuid('pi_user_id').notNull().references(() => usersTable.userId),
+    piCreatedAt: timestamp('pi_created_at').notNull().defaultNow(),
+}, table => ({
+    uniqueProjectUser: unique().on(table.piProjectId, table.piUserId)
 }))
 
 export const projectUsersTable = pgTable('project_users', {
@@ -61,6 +75,17 @@ export const projectUsersTable = pgTable('project_users', {
     puCreatedAt: timestamp('pu_created_at').notNull().defaultNow(),
 }, table => ({
     uniqueProjectUser: unique().on(table.puProjectId, table.puUserId)
+}))
+
+export const codesTable = pgTable('codes', {
+    codeId: uuid('code_id').defaultRandom().primaryKey(),
+    codeValue: varchar('code_value', { length: 64 }).notNull(),
+    codeDescription: varchar('code_description', { length: 128 }).notNull(),
+    codeUserId: uuid('code_user_id').notNull().references(() => usersTable.userId),
+    codeProjectId: uuid('code_project_id').notNull().references(() => projectsTable.projectId),
+    codeCreatedAt: timestamp('code_created_at').notNull().defaultNow(),
+}, table => ({
+    uniqueProjectUser: unique().on(table.codeValue, table.codeProjectId)
 }))
 
 export const modulesTable = pgTable('modules', {
@@ -118,7 +143,10 @@ namespace DbTableSchema {
 
     export const users = usersTable
     export const projects = projectsTable
+    export const projectInvitations = projectInvitationsTable
     export const projectUsers = projectUsersTable
+    export const codes = codesTable
+    export const modules = modulesTable
     export const apis = apisTable
     export const payloads = payloadsTable
     export const responses = responsesTable
@@ -127,11 +155,12 @@ namespace DbTableSchema {
     export const requestLogsRlTypeEnumList = requestLogsRlTypeEnum.enumValues
     export const payloadsPayloadTypeEnumList = payloadsPayloadTypeEnum.enumValues
     export const responsesResponseTypeEnumList = responsesResponseTypeEnum.enumValues
+    export const projectsProjectAuthorizationTypeEnumList = projectsProjectAuthorizationTypeEnum.enumValues
 
     
     export type TRequestLogsRlTypeEnum = typeof requestLogsRlTypeEnum.enumValues[number]
     export type TPayloadsPayloadTypeEnum = typeof payloadsPayloadTypeEnum.enumValues[number]
-    export type TResponsesResponseTypeEnum = typeof responsesResponseTypeEnum.enumValues[number]
+    export type TProjectsProjectAuthorizationTypeEnum = typeof projectsProjectAuthorizationTypeEnum.enumValues[number]
 
     export type InferSelectType<T extends Table, P extends boolean | null = null> = P extends true ? Partial<T['_']['inferSelect']> : T['_']['inferSelect'];
     export type InferInsertType<T extends Table> = T['_']['inferInsert'];
