@@ -1,4 +1,5 @@
 import ValidationInterface from "@shared/validation/validation.interface";
+import DbTableSchema from "@database/schema.database";
 import RegexUtil from "@util/regex.util";
 
 namespace ProjectsDto {
@@ -9,6 +10,17 @@ namespace ProjectsDto {
             type: 'string',
             min_length: 1,
             max_length: 32
+        },
+        project_base_url: {
+            required: false,
+            type: 'string',
+            min_length: 1,
+            max_length: 128
+        },
+        project_authorization_type: {
+            required: false,
+            type: 'string',
+            enum: DbTableSchema.projectsProjectAuthorizationTypeEnumList
         },
         project_description: {
             required: false,

@@ -1,8 +1,7 @@
 import express from 'express'
 
-
-import ProjectsModel from './projects.model'
 import ExpressFunctions from '@lib/express_functions.lib'
+import ProjectsModel from './projects.model'
 
 namespace ProjectsCtrl {
 
@@ -18,7 +17,7 @@ namespace ProjectsCtrl {
 
     export async function createProject(req: express.Request, res: express.Response) {
         try {
-            await ProjectsModel.createProject(req.body, req.headers.authorization as string)
+            await ProjectsModel.createProject(req.body, req.headers.authorization!)
 
             return res.status(201).json({
                 status: 201,

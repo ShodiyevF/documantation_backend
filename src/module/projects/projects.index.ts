@@ -12,7 +12,7 @@ app.get('/api/projects',
     ProjectsCtrl.getProjects
 )
 
-app.post('/api/projects',
+app.post('/api/projects/create',
     authorizationMiddleware,
     validationMiddleware(ProjectsDto.createProject, 'body'),
     ProjectsCtrl.createProject
