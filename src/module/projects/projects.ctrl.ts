@@ -28,6 +28,16 @@ namespace ProjectsCtrl {
         }
     }
 
+    export async function getProjectInvitations(req: express.Request, res: express.Response) {
+        try {
+            const model = await ProjectsModel.getProjectInvitations(req.headers.authorization!)
+
+            return res.status(200).json(model)
+        } catch (error) {
+            ExpressFunctions.controllerError(res, error)
+        }
+    }
+
     export async function createInvite(req: express.Request, res: express.Response) {
         try {
             await ProjectsModel.createInvite(req.body, req.headers.authorization!)

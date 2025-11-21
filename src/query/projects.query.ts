@@ -33,6 +33,26 @@ namespace ProjectsQuery {
         )
     }
     
+    export async function getProjectInvitations(userId: string) {
+        return await db.select({
+            invitation_id: DbTableSchema.projectInvitations.piId,
+            project_id: DbTableSchema.projects.projectId,
+            project_created_at: DbTableSchema.projectInvitations.piUpdatedAt
+        })
+        .from(DbTableSchema.projectInvitations)
+        .leftJoin(DbTableSchema.projects, eq(DbTableSchema.projects.projectId, DbTableSchema.projectInvitations.piProjectId))
+        .where(
+            and(
+                eq(DbTableSchema.projectInvitations.piAccepted, false),
+                eq(DbTableSchema.projectInvitations.piIsDeleted, false),
+                eq(DbTableSchema.projectInvitations.piUserId, userId),
+            )
+        )
+        .orderBy(
+            desc(DbTableSchema.projectInvitations.piUpdatedAt)
+        )
+    }
+    
     export async function getActiveProjectInvitationsByUserIds(payloads: ProjectsInterface.IGetProjectInvitationsByUserIdsQuery) {
         const {
             projectId,

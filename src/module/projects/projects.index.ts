@@ -18,6 +18,11 @@ app.post('/api/projects/create',
     ProjectsCtrl.createProject
 )
 
+app.get('/api/projects/invitation/get',
+    authorizationMiddleware,
+    ProjectsCtrl.getProjectInvitations
+)
+
 app.post('/api/projects/invite/create',
     authorizationMiddleware,
     validationMiddleware(ProjectsDto.createInvite, 'body'),

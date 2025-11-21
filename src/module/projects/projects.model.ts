@@ -65,6 +65,15 @@ namespace ProjectsModel {
         })
     }
 
+    export async function getProjectInvitations(token: string) {
+        const userId = await FinderLib.findUser(token)
+        if (userId === 'ERROR') {
+            throw new Exception.HttpException(401, 'Authorization error', Exception.Errors.AUTHORIZATION_ERROR)
+        }
+
+        return await ProjectsQuery.getProjectInvitations(userId)
+    }
+
     export async function createInvite(body: ProjectsInterface.IInviteUserBody, token: string) {
         const {
             project_id,
