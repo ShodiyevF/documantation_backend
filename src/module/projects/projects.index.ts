@@ -18,6 +18,13 @@ app.post('/api/projects/create',
     ProjectsCtrl.createProject
 )
 
+app.patch('/api/projects/update/:project_id',
+    authorizationMiddleware,
+    validationMiddleware(ProjectsDto.updateProjectParams, 'params'),
+    validationMiddleware(ProjectsDto.updateProjectBody, 'body'),
+    ProjectsCtrl.updateProject
+)
+
 app.get('/api/projects/invitation/get',
     authorizationMiddleware,
     ProjectsCtrl.getProjectInvitations

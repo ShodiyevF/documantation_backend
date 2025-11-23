@@ -65,6 +65,64 @@ namespace ProjectsModel {
         })
     }
 
+    export async function updateProject(body: ProjectsInterface.IUpdateProjectBody, projectId: string, token: string) {
+        const {
+            project_name,
+            project_base_url,
+            project_authorization_type,
+            project_description,
+        } = body
+
+        const userId = await FinderLib.findUser(token)
+        if (userId === 'ERROR') {
+            throw new Exception.HttpException(401, 'Authorization error', Exception.Errors.AUTHORIZATION_ERROR)
+        }
+        
+        const checkProject = await DatabaseFunctions.select({
+            tableName: 'projects',
+            filter: {
+                projectId: projectId,
+                projectOwnerId: userId
+            }
+        })
+        if (!checkProject) {
+            throw new Exception.HttpException(404, 'Project not found', Exception.Errors.PROJECT_NOT_FOUND)
+        }
+
+        const projectName = project_name ? project_name : checkProject.projectName 
+        const projectBaseUrl = project_base_url ? project_base_url : checkProject.projectBaseUrl 
+        const projectAuthorizationType = project_authorization_type ? project_authorization_type : checkProject.projectAuthorizationType 
+        const projectDescription = project_description ? project_description : checkProject.projectDescription 
+
+        const checkProjectName = await DatabaseFunctions.select({
+            tableName: 'projects',
+            filter: {
+                projectOwnerId: userId,
+                projectName: projectName,
+                projectIsDeleted: false,
+            }
+        })
+        if (checkProjectName && checkProjectName.projectId != projectId) {
+            throw new Exception.HttpException(409, 'Project name already exists', Exception.Errors.PROJECT_ALREADY_EXISTS)
+        }
+
+        await DatabaseFunctions.update({
+            tableName: 'projects',
+            data: {
+                projectName: projectName,
+                projectBaseUrl: projectBaseUrl,
+                projectAuthorizationType: projectAuthorizationType,
+                projectDescription: projectDescription,
+            },
+            targets: [
+                {
+                    targetColumn: 'projectId',
+                    targetValue: projectId
+                }
+            ]
+        })
+    }
+
     export async function getProjectInvitations(token: string) {
         const userId = await FinderLib.findUser(token)
         if (userId === 'ERROR') {

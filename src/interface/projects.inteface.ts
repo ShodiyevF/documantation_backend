@@ -9,6 +9,18 @@ namespace ProjectsInterface {
         project_description?: string;
     }
 
+    //! UPDATE_PROJECT_START
+    
+    export interface IUpdateProjectBody {
+        project_name?: string;
+        project_base_url?: string;
+        project_authorization_type?: DbTableSchema.TProjectsProjectAuthorizationTypeEnum;
+        project_description?: string;
+    }
+
+    //! UPDATE_PROJECT_END
+
+
     //! CREATE_PROJECT_INVITATIONS_START
     
     export interface ICreateProjectInvitationBody {

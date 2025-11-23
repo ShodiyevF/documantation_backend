@@ -28,6 +28,19 @@ namespace ProjectsCtrl {
         }
     }
 
+    export async function updateProject(req: express.Request, res: express.Response) {
+        try {
+            await ProjectsModel.updateProject(req.body, req.params.project_id, req.headers.authorization!)
+
+            return res.status(200).json({
+                status: 200,
+                message: 'Project succesfully updated'
+            })
+        } catch (error) {
+            ExpressFunctions.controllerError(res, error)
+        }
+    }
+
     export async function getProjectInvitations(req: express.Request, res: express.Response) {
         try {
             const model = await ProjectsModel.getProjectInvitations(req.headers.authorization!)
