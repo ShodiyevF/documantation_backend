@@ -38,6 +38,14 @@ namespace ProjectsDto {
         },
     }
 
+    export const deleteProjectParams: ValidationInterface.DTO = {
+        project_id: {
+            required: true,
+            type: 'string',
+            pattern: RegexUtil.UUID
+        },
+    }
+
     export const updateProjectBody: ValidationInterface.DTO = {
         project_name: {
             required: false,

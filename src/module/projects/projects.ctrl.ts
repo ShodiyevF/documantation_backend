@@ -41,6 +41,19 @@ namespace ProjectsCtrl {
         }
     }
 
+    export async function deleteProject(req: express.Request, res: express.Response) {
+        try {
+            await ProjectsModel.deleteProject(req.params.project_id, req.headers.authorization!)
+
+            return res.status(200).json({
+                status: 200,
+                message: 'Project succesfully deleted'
+            })
+        } catch (error) {
+            ExpressFunctions.controllerError(res, error)
+        }
+    }
+
     export async function getProjectInvitations(req: express.Request, res: express.Response) {
         try {
             const model = await ProjectsModel.getProjectInvitations(req.headers.authorization!)

@@ -25,6 +25,12 @@ app.patch('/api/projects/update/:project_id',
     ProjectsCtrl.updateProject
 )
 
+app.delete('/api/projects/delete/:project_id',
+    authorizationMiddleware,
+    validationMiddleware(ProjectsDto.deleteProjectParams, 'params'),
+    ProjectsCtrl.deleteProject
+)
+
 app.get('/api/projects/invitation/get',
     authorizationMiddleware,
     ProjectsCtrl.getProjectInvitations

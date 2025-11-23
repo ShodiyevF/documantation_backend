@@ -123,6 +123,38 @@ namespace ProjectsModel {
         })
     }
 
+    export async function deleteProject(projectId: string, token: string) {
+        const userId = await FinderLib.findUser(token)
+        if (userId === 'ERROR') {
+            throw new Exception.HttpException(401, 'Authorization error', Exception.Errors.AUTHORIZATION_ERROR)
+        }
+        
+        const checkProject = await DatabaseFunctions.select({
+            tableName: 'projects',
+            filter: {
+                projectId: projectId,
+                projectIsDeleted: false,
+                projectOwnerId: userId
+            }
+        })
+        if (!checkProject) {
+            throw new Exception.HttpException(404, 'Project not found', Exception.Errors.PROJECT_NOT_FOUND)
+        }
+
+        await DatabaseFunctions.update({
+            tableName: 'projects',
+            data: {
+                projectIsDeleted: true
+            },
+            targets: [
+                {
+                    targetColumn: 'projectId',
+                    targetValue: projectId
+                }
+            ]
+        })
+    }
+
     export async function getProjectInvitations(token: string) {
         const userId = await FinderLib.findUser(token)
         if (userId === 'ERROR') {
