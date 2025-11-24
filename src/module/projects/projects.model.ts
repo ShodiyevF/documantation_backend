@@ -1,4 +1,5 @@
 import ProjectsInterface from "@interface/projects.inteface"
+import UsefulfunctionsUtil from "@util/usefulfunctions.util"
 import DatabaseFunctions from "@database/functions.database"
 import DbTableSchema from "@database/schema.database"
 import ProjectsQuery from "@query/projects.query"
@@ -7,7 +8,7 @@ import UsersQuery from "@query/users.query"
 import FinderLib from "@lib/finder.lib"
 
 namespace ProjectsModel {
-
+    
     export async function getProjects(token: string) {
         const userId = await FinderLib.findUser(token)
         if (userId === 'ERROR') {
@@ -105,9 +106,9 @@ namespace ProjectsModel {
         }
 
         const projectName = project_name ? project_name : checkProject.projectName 
-        const projectBaseUrl = project_base_url ? project_base_url : checkProject.projectBaseUrl 
-        const projectAuthorizationType = project_authorization_type ? project_authorization_type : checkProject.projectAuthorizationType 
-        const projectDescription = project_description ? project_description : checkProject.projectDescription 
+        const projectBaseUrl = UsefulfunctionsUtil.isNullableData(project_base_url, checkProject.projectBaseUrl)
+        const projectAuthorizationType = UsefulfunctionsUtil.isNullableData(project_authorization_type, checkProject.projectAuthorizationType)
+        const projectDescription = UsefulfunctionsUtil.isNullableData(project_description, checkProject.projectDescription)
 
         const checkProjectName = await DatabaseFunctions.select({
             tableName: 'projects',
