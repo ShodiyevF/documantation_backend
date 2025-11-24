@@ -15,6 +15,16 @@ namespace ProjectsCtrl {
         }
     }
 
+    export async function getProjectById(req: express.Request, res: express.Response) {
+        try {
+            const model = await ProjectsModel.getProjectById(req.params.project_id, req.headers.authorization!)
+
+            return res.status(200).json(model)
+        } catch (error) {
+            ExpressFunctions.controllerError(res, error)
+        }
+    }
+
     export async function createProject(req: express.Request, res: express.Response) {
         try {
             await ProjectsModel.createProject(req.body, req.headers.authorization!)

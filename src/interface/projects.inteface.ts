@@ -2,6 +2,16 @@ import DbTableSchema from "@database/schema.database";
 
 namespace ProjectsInterface {
 
+    //! GET_PROJECT_BY_ID_START
+    
+    export interface IGetProjectByIdPayloads {
+        projectId: string;
+        userId: string;
+    }
+    
+    //! GET_PROJECT_BY_ID_END
+
+
     //! CREATE_PROJECT_START
     
     export interface ICreateProjectBody {

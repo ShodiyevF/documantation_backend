@@ -4,6 +4,14 @@ import RegexUtil from "@util/regex.util";
 
 namespace ProjectsDto {
 
+    export const getProjectByIdParams: ValidationInterface.DTO = {
+        project_id: {
+            required: true,
+            type: 'string',
+            pattern: RegexUtil.UUID
+        },
+    }
+
     export const createProject: ValidationInterface.DTO = {
         project_name: {
             required: true,

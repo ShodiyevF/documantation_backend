@@ -17,6 +17,23 @@ namespace ProjectsModel {
         return await ProjectsQuery.getUserProjects(userId)
     }
 
+    export async function getProjectById(project_id: string, token: string) {
+        const userId = await FinderLib.findUser(token)
+        if (userId === 'ERROR') {
+            throw new Exception.HttpException(401, 'Authorization error', Exception.Errors.AUTHORIZATION_ERROR)
+        }
+
+        const project = await ProjectsQuery.getProjectById({
+            projectId: project_id,
+            userId: userId
+        })
+        if (!project) {
+            throw new Exception.HttpException(404, 'Project not found', Exception.Errors.PROJECT_NOT_FOUND)
+        }
+
+        return project
+    }
+
     export async function createProject(body: ProjectsInterface.ICreateProjectBody, token: string) {
         const {
             project_name,

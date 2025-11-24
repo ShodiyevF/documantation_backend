@@ -12,6 +12,12 @@ app.get('/api/projects/get',
     ProjectsCtrl.getProjects
 )
 
+app.get('/api/projects/get/by-id/:project_id',
+    authorizationMiddleware,
+    validationMiddleware(ProjectsDto.getProjectByIdParams, 'params'),
+    ProjectsCtrl.getProjectById
+)
+
 app.post('/api/projects/create',
     authorizationMiddleware,
     validationMiddleware(ProjectsDto.createProject, 'body'),
