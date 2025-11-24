@@ -1,0 +1,8 @@
+Invite project user cases
+1. Projectda yo'q, invite qilinmagan. Shunchaki invite qilinadi.
+2. Projectda yo'q, invite qilingan. Eski invite ni updated at ni hozirgi vaqtga uzgartiradi.
+3. Projectda bor. Shunchaki invite qilinmaydi.
+
+Invite project user in use.
+1. Oldin invite qilinganlarni updated at ini update qiladi
+2. Barchani invite qilinadi
