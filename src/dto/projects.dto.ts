@@ -97,6 +97,14 @@ namespace ProjectsDto {
             type: 'boolean',
         }
     }
+
+    export const leaveProject: ValidationInterface.DTO = {
+        project_id: {
+            required: true,
+            type: 'string',
+            pattern: RegexUtil.UUID
+        }
+    }
     
 }
 

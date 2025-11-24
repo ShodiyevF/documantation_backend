@@ -48,4 +48,10 @@ app.post('/api/projects/invitation/confirm',
     ProjectsCtrl.confirmProjectInvitation
 )
 
+app.post('/api/projects/leave',
+    authorizationMiddleware,
+    validationMiddleware(ProjectsDto.leaveProject, 'body'),
+    ProjectsCtrl.leaveProject
+)
+
 export default app

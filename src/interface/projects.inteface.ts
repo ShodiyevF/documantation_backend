@@ -45,6 +45,15 @@ namespace ProjectsInterface {
 
     //! CONFIRM_PROJECT_INVITATION_END
 
+
+    //! LEAVE_PROJECT_START
+    
+    export interface ILeaveProjectBody {
+        project_id: string;
+    }
+
+    //! LEAVE_PROJECT_END
+
 }
 
 export default ProjectsInterface

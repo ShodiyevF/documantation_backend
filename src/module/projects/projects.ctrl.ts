@@ -89,6 +89,19 @@ namespace ProjectsCtrl {
             ExpressFunctions.controllerError(res, error)
         }
     }
+
+    export async function leaveProject(req: express.Request, res: express.Response) {
+        try {
+            await ProjectsModel.leaveProject(req.body, req.headers.authorization!)
+
+            return res.status(200).json({
+                status: 200,
+                message: 'You have successfully left the project.'
+            })
+        } catch (error) {
+            ExpressFunctions.controllerError(res, error)
+        }
+    }
     
 }
 

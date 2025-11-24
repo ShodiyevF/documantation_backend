@@ -275,6 +275,54 @@ namespace ProjectsModel {
         })
     }
 
+    export async function leaveProject(body: ProjectsInterface.ILeaveProjectBody, token: string) {
+        const {
+            project_id
+        } = body
+
+        const userId = await FinderLib.findUser(token)
+        if (userId === 'ERROR') {
+            throw new Exception.HttpException(401, 'Authorization error', Exception.Errors.AUTHORIZATION_ERROR)
+        }
+
+        const projects = await DatabaseFunctions.select({
+            tableName: 'projects',
+            filter: {
+                projectId: project_id,
+                projectIsDeleted: false
+            }
+        })
+        if (!projects) {
+            throw new Exception.HttpException(404, 'Project not found', Exception.Errors.PROJECT_NOT_FOUND)
+        }
+
+        if (projects.projectOwnerId === userId) {
+            throw new Exception.HttpException(404, 'You are the project owner. Please transfer ownership of the project to another user to leave the project.', Exception.Errors.PLEASE_TRANSFER_PROJECT_OWNERSHIP)
+        }
+
+        const projectUser = await DatabaseFunctions.select({
+            tableName: 'projectUsers',
+            filter: {
+                puProjectId: project_id,
+                puUserId: userId
+            }
+        })
+        if (!projectUser) {
+            throw new Exception.HttpException(404, 'You are not a project user', Exception.Errors.PROJECT_USER_NOT_FOUND)
+        }
+
+        await DatabaseFunctions.remove({
+            tableName: 'projectUsers',
+            targets: [
+                {
+                    targetColumn: 'puId',
+                    targetValue: projectUser.puId
+                }
+            ]
+        })
+
+    }
+
 }
 
 export default ProjectsModel
