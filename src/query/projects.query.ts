@@ -34,11 +34,18 @@ namespace ProjectsQuery {
             project_base_url: DbTableSchema.projects.projectBaseUrl,
             project_authorization_type: DbTableSchema.projects.projectAuthorizationType,
             project_description: DbTableSchema.projects.projectDescription,
+            project_owner: {
+                user_id: DbTableSchema.users.userId,
+                user_first_name: DbTableSchema.users.userFirstName,
+                user_last_name: DbTableSchema.users.userLastName,
+                user_email: DbTableSchema.users.userEmail,
+            },
             project_users: projectUsers.projectUsers,
             project_created_at: DbTableSchema.projects.projectCreatedAt,
         })
         .from(DbTableSchema.projectUsers)
         .leftJoin(DbTableSchema.projects, eq(DbTableSchema.projects.projectId, DbTableSchema.projectUsers.puProjectId))
+        .leftJoin(DbTableSchema.users, eq(DbTableSchema.users.userId, DbTableSchema.projects.projectOwnerId))
         .leftJoin(projectUsers, eq(projectUsers.projectId, DbTableSchema.projects.projectId))
         .where(
             and(
@@ -49,14 +56,6 @@ namespace ProjectsQuery {
         .orderBy(
             desc(DbTableSchema.projects.projectCreatedAt)
         )
-        // .groupBy(
-        //     DbTableSchema.projects.projectId,
-        //     DbTableSchema.projects.projectName,
-        //     DbTableSchema.projects.projectBaseUrl,
-        //     DbTableSchema.projects.projectAuthorizationType,
-        //     DbTableSchema.projects.projectDescription,
-        //     DbTableSchema.projects.projectCreatedAt,
-        // )
     }
     
     export async function getProjectById(payloads: ProjectsInterface.IGetProjectByIdPayloads) {
@@ -90,11 +89,18 @@ namespace ProjectsQuery {
             project_base_url: DbTableSchema.projects.projectBaseUrl,
             project_authorization_type: DbTableSchema.projects.projectAuthorizationType,
             project_description: DbTableSchema.projects.projectDescription,
+            project_owner: {
+                user_id: DbTableSchema.users.userId,
+                user_first_name: DbTableSchema.users.userFirstName,
+                user_last_name: DbTableSchema.users.userLastName,
+                user_email: DbTableSchema.users.userEmail,
+            },
             project_users: projectUsers.projectUsers,
             project_created_at: DbTableSchema.projects.projectCreatedAt,
         })
         .from(DbTableSchema.projectUsers)
         .leftJoin(DbTableSchema.projects, eq(DbTableSchema.projects.projectId, DbTableSchema.projectUsers.puProjectId))
+        .leftJoin(DbTableSchema.users, eq(DbTableSchema.users.userId, DbTableSchema.projects.projectOwnerId))
         .leftJoin(projectUsers, eq(projectUsers.projectId, DbTableSchema.projects.projectId))
         .where(
             and(
