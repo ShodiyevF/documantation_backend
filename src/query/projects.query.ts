@@ -1,4 +1,4 @@
-import { and, desc, eq, inArray, or } from "drizzle-orm"
+import { and, desc, eq, inArray, sql } from "drizzle-orm"
 
 import ProjectsInterface from "@interface/projects.inteface"
 import DbTableSchema from "@database/schema.database"
@@ -9,16 +9,37 @@ namespace ProjectsQuery {
     //! SELECT_START
     
     export async function getUserProjects(userId: string) {
+        const projectUsers = db.select({
+            projectId: DbTableSchema.projects.projectId,
+            projectUsers: sql`
+                array_agg(
+                    jsonb_build_object(
+                        'user_id', ${DbTableSchema.users.userId},
+                        'user_first_name', ${DbTableSchema.users.userFirstName},
+                        'user_last_name', ${DbTableSchema.users.userLastName},
+                        'user_email', ${DbTableSchema.users.userEmail}
+                    )
+                )
+            `.as('projectUsers')
+        })
+        .from(DbTableSchema.projects)
+        .leftJoin(DbTableSchema.projectUsers, eq(DbTableSchema.projectUsers.puProjectId, DbTableSchema.projects.projectId))
+        .leftJoin(DbTableSchema.users, eq(DbTableSchema.users.userId, DbTableSchema.projectUsers.puUserId))
+        .groupBy(DbTableSchema.projects.projectId)
+        .as('project_users_rows')
+        
         return await db.select({
             project_id: DbTableSchema.projects.projectId,
             project_name: DbTableSchema.projects.projectName,
             project_base_url: DbTableSchema.projects.projectBaseUrl,
             project_authorization_type: DbTableSchema.projects.projectAuthorizationType,
             project_description: DbTableSchema.projects.projectDescription,
+            project_users: projectUsers.projectUsers,
             project_created_at: DbTableSchema.projects.projectCreatedAt,
         })
         .from(DbTableSchema.projectUsers)
         .leftJoin(DbTableSchema.projects, eq(DbTableSchema.projects.projectId, DbTableSchema.projectUsers.puProjectId))
+        .leftJoin(projectUsers, eq(projectUsers.projectId, DbTableSchema.projects.projectId))
         .where(
             and(
                 eq(DbTableSchema.projects.projectIsDeleted, false),
@@ -28,6 +49,14 @@ namespace ProjectsQuery {
         .orderBy(
             desc(DbTableSchema.projects.projectCreatedAt)
         )
+        // .groupBy(
+        //     DbTableSchema.projects.projectId,
+        //     DbTableSchema.projects.projectName,
+        //     DbTableSchema.projects.projectBaseUrl,
+        //     DbTableSchema.projects.projectAuthorizationType,
+        //     DbTableSchema.projects.projectDescription,
+        //     DbTableSchema.projects.projectCreatedAt,
+        // )
     }
     
     export async function getProjectInvitations(userId: string) {
