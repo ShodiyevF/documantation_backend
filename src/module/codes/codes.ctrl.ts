@@ -21,6 +21,19 @@ namespace CodesCtrl {
             ExpressFunctions.controllerError(res, error)
         }
     }
+
+    export async function createCode(req: express.Request, res: express.Response) {
+        try {
+            await CodesModel.createCode(req.body, req.headers.authorization!)
+
+            return res.status(201).json({
+                status: 201,
+                message: 'Code successfully created'
+            })
+        } catch (error) {
+            ExpressFunctions.controllerError(res, error)
+        }
+    }
     
 }
 

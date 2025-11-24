@@ -14,6 +14,17 @@ namespace CodesInterface {
 
     //! GET_CODES_END
 
+
+    //! CREATE_CODE_START
+
+    export interface ICreateCodeBody {
+        project_id: string;
+        code_value: string;
+        code_description: string;
+    }
+
+    //! CREATE_CODE_END
+
 }
 
 export default CodesInterface

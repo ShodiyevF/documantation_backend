@@ -15,5 +15,11 @@ app.get('/api/codes/get',
     CodesCtrl.getCodes
 )
 
+app.post('/api/codes/create',
+    authorizationMiddleware,
+    validationMiddleware(CodesDto.createCodeBody, 'body'),
+    CodesCtrl.createCode
+)
+
 
 export default app

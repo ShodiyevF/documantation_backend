@@ -11,6 +11,26 @@ namespace CodesDto {
         }
     }
 
+    export const createCodeBody: ValidationInterface.DTO = {
+        project_id: {
+            required: true,
+            type: 'string',
+            pattern: RegexUtil.UUID
+        },
+        code_value: {
+            required: true,
+            type: 'string',
+            min_length: 1,
+            max_length: 64,
+        },
+        code_description: {
+            required: true,
+            type: 'string',
+            min_length: 1,
+            max_length: 128,
+        },
+    }
+
 }
 
 export default CodesDto
