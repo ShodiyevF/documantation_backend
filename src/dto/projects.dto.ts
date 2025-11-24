@@ -38,14 +38,6 @@ namespace ProjectsDto {
         },
     }
 
-    export const deleteProjectParams: ValidationInterface.DTO = {
-        project_id: {
-            required: true,
-            type: 'string',
-            pattern: RegexUtil.UUID
-        },
-    }
-
     export const updateProjectBody: ValidationInterface.DTO = {
         project_name: {
             required: false,
@@ -72,6 +64,14 @@ namespace ProjectsDto {
         },
     }
 
+    export const deleteProjectParams: ValidationInterface.DTO = {
+        project_id: {
+            required: true,
+            type: 'string',
+            pattern: RegexUtil.UUID
+        },
+    }
+
     export const transferProjectOwnershipBody: ValidationInterface.DTO = {
         project_id: {
             required: true,
@@ -85,7 +85,7 @@ namespace ProjectsDto {
         },
     }
 
-    export const createProjectInvitations: ValidationInterface.DTO = {
+    export const createProjectInvitationsBody: ValidationInterface.DTO = {
         project_id: {
             required: true,
             type: 'string',
@@ -99,7 +99,7 @@ namespace ProjectsDto {
         },
     }
 
-    export const confirmProjectInvitation: ValidationInterface.DTO = {
+    export const confirmProjectInvitationBody: ValidationInterface.DTO = {
         invitation_id: {
             required: true,
             type: 'string',
@@ -111,7 +111,7 @@ namespace ProjectsDto {
         }
     }
 
-    export const leaveProject: ValidationInterface.DTO = {
+    export const leaveProjectBody: ValidationInterface.DTO = {
         project_id: {
             required: true,
             type: 'string',
@@ -119,7 +119,7 @@ namespace ProjectsDto {
         }
     }
 
-    export const removeProjectUser: ValidationInterface.DTO = {
+    export const removeProjectUserBody: ValidationInterface.DTO = {
         project_id: {
             required: true,
             type: 'string',

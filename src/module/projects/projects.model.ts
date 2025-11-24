@@ -38,8 +38,6 @@ namespace ProjectsModel {
                 projectIsDeleted: false,
             }
         })
-
-        console.log(checkProject);
         
         if (checkProject) {
             throw new Exception.HttpException(409, 'Project name already exists', Exception.Errors.PROJECT_ALREADY_EXISTS)

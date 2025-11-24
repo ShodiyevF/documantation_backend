@@ -2,12 +2,17 @@ import DbTableSchema from "@database/schema.database";
 
 namespace ProjectsInterface {
 
+    //! CREATE_PROJECT_START
+    
     export interface ICreateProjectBody {
         project_name: string;
         project_base_url?: string;
         project_authorization_type?: DbTableSchema.TProjectsProjectAuthorizationTypeEnum;
         project_description?: string;
     }
+    
+    //! CREATE_PROJECT_END
+    
 
     //! UPDATE_PROJECT_START
     

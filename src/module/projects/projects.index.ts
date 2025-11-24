@@ -7,7 +7,7 @@ import ProjectsCtrl from './projects.ctrl'
 
 const app = express.Router()
 
-app.get('/api/projects',
+app.get('/api/projects/get',
     authorizationMiddleware,
     ProjectsCtrl.getProjects
 )
@@ -44,25 +44,25 @@ app.get('/api/projects/invitation/get',
 
 app.post('/api/projects/invitation/create',
     authorizationMiddleware,
-    validationMiddleware(ProjectsDto.createProjectInvitations, 'body'),
+    validationMiddleware(ProjectsDto.createProjectInvitationsBody, 'body'),
     ProjectsCtrl.createProjectInvitations
 )
 
 app.post('/api/projects/invitation/confirm',
     authorizationMiddleware,
-    validationMiddleware(ProjectsDto.confirmProjectInvitation, 'body'),
+    validationMiddleware(ProjectsDto.confirmProjectInvitationBody, 'body'),
     ProjectsCtrl.confirmProjectInvitation
 )
 
 app.post('/api/projects/leave',
     authorizationMiddleware,
-    validationMiddleware(ProjectsDto.leaveProject, 'body'),
+    validationMiddleware(ProjectsDto.leaveProjectBody, 'body'),
     ProjectsCtrl.leaveProject
 )
 
 app.post('/api/projects/remove-user',
     authorizationMiddleware,
-    validationMiddleware(ProjectsDto.removeProjectUser, 'body'),
+    validationMiddleware(ProjectsDto.removeProjectUserBody, 'body'),
     ProjectsCtrl.removeProjectUser
 )
 
