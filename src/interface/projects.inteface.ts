@@ -54,6 +54,16 @@ namespace ProjectsInterface {
 
     //! LEAVE_PROJECT_END
 
+
+    //! REMOVE_PROJECT_USER_START
+    
+    export interface IRemoveProjectUserBody {
+        project_id: string;
+        user_id: string;
+    }
+
+    //! REMOVE_PROJECT_USER_END
+
 }
 
 export default ProjectsInterface

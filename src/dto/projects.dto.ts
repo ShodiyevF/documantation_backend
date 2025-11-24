@@ -105,6 +105,19 @@ namespace ProjectsDto {
             pattern: RegexUtil.UUID
         }
     }
+
+    export const removeProjectUser: ValidationInterface.DTO = {
+        project_id: {
+            required: true,
+            type: 'string',
+            pattern: RegexUtil.UUID
+        },
+        user_id: {
+            required: true,
+            type: 'string',
+            pattern: RegexUtil.UUID
+        }
+    }
     
 }
 

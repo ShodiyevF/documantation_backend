@@ -54,4 +54,10 @@ app.post('/api/projects/leave',
     ProjectsCtrl.leaveProject
 )
 
+app.post('/api/projects/remove-user',
+    authorizationMiddleware,
+    validationMiddleware(ProjectsDto.removeProjectUser, 'body'),
+    ProjectsCtrl.removeProjectUser
+)
+
 export default app

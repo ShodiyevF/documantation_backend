@@ -323,6 +323,52 @@ namespace ProjectsModel {
 
     }
 
+    export async function removeProjectUser(body: ProjectsInterface.IRemoveProjectUserBody, token: string) {
+        const {
+            project_id,
+            user_id
+        } = body
+
+        const userId = await FinderLib.findUser(token)
+        if (userId === 'ERROR') {
+            throw new Exception.HttpException(401, 'Authorization error', Exception.Errors.AUTHORIZATION_ERROR)
+        }
+
+        const project = await DatabaseFunctions.select({
+            tableName: 'projects',
+            filter: {
+                projectId: project_id,
+                projectIsDeleted: false,
+                projectOwnerId: userId
+            }
+        })
+        if (!project) {
+            throw new Exception.HttpException(404, 'Project not found', Exception.Errors.PROJECT_NOT_FOUND)
+        }
+
+        const projectUser = await DatabaseFunctions.select({
+            tableName: 'projectUsers',
+            filter: {
+                puProjectId: project_id,
+                puUserId: user_id
+            }
+        })
+        if (!projectUser) {
+            throw new Exception.HttpException(404, 'Project user not found', Exception.Errors.PROJECT_USER_NOT_FOUND)
+        }
+
+        await DatabaseFunctions.remove({
+            tableName: 'projectUsers',
+            targets: [
+                {
+                    targetColumn: 'puId',
+                    targetValue: projectUser.puId
+                }
+            ]
+        })
+
+    }
+
 }
 
 export default ProjectsModel
