@@ -54,6 +54,37 @@ namespace CodesModel {
         }
     }
     
+    export async function getCodeById(code_id: string, token: string) {
+        const userId = await FinderLib.findUser(token)
+        if (userId === 'ERROR') {
+            throw new Exception.HttpException(401, 'Authorization error', Exception.Errors.AUTHORIZATION_ERROR)
+        }
+        
+        const code = await DatabaseFunctions.select({
+            tableName: 'codes',
+            filter: {
+                codeId: code_id,
+                codeIsDeleted: false
+            }
+        });
+        if (!code) {
+            throw new Exception.HttpException(404, 'Code not found', Exception.Errors.CODE_NOT_FOUND)
+        }
+        
+        const checkProjectUser = await DatabaseFunctions.select({
+            tableName: 'projectUsers',
+            filter: {
+                puProjectId: code.codeProjectId,
+                puUserId: userId
+            }
+        })
+        if (!checkProjectUser) {
+            throw new Exception.HttpException(404, 'You are not a project user', Exception.Errors.PROJECT_USER_NOT_FOUND)
+        }
+
+        return await CodesQuery.getCodeById(code_id)
+    }
+    
     export async function createCode(body: CodesInterface.ICreateCodeBody, token: string) {
         const {
             project_id,

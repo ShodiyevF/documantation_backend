@@ -15,6 +15,12 @@ app.get('/api/codes/get',
     CodesCtrl.getCodes
 )
 
+app.get('/api/codes/get/by-id/:code_id',
+    authorizationMiddleware,
+    validationMiddleware(CodesDto.getCodeByIdParams, 'params'),
+    CodesCtrl.getCodeById
+)
+
 app.post('/api/codes/create',
     authorizationMiddleware,
     validationMiddleware(CodesDto.createCodeBody, 'body'),

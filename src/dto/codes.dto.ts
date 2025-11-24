@@ -11,6 +11,14 @@ namespace CodesDto {
         }
     }
 
+    export const getCodeByIdParams: ValidationInterface.DTO = {
+        code_id: {
+            required: true,
+            type: 'string',
+            pattern: RegexUtil.UUID
+        }
+    }
+
     export const createCodeBody: ValidationInterface.DTO = {
         project_id: {
             required: true,

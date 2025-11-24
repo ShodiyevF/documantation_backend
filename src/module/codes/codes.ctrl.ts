@@ -22,6 +22,16 @@ namespace CodesCtrl {
         }
     }
 
+    export async function getCodeById(req: express.Request, res: express.Response) {
+        try {
+            const model = await CodesModel.getCodeById(req.params.code_id, req.headers.authorization!)
+
+            return res.status(200).json(model)
+        } catch (error) {
+            ExpressFunctions.controllerError(res, error)
+        }
+    }
+
     export async function createCode(req: express.Request, res: express.Response) {
         try {
             await CodesModel.createCode(req.body, req.headers.authorization!)
