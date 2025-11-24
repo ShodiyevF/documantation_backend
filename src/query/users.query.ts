@@ -1,8 +1,8 @@
 import { and, eq, ilike, inArray, or } from "drizzle-orm"
 
+import GlobalInterface from "@interface/global.interface"
 import DbTableSchema from "@database/schema.database"
 import { db } from "@database/pg.database"
-import GlobalInterface from "@interface/global.interface"
 
 namespace UsersQuery {
 
@@ -16,6 +16,21 @@ namespace UsersQuery {
                 DbTableSchema.users.userId, userIds
             )
         )
+    }
+
+    export async function getMe(userId: string) {
+        return await db.select({
+            user_id: DbTableSchema.users.userId,
+            user_first_name: DbTableSchema.users.userFirstName,
+            user_last_name: DbTableSchema.users.userLastName,
+            user_email: DbTableSchema.users.userEmail,
+            user_created_at: DbTableSchema.users.userCreatedAt
+        })
+        .from(DbTableSchema.users)
+        .where(
+            eq(DbTableSchema.users.userId, userId)
+        )
+        .then(data => data[0])
     }
 
     export async function getUsersAll(payloads: GlobalInterface.IGetAll) {

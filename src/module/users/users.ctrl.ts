@@ -6,6 +6,16 @@ import UsersModel from './users.model'
 
 namespace UsersCtrl {
 
+    export async function getMe(req: express.Request, res: express.Response) {
+        try {
+            const model = await UsersModel.getMe(req.headers.authorization!)
+            
+            return res.status(200).json(model)
+        } catch (error) {
+            ExpressFunctions.controllerError(res, error)
+        }
+    }
+
     export async function getUsersAll(req: express.Request, res: express.Response) {
         try {
             const query: GlobalInterface.IGetAll = {
