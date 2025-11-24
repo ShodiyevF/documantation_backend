@@ -10,6 +10,21 @@ namespace GlobalDto {
             max_length: 128
         }
     }
+
+    export const paginationQuery: ValidationInterface.DTO = {
+        page: {
+            required: true,
+            type: 'number',
+            min: 1,
+            max: 2048,
+        },
+        limit: {
+            required: true,
+            type: 'number',
+            min: 1,
+            max: 200,
+        },
+    }
     
 }
 
