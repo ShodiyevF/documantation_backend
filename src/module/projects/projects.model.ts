@@ -285,18 +285,18 @@ namespace ProjectsModel {
             throw new Exception.HttpException(401, 'Authorization error', Exception.Errors.AUTHORIZATION_ERROR)
         }
 
-        const projects = await DatabaseFunctions.select({
+        const project = await DatabaseFunctions.select({
             tableName: 'projects',
             filter: {
                 projectId: project_id,
                 projectIsDeleted: false
             }
         })
-        if (!projects) {
+        if (!project) {
             throw new Exception.HttpException(404, 'Project not found', Exception.Errors.PROJECT_NOT_FOUND)
         }
 
-        if (projects.projectOwnerId === userId) {
+        if (project.projectOwnerId === userId) {
             throw new Exception.HttpException(404, 'You are the project owner. Please transfer ownership of the project to another user to leave the project.', Exception.Errors.PLEASE_TRANSFER_PROJECT_OWNERSHIP)
         }
 
