@@ -25,6 +25,16 @@ namespace CodesInterface {
 
     //! CREATE_CODE_END
 
+
+    //! UPDATE_CODE_START
+
+    export interface IUpdateCodeBody {
+        code_value?: string;
+        code_description?: string;
+    }
+
+    //! UPDATE_CODE_END
+
 }
 
 export default CodesInterface

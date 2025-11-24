@@ -27,5 +27,12 @@ app.post('/api/codes/create',
     CodesCtrl.createCode
 )
 
+app.patch('/api/codes/update/:code_id',
+    authorizationMiddleware,
+    validationMiddleware(CodesDto.updateCodeParams, 'params'),
+    validationMiddleware(CodesDto.updateCodeBody, 'body'),
+    CodesCtrl.updateCode
+)
+
 
 export default app

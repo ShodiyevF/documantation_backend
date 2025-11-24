@@ -39,6 +39,29 @@ namespace CodesDto {
         },
     }
 
+    export const updateCodeParams: ValidationInterface.DTO = {
+        code_id: {
+            required: true,
+            type: 'string',
+            pattern: RegexUtil.UUID
+        },
+    }
+
+    export const updateCodeBody: ValidationInterface.DTO = {
+        code_value: {
+            required: false,
+            type: 'string',
+            min_length: 1,
+            max_length: 64,
+        },
+        code_description: {
+            required: false,
+            type: 'string',
+            min_length: 1,
+            max_length: 128,
+        },
+    }
+
 }
 
 export default CodesDto

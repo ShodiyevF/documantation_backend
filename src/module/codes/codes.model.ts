@@ -140,6 +140,57 @@ namespace CodesModel {
         })
     }
     
+    export async function updateCode(body: CodesInterface.IUpdateCodeBody, code_id: string, token: string) {
+        const {
+            code_value,
+            code_description
+        } = body
+        
+        const userId = await FinderLib.findUser(token)
+        if (userId === 'ERROR') {
+            throw new Exception.HttpException(401, 'Authorization error', Exception.Errors.AUTHORIZATION_ERROR)
+        }
+        
+        const code = await DatabaseFunctions.select({
+            tableName: 'codes',
+            filter: {
+                codeId: code_id,
+                codeIsDeleted: false
+            }
+        });
+        if (!code) {
+            throw new Exception.HttpException(404, 'Code not found', Exception.Errors.CODE_NOT_FOUND)
+        }
+        
+        const codeValue = code_value ? code_value : code.codeValue
+        const codeDescription = code_description ? code_description : code.codeDescription
+        
+        
+        const checkCodeValue = await DatabaseFunctions.select({
+            tableName: 'codes',
+            filter: {
+                codeValue: codeValue
+            }
+        });
+        if (checkCodeValue && checkCodeValue.codeId !== code_id) {
+            throw new Exception.HttpException(409, 'Code value already exists', Exception.Errors.CODE_ALREADY_EXISTS)
+        }
+
+        await DatabaseFunctions.update({
+            tableName: 'codes',
+            data: {
+                codeValue: codeValue,
+                codeDescription: codeDescription,
+            },
+            targets: [
+                {
+                    targetColumn: 'codeId',
+                    targetValue: code_id
+                }
+            ]
+        })
+    }
+    
 }
 
 export default CodesModel

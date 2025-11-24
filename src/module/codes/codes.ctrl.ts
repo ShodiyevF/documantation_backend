@@ -44,6 +44,19 @@ namespace CodesCtrl {
             ExpressFunctions.controllerError(res, error)
         }
     }
+
+    export async function updateCode(req: express.Request, res: express.Response) {
+        try {
+            await CodesModel.updateCode(req.body, req.params.code_id, req.headers.authorization!)
+
+            return res.status(200).json({
+                status: 200,
+                message: 'Code successfully updated'
+            })
+        } catch (error) {
+            ExpressFunctions.controllerError(res, error)
+        }
+    }
     
 }
 
