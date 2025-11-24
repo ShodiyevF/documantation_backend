@@ -14,7 +14,7 @@ app.get(
 )
 
 app.get(
-    '/api/users/get-all',
+    '/api/users/get/all',
     authorizationMiddleware,
     validationMiddleware(GlobalDto.getAllQuery, 'query'),
     UsersCtrl.getUsersAll
