@@ -165,7 +165,6 @@ namespace CodesModel {
         const codeValue = code_value ? code_value : code.codeValue
         const codeDescription = code_description ? code_description : code.codeDescription
         
-        
         const checkCodeValue = await DatabaseFunctions.select({
             tableName: 'codes',
             filter: {
@@ -181,6 +180,48 @@ namespace CodesModel {
             data: {
                 codeValue: codeValue,
                 codeDescription: codeDescription,
+            },
+            targets: [
+                {
+                    targetColumn: 'codeId',
+                    targetValue: code_id
+                }
+            ]
+        })
+    }
+    
+    export async function deleteCode(code_id: string, token: string) {
+        const userId = await FinderLib.findUser(token)
+        if (userId === 'ERROR') {
+            throw new Exception.HttpException(401, 'Authorization error', Exception.Errors.AUTHORIZATION_ERROR)
+        }
+        
+        const code = await DatabaseFunctions.select({
+            tableName: 'codes',
+            filter: {
+                codeId: code_id,
+                codeIsDeleted: false
+            }
+        })
+        if (!code) {
+            throw new Exception.HttpException(404, 'Code not found', Exception.Errors.CODE_NOT_FOUND)
+        }
+        
+        const checkProjectUser = await DatabaseFunctions.select({
+            tableName: 'projectUsers',
+            filter: {
+                puProjectId: code.codeProjectId,
+                puUserId: userId
+            }
+        })
+        if (!checkProjectUser) {
+            throw new Exception.HttpException(404, 'You are not a project user', Exception.Errors.PROJECT_USER_NOT_FOUND)
+        }
+        
+        await DatabaseFunctions.update({
+            tableName: 'codes',
+            data: {
+                codeIsDeleted: true
             },
             targets: [
                 {

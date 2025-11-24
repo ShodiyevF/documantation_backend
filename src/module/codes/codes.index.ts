@@ -34,5 +34,11 @@ app.patch('/api/codes/update/:code_id',
     CodesCtrl.updateCode
 )
 
+app.delete('/api/codes/delete/:code_id',
+    authorizationMiddleware,
+    validationMiddleware(CodesDto.deleteCodeParams, 'params'),
+    CodesCtrl.deleteCode
+)
+
 
 export default app

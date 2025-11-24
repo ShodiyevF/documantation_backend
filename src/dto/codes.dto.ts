@@ -62,6 +62,14 @@ namespace CodesDto {
         },
     }
 
+    export const deleteCodeParams: ValidationInterface.DTO = {
+        code_id: {
+            required: true,
+            type: 'string',
+            pattern: RegexUtil.UUID
+        },
+    }
+
 }
 
 export default CodesDto

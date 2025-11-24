@@ -57,6 +57,19 @@ namespace CodesCtrl {
             ExpressFunctions.controllerError(res, error)
         }
     }
+
+    export async function deleteCode(req: express.Request, res: express.Response) {
+        try {
+            await CodesModel.deleteCode(req.params.code_id, req.headers.authorization!)
+
+            return res.status(200).json({
+                status: 200,
+                message: 'Code successfully deleted'
+            })
+        } catch (error) {
+            ExpressFunctions.controllerError(res, error)
+        }
+    }
     
 }
 
