@@ -72,6 +72,19 @@ namespace ProjectsDto {
         },
     }
 
+    export const transferProjectOwnershipBody: ValidationInterface.DTO = {
+        project_id: {
+            required: true,
+            type: 'string',
+            pattern: RegexUtil.UUID
+        },
+        user_id: {
+            required: true,
+            type: 'string',
+            pattern: RegexUtil.UUID
+        },
+    }
+
     export const createProjectInvitations: ValidationInterface.DTO = {
         project_id: {
             required: true,

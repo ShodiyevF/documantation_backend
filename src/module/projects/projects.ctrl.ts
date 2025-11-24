@@ -54,6 +54,19 @@ namespace ProjectsCtrl {
         }
     }
 
+    export async function transferProjectOwnership(req: express.Request, res: express.Response) {
+        try {
+            await ProjectsModel.transferProjectOwnership(req.body, req.headers.authorization!)
+
+            return res.status(200).json({
+                status: 200,
+                message: 'Project ownership successfully transferred'
+            })
+        } catch (error) {
+            ExpressFunctions.controllerError(res, error)
+        }
+    }
+
     export async function getProjectInvitations(req: express.Request, res: express.Response) {
         try {
             const model = await ProjectsModel.getProjectInvitations(req.headers.authorization!)

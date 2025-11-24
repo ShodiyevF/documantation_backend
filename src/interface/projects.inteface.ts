@@ -21,6 +21,16 @@ namespace ProjectsInterface {
     //! UPDATE_PROJECT_END
 
 
+    //! TRANSFER_PROJECT_OWNERSHIP_START
+    
+    export interface ITransferProjectOwnershipBody {
+        project_id: string;
+        user_id: string;
+    }
+
+    //! TRANSFER_PROJECT_OWNERSHIP_END
+
+
     //! CREATE_PROJECT_INVITATIONS_START
     
     export interface ICreateProjectInvitationBody {

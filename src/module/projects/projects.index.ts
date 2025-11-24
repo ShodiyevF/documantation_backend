@@ -31,6 +31,12 @@ app.delete('/api/projects/delete/:project_id',
     ProjectsCtrl.deleteProject
 )
 
+app.patch('/api/projects/transfer-ownership',
+    authorizationMiddleware,
+    validationMiddleware(ProjectsDto.transferProjectOwnershipBody, 'body'),
+    ProjectsCtrl.transferProjectOwnership
+)
+
 app.get('/api/projects/invitation/get',
     authorizationMiddleware,
     ProjectsCtrl.getProjectInvitations
