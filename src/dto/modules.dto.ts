@@ -10,6 +10,14 @@ namespace ModulesDto {
             pattern: RegexUtil.UUID
         }
     }
+    
+    export const getModuleByIdParams: ValidationInterface.DTO = {
+        module_id: {
+            required: true,
+            type: 'string',
+            pattern: RegexUtil.UUID
+        }
+    }
 
 }
 

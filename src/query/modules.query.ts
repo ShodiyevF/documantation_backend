@@ -55,6 +55,27 @@ namespace ModulesQuery {
         }
     }
 
+    export async function getModuleById(moduleId: string) {
+        return await db.select({
+            module_id: DbTableSchema.modules.moduleId,
+            module_name: DbTableSchema.modules.moduleName,
+            module_description: DbTableSchema.modules.moduleDescription,
+            module_creator: {
+                user_id: DbTableSchema.users.userId,
+                user_first_name: DbTableSchema.users.userFirstName,
+                user_last_name: DbTableSchema.users.userLastName,
+                user_email: DbTableSchema.users.userEmail,
+            },
+            module_created_at: DbTableSchema.modules.moduleCreatedAt,
+        })
+        .from(DbTableSchema.modules)
+        .leftJoin(DbTableSchema.users, eq(DbTableSchema.users.userId, DbTableSchema.modules.moduleOwnerId))
+        .where(
+            eq(DbTableSchema.modules.moduleId, moduleId)
+        )
+        .then(data => data[0])
+    }
+
 }
 
 export default ModulesQuery

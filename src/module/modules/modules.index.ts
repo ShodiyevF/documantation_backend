@@ -15,4 +15,10 @@ app.get('/api/modules/get',
     ModulesCtrl.getModules
 )
 
+app.get('/api/modules/get/by-id/:module_id',
+    authorizationMiddleware,
+    validationMiddleware(ModulesDto.getModuleByIdParams, 'params'),
+    ModulesCtrl.getModuleById
+)
+
 export default app

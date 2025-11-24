@@ -21,6 +21,16 @@ namespace ModulesCtrl {
             ExpressFunctions.controllerError(res, error)
         }
     }
+
+    export async function getModuleById(req: express.Request, res: express.Response) {
+        try {
+            const model = await ModulesModel.getModuleById(req.params.module_id, req.headers.authorization!)
+
+            return res.status(200).json(model)
+        } catch (error) {
+            ExpressFunctions.controllerError(res, error)
+        }
+    }
     
 }
 
