@@ -124,7 +124,8 @@ namespace ModulesModel {
             tableName: 'modules',
             filter: {
                 moduleName: module_name,
-                moduleProjectId: project_id
+                moduleProjectId: project_id,
+                moduleIsDeleted: false
             }
         })
         if (checkModule) {
