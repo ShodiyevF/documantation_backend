@@ -3,6 +3,7 @@ import ModulesInterface from '@interface/modules.interface'
 import Exception from '@lib/http_exception.lib'
 import ModulesQuery from '@query/modules.query'
 import FinderLib from '@lib/finder.lib'
+import UsefulfunctionsUtil from '@util/usefulfunctions.util'
 
 namespace ModulesModel {
     
@@ -138,6 +139,69 @@ namespace ModulesModel {
                 moduleOwnerId: userId,
                 moduleProjectId: project_id
             }
+        })
+    }
+    
+    export async function updateModule(body: ModulesInterface.IUpdateModuleBody, module_id: string, token: string) {
+        const {
+            module_name,
+            module_description
+        } = body
+        
+        const userId = await FinderLib.findUser(token)
+        if (userId === 'ERROR') {
+            throw new Exception.HttpException(401, 'Authorization error', Exception.Errors.AUTHORIZATION_ERROR)
+        }
+        
+        const module = await DatabaseFunctions.select({
+            tableName: 'modules',
+            filter: {
+                moduleId: module_id,
+                moduleIsDeleted: false
+            }
+        });
+        if (!module) {
+            throw new Exception.HttpException(404, 'Module not found', Exception.Errors.MODULE_NOT_FOUND)
+        }
+        
+        const checkProjectUser = await DatabaseFunctions.select({
+            tableName: 'projectUsers',
+            filter: {
+                puProjectId: module.moduleProjectId,
+                puUserId: userId
+            }
+        })
+        if (!checkProjectUser) {
+            throw new Exception.HttpException(404, 'You are not a project user', Exception.Errors.PROJECT_USER_NOT_FOUND)
+        }
+
+        const moduleName = module_name ? module_name : module.moduleName
+        const moduleDescription = UsefulfunctionsUtil.isNullableData(module_description, module.moduleName)
+
+        const checkModule = await DatabaseFunctions.select({
+            tableName: 'modules',
+            filter: {
+                moduleName: moduleName,
+                moduleProjectId: module.moduleProjectId,
+                moduleIsDeleted: false
+            }
+        })
+        if (checkModule && checkModule.moduleId !== module_id) {
+            throw new Exception.HttpException(409, 'Module name already exists', Exception.Errors.MODULE_NAME_ALREADY_EXISTS)
+        }
+
+        await DatabaseFunctions.update({
+            tableName: 'modules',
+            data: {
+                moduleName: moduleName,
+                moduleDescription: moduleDescription,
+            },
+            targets: [
+                {
+                    targetColumn: 'moduleId',
+                    targetValue: module_id
+                }
+            ]
         })
     }
     

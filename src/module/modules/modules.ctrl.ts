@@ -44,6 +44,19 @@ namespace ModulesCtrl {
             ExpressFunctions.controllerError(res, error)
         }
     }
+
+    export async function updateModule(req: express.Request, res: express.Response) {
+        try {
+            await ModulesModel.updateModule(req.body, req.params.module_id, req.headers.authorization!)
+
+            return res.status(200).json({
+                status: 200,
+                message: 'Module successfully updated'
+            })
+        } catch (error) {
+            ExpressFunctions.controllerError(res, error)
+        }
+    }
     
 }
 

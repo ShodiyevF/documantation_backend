@@ -25,6 +25,16 @@ namespace ModulesInterface {
 
     //! CREATE_MODULE_END
 
+
+    //! UPDATE_MODULE_START
+
+    export interface IUpdateModuleBody {
+        module_name?: string;
+        module_description?: string;
+    }
+
+    //! UPDATE_MODULE_END
+
 }
 
 export default ModulesInterface

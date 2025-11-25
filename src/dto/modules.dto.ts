@@ -39,6 +39,29 @@ namespace ModulesDto {
         },
     }
 
+    export const updateModuleParams: ValidationInterface.DTO = {
+        module_id: {
+            required: true,
+            type: 'string',
+            pattern: RegexUtil.UUID
+        }
+    }
+
+    export const updateModuleBody: ValidationInterface.DTO = {
+        module_name: {
+            required: false,
+            type: 'string',
+            min_length: 1,
+            max_length: 32,
+        },
+        module_description: {
+            required: false,
+            type: 'string',
+            min_length: 1,
+            max_length: 512,
+        },
+    }
+
 }
 
 export default ModulesDto

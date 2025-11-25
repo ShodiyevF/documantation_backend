@@ -27,4 +27,11 @@ app.post('/api/modules/create',
     ModulesCtrl.createModule
 )
 
+app.patch('/api/modules/update/:module_id',
+    authorizationMiddleware,
+    validationMiddleware(ModulesDto.updateModuleParams, 'params'),
+    validationMiddleware(ModulesDto.updateModuleBody, 'body'),
+    ModulesCtrl.updateModule
+)
+
 export default app
