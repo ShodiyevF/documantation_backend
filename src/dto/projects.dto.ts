@@ -34,7 +34,7 @@ namespace ProjectsDto {
             required: false,
             type: 'string',
             min_length: 1,
-            max_length: 1024
+            max_length: 512
         },
     }
 
@@ -68,7 +68,7 @@ namespace ProjectsDto {
             required: false,
             type: 'string',
             min_length: 1,
-            max_length: 1024
+            max_length: 512
         },
     }
 
