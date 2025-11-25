@@ -56,9 +56,8 @@ namespace ProjectsModel {
                 projectIsDeleted: false,
             }
         })
-        
         if (checkProject) {
-            throw new Exception.HttpException(409, 'Project name already exists', Exception.Errors.PROJECT_ALREADY_EXISTS)
+            throw new Exception.HttpException(409, 'Project name already exists', Exception.Errors.PROJECT_NAME_ALREADY_EXISTS)
         }
 
         const project = await DatabaseFunctions.insert({
@@ -119,7 +118,7 @@ namespace ProjectsModel {
             }
         })
         if (checkProjectName && checkProjectName.projectId != projectId) {
-            throw new Exception.HttpException(409, 'Project name already exists', Exception.Errors.PROJECT_ALREADY_EXISTS)
+            throw new Exception.HttpException(409, 'Project name already exists', Exception.Errors.PROJECT_NAME_ALREADY_EXISTS)
         }
 
         await DatabaseFunctions.update({
