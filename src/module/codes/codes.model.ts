@@ -122,7 +122,8 @@ namespace CodesModel {
         const checkCode = await DatabaseFunctions.select({
             tableName: 'codes',
             filter: {
-                codeValue: code_value
+                codeValue: code_value,
+                codeProjectId: project_id
             }
         })
         if (checkCode) {
@@ -168,7 +169,8 @@ namespace CodesModel {
         const checkCodeValue = await DatabaseFunctions.select({
             tableName: 'codes',
             filter: {
-                codeValue: codeValue
+                codeValue: codeValue,
+                codeProjectId: code.codeProjectId
             }
         });
         if (checkCodeValue && checkCodeValue.codeId !== code_id) {
