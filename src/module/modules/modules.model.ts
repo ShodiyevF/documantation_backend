@@ -1,9 +1,9 @@
 import DatabaseFunctions from '@database/functions.database'
+import UsefulfunctionsUtil from '@util/usefulfunctions.util'
 import ModulesInterface from '@interface/modules.interface'
 import Exception from '@lib/http_exception.lib'
 import ModulesQuery from '@query/modules.query'
 import FinderLib from '@lib/finder.lib'
-import UsefulfunctionsUtil from '@util/usefulfunctions.util'
 
 namespace ModulesModel {
     
