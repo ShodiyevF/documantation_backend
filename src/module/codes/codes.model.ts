@@ -123,11 +123,12 @@ namespace CodesModel {
             tableName: 'codes',
             filter: {
                 codeValue: code_value,
-                codeProjectId: project_id
+                codeProjectId: project_id,
+                codeIsDeleted: false
             }
         })
         if (checkCode) {
-            throw new Exception.HttpException(409, 'Code already exists', Exception.Errors.CODE_ALREADY_EXISTS)
+            throw new Exception.HttpException(409, 'Code value already exists', Exception.Errors.CODE_VALUE_ALREADY_EXISTS)
         }
 
         await DatabaseFunctions.insert({
@@ -170,11 +171,12 @@ namespace CodesModel {
             tableName: 'codes',
             filter: {
                 codeValue: codeValue,
-                codeProjectId: code.codeProjectId
+                codeProjectId: code.codeProjectId,
+                codeIsDeleted: false,
             }
         });
         if (checkCodeValue && checkCodeValue.codeId !== code_id) {
-            throw new Exception.HttpException(409, 'Code value already exists', Exception.Errors.CODE_ALREADY_EXISTS)
+            throw new Exception.HttpException(409, 'Code value already exists', Exception.Errors.CODE_VALUE_ALREADY_EXISTS)
         }
 
         await DatabaseFunctions.update({
