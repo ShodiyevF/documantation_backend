@@ -14,6 +14,17 @@ namespace ModulesInterface {
 
     //! GET_MODULES_END
 
+
+    //! CREATE_MODULE_START
+
+    export interface ICreateModuleBody {
+        project_id: string;
+        module_name: string;
+        module_description?: string;
+    }
+
+    //! CREATE_MODULE_END
+
 }
 
 export default ModulesInterface

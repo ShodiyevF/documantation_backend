@@ -31,6 +31,19 @@ namespace ModulesCtrl {
             ExpressFunctions.controllerError(res, error)
         }
     }
+
+    export async function createModule(req: express.Request, res: express.Response) {
+        try {
+            await ModulesModel.createModule(req.body, req.headers.authorization!)
+
+            return res.status(201).json({
+                status: 201,
+                message: 'Module successfully created'
+            })
+        } catch (error) {
+            ExpressFunctions.controllerError(res, error)
+        }
+    }
     
 }
 

@@ -85,6 +85,62 @@ namespace ModulesModel {
         return await ModulesQuery.getModuleById(module_id)
     }
     
+    export async function createModule(body: ModulesInterface.ICreateModuleBody, token: string) {
+        const {
+            project_id,
+            module_name,
+            module_description
+        } = body
+        
+        const userId = await FinderLib.findUser(token)
+        if (userId === 'ERROR') {
+            throw new Exception.HttpException(401, 'Authorization error', Exception.Errors.AUTHORIZATION_ERROR)
+        }
+        
+        const project = await DatabaseFunctions.select({
+            tableName: 'projects',
+            filter: {
+                projectId: project_id,
+                projectIsDeleted: false
+            }
+        });
+        if (!project) {
+            throw new Exception.HttpException(404, 'Project not found', Exception.Errors.PROJECT_NOT_FOUND)
+        }
+        
+        const checkProjectUser = await DatabaseFunctions.select({
+            tableName: 'projectUsers',
+            filter: {
+                puProjectId: project_id,
+                puUserId: userId
+            }
+        })
+        if (!checkProjectUser) {
+            throw new Exception.HttpException(404, 'You are not a project user', Exception.Errors.PROJECT_USER_NOT_FOUND)
+        }
+
+        const checkModule = await DatabaseFunctions.select({
+            tableName: 'modules',
+            filter: {
+                moduleName: module_name,
+                moduleProjectId: project_id
+            }
+        })
+        if (checkModule) {
+            throw new Exception.HttpException(409, 'Module name already exists', Exception.Errors.MODULE_NAME_ALREADY_EXISTS)
+        }
+
+        await DatabaseFunctions.insert({
+            tableName: 'modules',
+            data: {
+                moduleName: module_name,
+                moduleDescription: module_description,
+                moduleOwnerId: userId,
+                moduleProjectId: project_id
+            }
+        })
+    }
+    
 }
 
 export default ModulesModel

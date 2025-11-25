@@ -21,4 +21,10 @@ app.get('/api/modules/get/by-id/:module_id',
     ModulesCtrl.getModuleById
 )
 
+app.post('/api/modules/create',
+    authorizationMiddleware,
+    validationMiddleware(ModulesDto.createModuleBody, 'body'),
+    ModulesCtrl.createModule
+)
+
 export default app
