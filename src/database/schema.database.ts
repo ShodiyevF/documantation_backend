@@ -165,7 +165,9 @@ namespace DbTableSchema {
     export const modules = modulesTable
     export const apis = apisTable
     export const payloads = payloadsTable
+    export const payloadCodes = payloadCodesTable
     export const responses = responsesTable
+    export const responseCodes = responseCodesTable
 
 
     export const requestLogsRlTypeEnumList = requestLogsRlTypeEnum.enumValues
