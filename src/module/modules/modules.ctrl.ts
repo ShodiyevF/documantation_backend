@@ -57,6 +57,19 @@ namespace ModulesCtrl {
             ExpressFunctions.controllerError(res, error)
         }
     }
+
+    export async function deleteModule(req: express.Request, res: express.Response) {
+        try {
+            await ModulesModel.deleteModule(req.params.module_id, req.headers.authorization!)
+
+            return res.status(200).json({
+                status: 200,
+                message: 'Module successfully deleted'
+            })
+        } catch (error) {
+            ExpressFunctions.controllerError(res, error)
+        }
+    }
     
 }
 

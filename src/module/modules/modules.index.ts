@@ -34,4 +34,10 @@ app.patch('/api/modules/update/:module_id',
     ModulesCtrl.updateModule
 )
 
+app.delete('/api/modules/delete/:module_id',
+    authorizationMiddleware,
+    validationMiddleware(ModulesDto.deleteModuleParams, 'params'),
+    ModulesCtrl.deleteModule
+)
+
 export default app

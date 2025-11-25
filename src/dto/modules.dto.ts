@@ -62,6 +62,14 @@ namespace ModulesDto {
         },
     }
 
+    export const deleteModuleParams: ValidationInterface.DTO = {
+        module_id: {
+            required: true,
+            type: 'string',
+            pattern: RegexUtil.UUID
+        }
+    }
+
 }
 
 export default ModulesDto
