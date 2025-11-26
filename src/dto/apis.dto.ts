@@ -87,6 +87,14 @@ namespace ApisDto {
         },
     }
 
+    export const deleteApiParams: ValidationInterface.DTO = {
+        api_id: {
+            required: true,
+            type: 'string',
+            pattern: RegexUtil.UUID
+        }
+    }
+
     export const createKey: ValidationInterface.DTO = {
         key_name: {
             required: true,

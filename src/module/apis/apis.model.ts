@@ -191,6 +191,48 @@ namespace ApisModel {
         })
     }
     
+    export async function deleteApi(api_id: string, token: string) {
+        const userId = await FinderLib.findUser(token)
+        if (userId === 'ERROR') {
+            throw new Exception.HttpException(401, 'Authorization error', Exception.Errors.AUTHORIZATION_ERROR)
+        }
+        
+        const api = await DatabaseFunctions.select({
+            tableName: 'apis',
+            filter: {
+                apiId: api_id,
+                apiIsDeleted: false
+            }
+        })
+        if (!api) {
+            throw new Exception.HttpException(404, 'Api not found', Exception.Errors.API_NOT_FOUND)
+        }
+        
+        const checkUserProject = await DatabaseFunctions.select({
+            tableName: 'projectUsers',
+            filter: {
+                puUserId: userId,
+                puProjectId: api.apiProjectId
+            }
+        })
+        if (!checkUserProject) {
+            throw new Exception.HttpException(404, 'You are not a project user', Exception.Errors.PROJECT_USER_NOT_FOUND)
+        }
+
+        await DatabaseFunctions.update({
+            tableName: 'apis',
+            data: {
+                apiIsDeleted: true
+            },
+            targets: [
+                {
+                    targetColumn: 'apiId',
+                    targetValue: api_id
+                }
+            ]
+        })
+    }
+    
     export async function createApiResponse(body: ApisInterface.IApiResponseBody, token: string) {
         const {
             api_id,

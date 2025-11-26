@@ -28,6 +28,12 @@ app.patch('/api/apis/update/:api_id',
     ApisCtrl.updateApi
 )
 
+app.delete('/api/apis/delete/:api_id',
+    authorizationMiddleware,
+    validationMiddleware(ApisDto.deleteApiParams, 'params'),
+    ApisCtrl.deleteApi
+)
+
 app.post('/api/apis/response',
     authorizationMiddleware,
     validationMiddleware(ApisDto.createApiResponseBody, 'body'),
