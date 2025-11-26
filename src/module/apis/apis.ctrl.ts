@@ -35,6 +35,19 @@ namespace ApisCtrl {
         }
     }
 
+    export async function updateApi(req: express.Request, res: express.Response) {
+        try {
+            await ApisModel.updateApi(req.body, req.params.api_id, req.headers.authorization!)
+
+            return res.status(200).json({
+                status: 200,
+                message: 'Api successfully updated'
+            })
+        } catch (error) {
+            ExpressFunctions.controllerError(res, error)
+        }
+    }
+
     export async function createApiResponse(req: express.Request, res: express.Response) {
         try {
             await ApisModel.createApiResponse(req.body, req.headers.authorization!)

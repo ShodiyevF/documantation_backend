@@ -29,6 +29,19 @@ namespace ApisInterface {
     
     //! CREATE_API_END
 
+    
+    //! UPDATE_API_START
+
+    export interface IUpdateApiBody {
+        api_name?: string;
+        api_route?: string;
+        api_method?: DbTableSchema.TApisApiMethodEnum;
+        api_authorization?: boolean;
+        api_description?: string;
+    }
+    
+    //! UPDATE_API_END
+
     export interface IGetApiByRoute {
         projectId: string;
         apiRoute: string;

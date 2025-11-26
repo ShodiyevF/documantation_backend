@@ -21,6 +21,13 @@ app.post('/api/apis/create',
     ApisCtrl.createApi
 )
 
+app.patch('/api/apis/update/:api_id',
+    authorizationMiddleware,
+    validationMiddleware(ApisDto.updateApiParams, 'params'),
+    validationMiddleware(ApisDto.updateApiBody, 'body'),
+    ApisCtrl.updateApi
+)
+
 app.post('/api/apis/response',
     authorizationMiddleware,
     validationMiddleware(ApisDto.createApiResponseBody, 'body'),

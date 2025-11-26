@@ -49,6 +49,44 @@ namespace ApisDto {
         },
     }
 
+    export const updateApiParams: ValidationInterface.DTO = {
+        api_id: {
+            required: true,
+            type: 'string',
+            pattern: RegexUtil.UUID
+        }
+    }
+
+    export const updateApiBody: ValidationInterface.DTO = {
+        api_name: {
+            required: false,
+            type: 'string',
+            min_length: 1,
+            max_length: 128
+        },
+        api_route: {
+            required: false,
+            type: 'string',
+            min_length: 1,
+            max_length: 256
+        },
+        api_method: {
+            required: false,
+            type: 'string',
+            enum: DbTableSchema.apisApiMethodEnumList
+        },
+        api_authorization: {
+            required: false,
+            type: 'boolean'
+        },
+        api_description: {
+            required: false,
+            type: 'string',
+            min_length: 1,
+            max_length: 512
+        },
+    }
+
     export const createKey: ValidationInterface.DTO = {
         key_name: {
             required: true,

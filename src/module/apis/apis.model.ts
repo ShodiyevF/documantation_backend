@@ -1,4 +1,5 @@
 import DatabaseFunctions from "@database/functions.database"
+import UsefulfunctionsUtil from "@util/usefulfunctions.util"
 import ApisInterface from "@interface/apis.inteface"
 import Exception from "@lib/http_exception.lib"
 import ApisQuery from "@query/apis.query"
@@ -115,6 +116,78 @@ namespace ApisModel {
                 apiModuleId: module_id,
                 apiProjectId: module.moduleProjectId
             }
+        })
+    }
+    
+    export async function updateApi(body: ApisInterface.IUpdateApiBody, api_id: string, token: string) {
+        const {
+            api_name,
+            api_route,
+            api_method,
+            api_authorization,
+            api_description,
+        } = body
+        
+        const userId = await FinderLib.findUser(token)
+        if (userId === 'ERROR') {
+            throw new Exception.HttpException(401, 'Authorization error', Exception.Errors.AUTHORIZATION_ERROR)
+        }
+        
+        const api = await DatabaseFunctions.select({
+            tableName: 'apis',
+            filter: {
+                apiId: api_id,
+                apiOwnerId: userId
+            }
+        })
+        if (!api) {
+            throw new Exception.HttpException(404, 'Api not found', Exception.Errors.API_NOT_FOUND)
+        }
+        
+        const checkUserProject = await DatabaseFunctions.select({
+            tableName: 'projectUsers',
+            filter: {
+                puUserId: userId,
+                puProjectId: api.apiProjectId
+            }
+        })
+        if (!checkUserProject) {
+            throw new Exception.HttpException(404, 'You are not a project user', Exception.Errors.PROJECT_USER_NOT_FOUND)
+        }
+
+        const apiName = api_name ? api_name : api.apiName
+        const apiRoute = api_route ? api_route : api.apiRoute
+        const apiMethod = api_method ? api_method : api.apiMethod
+        const apiAuthorization = api_authorization ? api_authorization : api.apiAuthorization
+        const apiDescription = UsefulfunctionsUtil.isNullableData(api_description, api.apiDescription)
+        
+        const checkApi = await DatabaseFunctions.select({
+            tableName: 'apis',
+            filter: {
+                apiRoute: apiRoute,
+                apiMethod: apiMethod,
+                apiProjectId: api.apiProjectId
+            }
+        })
+        if (checkApi && checkApi.apiId !== api_id) {
+            throw new Exception.HttpException(404, 'Api already exists', Exception.Errors.API_ALREADY_EXISTS)
+        }
+        
+        await DatabaseFunctions.update({
+            tableName: 'apis',
+            data: {
+                apiName: apiName,
+                apiRoute: apiRoute,
+                apiMethod: apiMethod,
+                apiAuthorization: apiAuthorization,
+                apiDescription: apiDescription,
+            },
+            targets: [
+                {
+                    targetColumn: 'apiId',
+                    targetValue: api_id
+                }
+            ]
         })
     }
     
