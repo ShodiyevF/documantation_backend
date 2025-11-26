@@ -56,12 +56,12 @@ namespace ApisModel {
     
     export async function createApi(body: ApisInterface.ICreateApiBody, token: string) {
         const {
-            project_id,
             module_id,
             api_name,
             api_route,
             api_method,
-            api_description
+            api_authorization,
+            api_description,
         } = body
         
         const userId = await FinderLib.findUser(token)
@@ -69,33 +69,53 @@ namespace ApisModel {
             throw new Exception.HttpException(401, 'Authorization error', Exception.Errors.AUTHORIZATION_ERROR)
         }
         
-        const getProject = await DatabaseFunctions.select({
-            tableName: 'projects',
+        const module = await DatabaseFunctions.select({
+            tableName: 'modules',
             filter: {
-                projectId: project_id,
-                projectOwnerId: userId
+                moduleId: module_id,
+                moduleOwnerId: userId
             }
         })
-        if (!getProject) {
-            throw new Exception.HttpException(404, 'Project not found', Exception.Errors.PROJECT_NOT_FOUND)
+        if (!module) {
+            throw new Exception.HttpException(404, 'Module not found', Exception.Errors.MODULE_NOT_FOUND)
         }
         
-        if (getProject.projectOwnerId !== userId) {
-            throw new Exception.HttpException(404, 'You are not allowed to add api to this project!', Exception.Errors.NO_ACCESS_TO_THIS_PROJECT)
+        const checkUserProject = await DatabaseFunctions.select({
+            tableName: 'projectUsers',
+            filter: {
+                puUserId: userId,
+                puProjectId: module.moduleProjectId
+            }
+        })
+        if (!checkUserProject) {
+            throw new Exception.HttpException(404, 'You are not a project user', Exception.Errors.PROJECT_USER_NOT_FOUND)
         }
         
-        // await DatabaseFunctions.insert({
-        //     tableName: 'apis',
-        //     data: {
-        //         apiName: api_name,
-        //         apiRoute: api_route,
-        //         apiMethod: api_method as DbTableSchema.TApisApiMethodEnum,
-        //         apiDescription: api_description,
-        //         apiOwnerId: userId,
-        //         apiModuleId: module_id,
-        //         apiProjectId: project_id
-        //     }
-        // })
+        const checkApi = await DatabaseFunctions.select({
+            tableName: 'apis',
+            filter: {
+                apiRoute: api_route,
+                apiMethod: api_method,
+                apiProjectId: module.moduleProjectId
+            }
+        })
+        if (checkApi) {
+            throw new Exception.HttpException(404, 'Api already exists', Exception.Errors.API_ALREADY_EXISTS)
+        }
+        
+        await DatabaseFunctions.insert({
+            tableName: 'apis',
+            data: {
+                apiName: api_name,
+                apiRoute: api_route,
+                apiMethod: api_method,
+                apiAuthorization: api_authorization,
+                apiDescription: api_description,
+                apiOwnerId: userId,
+                apiModuleId: module_id,
+                apiProjectId: module.moduleProjectId
+            }
+        })
     }
     
     export async function createApiResponse(body: ApisInterface.IApiResponseBody, token: string) {

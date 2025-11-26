@@ -1,3 +1,4 @@
+import DbTableSchema from "@database/schema.database";
 import GlobalInterface from "./global.interface";
 
 namespace ApisInterface {
@@ -14,19 +15,23 @@ namespace ApisInterface {
 
     //! GET_APIS_END
 
+    
+    //! CREATE_API_START
+
+    export interface ICreateApiBody {
+        module_id: string;
+        api_name: string;
+        api_route: string;
+        api_method: DbTableSchema.TApisApiMethodEnum;
+        api_authorization: boolean;
+        api_description: string;
+    }
+    
+    //! CREATE_API_END
 
     export interface IGetApiByRoute {
         projectId: string;
         apiRoute: string;
-    }
-
-    export interface ICreateApiBody {
-        project_id: string;
-        module_id: string;
-        api_name: string;
-        api_route: string;
-        api_method: string;
-        api_description: string;
     }
 
     export interface IInsertApi {

@@ -15,11 +15,6 @@ namespace ApisDto {
     }
 
     export const createApiBody: ValidationInterface.DTO = {
-        project_id: {
-            required: true,
-            type: 'string',
-            pattern: RegexUtil.UUID
-        },
         module_id: {
             required: true,
             type: 'string',
@@ -29,24 +24,28 @@ namespace ApisDto {
             required: true,
             type: 'string',
             min_length: 1,
-            max_length: 64
+            max_length: 128
         },
         api_route: {
             required: true,
             type: 'string',
             min_length: 1,
-            max_length: 128
+            max_length: 256
         },
         api_method: {
             required: true,
             type: 'string',
-            // enum: DbTableSchema.apisApiMethodEnumList,
+            enum: DbTableSchema.apisApiMethodEnumList
+        },
+        api_authorization: {
+            required: true,
+            type: 'boolean'
         },
         api_description: {
             required: false,
             type: 'string',
             min_length: 1,
-            max_length: 128
+            max_length: 512
         },
     }
 

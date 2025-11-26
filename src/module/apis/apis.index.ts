@@ -15,7 +15,7 @@ app.get('/api/apis/get',
     ApisCtrl.getApis
 )
 
-app.post('/api/apis/',
+app.post('/api/apis/create',
     authorizationMiddleware,
     validationMiddleware(ApisDto.createApiBody, 'body'),
     ApisCtrl.createApi
