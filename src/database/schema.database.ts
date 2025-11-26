@@ -171,13 +171,16 @@ namespace DbTableSchema {
 
 
     export const requestLogsRlTypeEnumList = requestLogsRlTypeEnum.enumValues
+    export const apisApiMethodEnumList = apisApiMethodEnum.enumValues
     export const payloadsPayloadTypeEnumList = payloadsPayloadTypeEnum.enumValues
     export const responsesResponseTypeEnumList = responsesResponseTypeEnum.enumValues
     export const projectsProjectAuthorizationTypeEnumList = projectsProjectAuthorizationTypeEnum.enumValues
 
     
     export type TRequestLogsRlTypeEnum = typeof requestLogsRlTypeEnum.enumValues[number]
+    export type TApisApiMethodEnum = typeof apisApiMethodEnum.enumValues[number]
     export type TPayloadsPayloadTypeEnum = typeof payloadsPayloadTypeEnum.enumValues[number]
+    export type TResponsesResponseTypeEnum = typeof responsesResponseTypeEnum.enumValues[number]
     export type TProjectsProjectAuthorizationTypeEnum = typeof projectsProjectAuthorizationTypeEnum.enumValues[number]
 
     export type InferSelectType<T extends Table, P extends boolean | null = null> = P extends true ? Partial<T['_']['inferSelect']> : T['_']['inferSelect'];
