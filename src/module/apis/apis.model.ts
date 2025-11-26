@@ -1,5 +1,4 @@
 import DatabaseFunctions from "@database/functions.database"
-import DbTableSchema from "@database/schema.database"
 import ApisInterface from "@interface/apis.inteface"
 import Exception from "@lib/http_exception.lib"
 import ApisQuery from "@query/apis.query"
@@ -7,39 +6,52 @@ import FinderLib from "@lib/finder.lib"
 
 namespace ApisModel {
     
-    export async function getApis(params: ApisInterface.IGetApis, token: string) {
+    export async function getApis(query: ApisInterface.IGetApisQuery, token: string) {
         const {
-            projectId
-        } = params
+            limit,
+            page,
+            module_id
+        } = query
         
         const userId = await FinderLib.findUser(token)
         if (userId === 'ERROR') {
             throw new Exception.HttpException(401, 'Authorization error', Exception.Errors.AUTHORIZATION_ERROR)
         }
         
-        const getProject = await DatabaseFunctions.select({
-            tableName: 'projects',
+        const module = await DatabaseFunctions.select({
+            tableName: 'modules',
             filter: {
-                projectId: projectId,
-                projectOwnerId: userId
+                moduleId: module_id,
+                moduleIsDeleted: false
             }
         })
-        if (!getProject) {
-            throw new Exception.HttpException(404, 'Project not found', Exception.Errors.PROJECT_NOT_FOUND)
+        if (!module) {
+            throw new Exception.HttpException(404, 'Module not found', Exception.Errors.MODULE_NOT_FOUND)
         }
         
         const checkUserProject = await DatabaseFunctions.select({
             tableName: 'projectUsers',
             filter: {
                 puUserId: userId,
-                puProjectId: projectId
+                puProjectId: module.moduleProjectId
             }
         })
         if (!checkUserProject) {
-            throw new Exception.HttpException(404, 'You do not have access to this project', Exception.Errors.NO_ACCESS_TO_THIS_PROJECT)
+            throw new Exception.HttpException(404, 'You are not a project user', Exception.Errors.PROJECT_USER_NOT_FOUND)
         }
         
-        return await ApisQuery.getApisByProjectId(projectId)
+        const result = await ApisQuery.getApisByModuleId({
+            limit: limit,
+            page: page,
+            moduleId: module_id
+        })
+        const totalPages = Math.ceil(result.count / limit);
+
+        return {
+            total_page: totalPages,
+            current_page: page,
+            data: result.data
+        } 
     }
     
     export async function createApi(body: ApisInterface.ICreateApiBody, token: string) {
@@ -72,18 +84,18 @@ namespace ApisModel {
             throw new Exception.HttpException(404, 'You are not allowed to add api to this project!', Exception.Errors.NO_ACCESS_TO_THIS_PROJECT)
         }
         
-        await DatabaseFunctions.insert({
-            tableName: 'apis',
-            data: {
-                apiName: api_name,
-                apiRoute: api_route,
-                apiMethod: api_method as DbTableSchema.TApisApiMethodEnum,
-                apiDescription: api_description,
-                apiOwnerId: userId,
-                apiModuleId: module_id,
-                apiProjectId: project_id
-            }
-        })
+        // await DatabaseFunctions.insert({
+        //     tableName: 'apis',
+        //     data: {
+        //         apiName: api_name,
+        //         apiRoute: api_route,
+        //         apiMethod: api_method as DbTableSchema.TApisApiMethodEnum,
+        //         apiDescription: api_description,
+        //         apiOwnerId: userId,
+        //         apiModuleId: module_id,
+        //         apiProjectId: project_id
+        //     }
+        // })
     }
     
     export async function createApiResponse(body: ApisInterface.IApiResponseBody, token: string) {
@@ -114,30 +126,30 @@ namespace ApisModel {
             throw new Exception.HttpException(404, 'You are not allowed to add api to this api!', Exception.Errors.NO_ACCESS_TO_THIS_API)
         }
         
-        const response = await DatabaseFunctions.insert({
-            tableName: 'responses',
-            data: {
-                responseStatus: response_status,
-                responseStatusCode: response_status_code,
-                responseDescription: response_description,
-                responseApiId: api_id,
-                responseOwnerId: userId,
-            }
-        })
+        // const response = await DatabaseFunctions.insert({
+        //     tableName: 'responses',
+        //     data: {
+        //         responseStatus: response_status,
+        //         responseStatusCode: response_status_code,
+        //         responseDescription: response_description,
+        //         responseApiId: api_id,
+        //         responseOwnerId: userId,
+        //     }
+        // })
         
-        for (const key of response_keys) {
-            await DatabaseFunctions.insert({
-                tableName: 'responseKeys',
-                data: {
-                    rkName: key.key_name,
-                    rkTypes: key.key_types,
-                    rkMockData: key.key_mock_data,
-                    rkDescription: key.key_description,
-                    rkOwnerId: userId,
-                    rkResponseId: response.responseId,
-                }
-            })
-        }
+        // for (const key of response_keys) {
+        //     await DatabaseFunctions.insert({
+        //         tableName: 'responseKeys',
+        //         data: {
+        //             rkName: key.key_name,
+        //             rkTypes: key.key_types,
+        //             rkMockData: key.key_mock_data,
+        //             rkDescription: key.key_description,
+        //             rkOwnerId: userId,
+        //             rkResponseId: response.responseId,
+        //         }
+        //     })
+        // }
     }
     
     export async function createApiPayload(body: ApisInterface.IApiPayloadBody, token: string) {
@@ -167,29 +179,29 @@ namespace ApisModel {
             throw new Exception.HttpException(404, 'You are not allowed to add api to this api!', Exception.Errors.NO_ACCESS_TO_THIS_API)
         }
         
-        const payload = await DatabaseFunctions.insert({
-            tableName: 'payloads',
-            data: {
-                payloadType: payload_type,
-                payloadDescription: payload_description,
-                payloadOwnerId: userId,
-                payloadApiId: api_id,
-            }
-        })
+        // const payload = await DatabaseFunctions.insert({
+        //     tableName: 'payloads',
+        //     data: {
+        //         payloadType: payload_type,
+        //         payloadDescription: payload_description,
+        //         payloadOwnerId: userId,
+        //         payloadApiId: api_id,
+        //     }
+        // })
         
-        for (const key of payload_keys) {
-            await DatabaseFunctions.insert({
-                tableName: 'payloadKeys',
-                data: {
-                    pkName: key.key_name,
-                    pkTypes: key.key_types,
-                    pkMockData: key.key_mock_data,
-                    pkDescription: key.key_description,
-                    pkOwnerId: userId,
-                    pkPayloadId: payload.payloadId,
-                }
-            })
-        }
+        // for (const key of payload_keys) {
+        //     await DatabaseFunctions.insert({
+        //         tableName: 'payloadKeys',
+        //         data: {
+        //             pkName: key.key_name,
+        //             pkTypes: key.key_types,
+        //             pkMockData: key.key_mock_data,
+        //             pkDescription: key.key_description,
+        //             pkOwnerId: userId,
+        //             pkPayloadId: payload.payloadId,
+        //         }
+        //     })
+        // }
     }
     
 }

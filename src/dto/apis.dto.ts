@@ -1,14 +1,13 @@
 import ValidationInterface from "@shared/validation/validation.interface";
+import DbTableSchema from "@database/schema.database";
 import RegexUtil from "@util/regex.util";
 
 namespace ApisDto {
 
-    const methods = ["GET", "POST", "PUT", "PATCH", "DELETE", "HEAD", "OPTIONS", "CONNECT", "TRACE"]
-    const payloadType = ['params', 'query', 'form-data', 'body']
     const keyTypes = ['boolean', 'number', 'int', 'object', 'null', 'string']
     
-    export const getApisParams: ValidationInterface.DTO = {
-        project_id: {
+    export const getApisQuery: ValidationInterface.DTO = {
+        module_id: {
             required: true,
             type: 'string',
             pattern: RegexUtil.UUID
@@ -41,7 +40,7 @@ namespace ApisDto {
         api_method: {
             required: true,
             type: 'string',
-            enum: methods,
+            // enum: DbTableSchema.apisApiMethodEnumList,
         },
         api_description: {
             required: false,
@@ -117,7 +116,7 @@ namespace ApisDto {
         payload_type: {
             required: true,
             type: 'string',
-            enum: payloadType
+            enum: DbTableSchema.payloadsPayloadTypeEnumList
         },
         payload_description: {
             required: false,

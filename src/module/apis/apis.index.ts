@@ -2,14 +2,16 @@ import express from 'express'
 
 import authorizationMiddleware from '@middleware/authorization.middleware'
 import validationMiddleware from '@middleware/validator.middleware'
+import GlobalDto from '@dto/global.dto'
 import ApisDto from '@dto/apis.dto'
 import ApisCtrl from './apis.ctrl'
 
 const app = express.Router()
 
-app.get('/api/apis/:project_id',
+app.get('/api/apis/get',
     authorizationMiddleware,
-    validationMiddleware(ApisDto.getApisParams, 'params'),
+    validationMiddleware(GlobalDto.paginationQuery, 'query'),
+    validationMiddleware(ApisDto.getApisQuery, 'query'),
     ApisCtrl.getApis
 )
 

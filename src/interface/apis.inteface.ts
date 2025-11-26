@@ -1,10 +1,19 @@
+import GlobalInterface from "./global.interface";
+
 namespace ApisInterface {
 
-    //! APIS_START
+    //! GET_APIS_START
     
-    export interface IGetApis {
-        projectId: string;
+    export interface IGetApisQuery extends GlobalInterface.IPagination {
+        module_id: string;
     }
+    
+    export interface IGetApisPayloads extends GlobalInterface.IPagination {
+        moduleId: string;
+    }
+
+    //! GET_APIS_END
+
 
     export interface IGetApiByRoute {
         projectId: string;
@@ -29,7 +38,6 @@ namespace ApisInterface {
         apiProjectId: string;
     }
 
-    //! APIS_END
 
 
     //! RESPONSE_START
