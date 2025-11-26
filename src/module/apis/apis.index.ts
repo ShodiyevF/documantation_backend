@@ -15,6 +15,12 @@ app.get('/api/apis/get',
     ApisCtrl.getApis
 )
 
+app.get('/api/apis/get/by-id/:api_id',
+    authorizationMiddleware,
+    validationMiddleware(ApisDto.getApiByIdParams, 'params'),
+    ApisCtrl.getApiById
+)
+
 app.post('/api/apis/create',
     authorizationMiddleware,
     validationMiddleware(ApisDto.createApiBody, 'body'),

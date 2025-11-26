@@ -22,6 +22,16 @@ namespace ApisCtrl {
         }
     }
 
+    export async function getApiById(req: express.Request, res: express.Response) {
+        try {
+            const model = await ApisModel.getApiById(req.params.api_id, req.headers.authorization!)
+
+            return res.status(200).json(model)
+        } catch (error) {
+            ExpressFunctions.controllerError(res, error)
+        }
+    }
+
     export async function createApi(req: express.Request, res: express.Response) {
         try {
             await ApisModel.createApi(req.body, req.headers.authorization!)

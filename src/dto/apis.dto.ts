@@ -14,6 +14,14 @@ namespace ApisDto {
         }
     }
 
+    export const getApiByIdParams: ValidationInterface.DTO = {
+        api_id: {
+            required: true,
+            type: 'string',
+            pattern: RegexUtil.UUID
+        }
+    }
+
     export const createApiBody: ValidationInterface.DTO = {
         module_id: {
             required: true,
