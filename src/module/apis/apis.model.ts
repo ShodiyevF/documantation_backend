@@ -105,7 +105,7 @@ namespace ApisModel {
             tableName: 'modules',
             filter: {
                 moduleId: module_id,
-                moduleOwnerId: userId
+                moduleIsDeleted: false
             }
         })
         if (!module) {
@@ -168,7 +168,7 @@ namespace ApisModel {
             tableName: 'apis',
             filter: {
                 apiId: api_id,
-                apiOwnerId: userId
+                apiIsDeleted: false
             }
         })
         if (!api) {
