@@ -9,7 +9,7 @@ interface IStringPayload extends IPayloadBase {
     min_length?: number;
     max_length?: number;
     pattern?: RegExp;
-    enum?: any[];
+    enum_list?: any[];
     example?: string;
 }
 
@@ -18,7 +18,7 @@ interface INumberPayload extends IPayloadBase {
     min?: number;
     max?: number;
     pattern?: RegExp;
-    enum?: any[];
+    enum_list?: any[];
     example?: number;
 }
 
@@ -34,6 +34,8 @@ interface INullPayload extends IPayloadBase {
 
 interface IArrayPayload extends IPayloadBase {
     type: 'array';
+    items_min_length?: number;
+    items_max_length?: number;
     items: ChildPayload;
     example?: any[];
 }
@@ -52,10 +54,8 @@ interface IFileType extends IPayloadBase {
     mime_types?: string[];
 }
 
-// type Payload = IStringPayload | INumberPayload | IBooleanPayload | INullPayload | IArrayPayload | IObjectPayload | IFileType
-
 type BaseChild<T> = Omit<T, 'example'> & {
-    is_required?: boolean;
+    is_required: boolean;
 };
 
 type ChildPayload =
@@ -70,6 +70,7 @@ type ChildPayload =
     properties: Record<string, ChildPayload>;
 });
 
+type Payload = IStringPayload | INumberPayload | IBooleanPayload | INullPayload | IArrayPayload | IObjectPayload | IFileType
 
 
 const string: IStringPayload = {
@@ -91,49 +92,65 @@ const array: IArrayPayload = {
     type: 'array',
     items: {
         type: 'object',
+        is_required: false,
         properties: {
             user_id: {
-                type: 'string'
+                type: 'string',
+                is_required: true
             },
             user_first_name: {
                 type: 'string',
+                is_required: true
             },
             user_last_name: {
-                type: 'string'
+                type: 'string',
+                is_required: true
             },
             user_father_name: {
                 type: 'string',
+                is_required: true
             },
             user_age: {
                 type: 'number',
+                is_required: true
             },
             user_phone_numbers: {
                 type: 'array',
+                is_required: false,
                 items: {
                     type: 'string',
+                    is_required: false
                 }
             },
             user_branches: {
+                is_required: false,
                 type: 'array',
                 items: {
+                    is_required: false,
                     type: 'object',
                     properties: {
                         branch_id: {
                             type: 'string',
+                            is_required: false,
                         },
                         branch_name: {
-                            type: 'string'
+                            type: 'string',
+                            is_required: false,
                         },
                         branch_employees: {
                             type: 'array',
+                            is_required: false,
                             items: {
+                                is_required: false,
                                 type: 'object',
                                 properties: {
                                     employee_id: {
                                         type: 'string',
+                                        is_required: false,
                                     },
                                     employee_name: {
-                                        type: 'string'
+                                        type: 'string',
+                                        is_required: false,
                                     }
                                 }
                             }
@@ -171,12 +188,15 @@ const object: IObjectPayload = {
     properties: {
         user_first_name: {
             type: 'string',
+            is_required: false,
         },
         user_last_name: {
-            type: 'string'
+            type: 'string',
+            is_required: false,
         },
         user_father_name: {
-            type: 'string'
+            type: 'string',
+            is_required: false,
         },
         user_age: {
             type: 'number',
@@ -184,8 +204,10 @@ const object: IObjectPayload = {
         },
         user_phone_numbers: {
             type: 'array',
+            is_required: false,
             items: {
                 type: 'string',
+                is_required: false,
             }
         }
     },
@@ -203,3 +225,34 @@ const file: IFileType = {
     max_size: 999,
     mime_types: ['image/jpeg', 'image/png']
 }
+
+// EXAMPLE
+// {
+//     type: 'object',
+//     properties: {
+//         user_id: {
+//             type: 'string',
+//             is_required: true,
+//             pattern: ['adsasd'],
+//         },
+//         user_phone_numbers: {
+//             type: 'array',
+//             is_required: true,
+//             items: {
+//                 type: 'object',
+//                 properties: {
+//                     phone_number: {
+//                         type: 'string',
+//                         is_required: true
+//                     }
+//                 }
+//             }
+//         },
+//         user_image: {
+//             is_required: false,
+//             type: 'file',
+//             max_size: 100,
+//             mime_types: ['adasd']
+//         }
+//     }
+// }
