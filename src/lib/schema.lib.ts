@@ -6,7 +6,7 @@ namespace SchemaLib {
     
     interface IPayloadBase {
         type: 'string' | 'number' | 'boolean' | 'null' | 'array' | 'object' | 'file';
-        example?: any;
+        example: any;
         description?: string;
     }
     
@@ -16,7 +16,7 @@ namespace SchemaLib {
         max_length?: number;
         pattern?: RegExp;
         enum_list?: any[];
-        example?: string;
+        example: string;
     }
     
     interface INumberPayload extends IPayloadBase {
@@ -25,17 +25,17 @@ namespace SchemaLib {
         max?: number;
         pattern?: RegExp;
         enum_list?: any[];
-        example?: number;
+        example: number;
     }
     
     interface IBooleanPayload extends IPayloadBase {
         type: 'boolean';
-        example?: boolean;
+        example: boolean;
     }
     
     interface INullPayload extends IPayloadBase {
         type: 'null';
-        example?: null;
+        example: null;
     }
     
     interface IArrayPayload extends IPayloadBase {
@@ -43,7 +43,7 @@ namespace SchemaLib {
         items_min_length?: number;
         items_max_length?: number;
         items: ChildPayload;
-        example?: any[];
+        example: any[];
     }
     
     interface IObjectPayload extends IPayloadBase {
@@ -51,10 +51,10 @@ namespace SchemaLib {
         properties: {
             [key: string]: ChildPayload
         }
-        example?: object;
+        example: object;
     }
     
-    interface IFileType extends IPayloadBase {
+    interface IFileType extends Omit<IPayloadBase, 'example'> {
         type: 'file';
         max_size?: number;
         mime_types?: string[];
@@ -88,30 +88,53 @@ namespace SchemaLib {
     
     const correctTypes = ['string', 'number', 'boolean', 'null', 'array', 'object', 'file']
     
+    function typeFinder(type: IPayloadBase['type']) {
+        if (type === 'string') {
+            return BuildInSharedHelper.isString
+        } else if (type === 'number') {
+            return BuildInSharedHelper.isNumber
+        } else if (type === 'boolean') {
+            return BuildInSharedHelper.isBoolean
+        } else if (type === 'null') {
+            return (value: any) => value === null
+        } else if (type === 'array') {
+            return BuildInSharedHelper.isArray
+        } else {
+            return BuildInSharedHelper.isObject
+        }
+    }
+    
     export function schemaValidator(schema: any, isRoot: boolean = true): TSchemaValidatorReturn {
         const {
             type,
-            description
+            example,
+            description,
         } = schema
-        
-        if (isRoot && UsefulfunctionsUtil.hasKey(schema, 'is_required')) {
-            return { error: true, message: 'is_required: is not allowed in root payload' }
-        }
-        
-        if (!isRoot && UsefulfunctionsUtil.hasKey(schema, 'example')) {
-            return { error: true, message: 'example: is not allowed in child payload' }
-        }
-        
-        if (UsefulfunctionsUtil.hasKey(schema, 'description') && !BuildInSharedHelper.isString(description)) {
-            return { error: true, message: 'type: It must be one of these. ' + correctTypes.join(', ') }
-        }
-        
+
         if (!UsefulfunctionsUtil.hasKey(schema, 'type')) {
             return { error: true, message: 'type: field is required' }
         }
         
         if (!correctTypes.includes(type)) {
             return { error: true, message: 'type: It must be one of these. ' + correctTypes.join(', ') }
+        }
+
+        const typeFunc = typeFinder(type)
+        
+        if (isRoot && !UsefulfunctionsUtil.hasKey(schema, 'example')) {
+            return { error: true, message: 'example: field is required' }
+        }
+        
+        if (isRoot && !typeFunc(example)) {
+            return { error: true, message: 'example: must be ' + type}
+        }
+
+        if (UsefulfunctionsUtil.hasKey(schema, 'description') && !BuildInSharedHelper.isString(description)) {
+            return { error: true, message: 'description: must be string' }
+        }
+
+        if (isRoot && UsefulfunctionsUtil.hasKey(schema, 'is_required')) {
+            return { error: true, message: 'is_required: is not allowed in root payload' }
         }
         
         if (type === 'string') {
