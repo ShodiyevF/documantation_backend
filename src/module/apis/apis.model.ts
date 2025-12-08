@@ -407,13 +407,12 @@ namespace ApisModel {
         });
     }
     
-    export async function createApiResponse(body: ApisInterface.IApiResponseBody, token: string) {
+    export async function createApiResponse(body: ApisInterface.ICreateApiResponseBody, token: string) {
         const {
             api_id,
-            response_status,
-            response_status_code,
-            response_description,
-            response_keys
+            response_type,
+            response_schema,
+            response_description
         } = body
         
         const userId = await FinderLib.findUser(token)
@@ -421,44 +420,38 @@ namespace ApisModel {
             throw new Exception.HttpException(401, 'Authorization error', Exception.Errors.AUTHORIZATION_ERROR)
         }
         
-        const getApi = await DatabaseFunctions.select({
+        const api = await DatabaseFunctions.select({
             tableName: 'apis',
             filter: {
                 apiId: api_id
             }
         })
-        if (!getApi) {
+        if (!api) {
             throw new Exception.HttpException(404, 'Api not found', Exception.Errors.API_NOT_FOUND)
         }
         
-        if (getApi.apiOwnerId !== userId) {
-            throw new Exception.HttpException(404, 'You are not allowed to add api to this api!', Exception.Errors.NO_ACCESS_TO_THIS_API)
+        const checkUserProject = await DatabaseFunctions.select({
+            tableName: 'projectUsers',
+            filter: {
+                puUserId: userId,
+                puProjectId: api.apiProjectId
+            }
+        })
+        if (!checkUserProject) {
+            throw new Exception.HttpException(404, 'You are not a project user', Exception.Errors.PROJECT_USER_NOT_FOUND)
         }
         
-        // const response = await DatabaseFunctions.insert({
-        //     tableName: 'responses',
-        //     data: {
-        //         responseStatus: response_status,
-        //         responseStatusCode: response_status_code,
-        //         responseDescription: response_description,
-        //         responseApiId: api_id,
-        //         responseOwnerId: userId,
-        //     }
-        // })
-        
-        // for (const key of response_keys) {
-        //     await DatabaseFunctions.insert({
-        //         tableName: 'responseKeys',
-        //         data: {
-        //             rkName: key.key_name,
-        //             rkTypes: key.key_types,
-        //             rkMockData: key.key_mock_data,
-        //             rkDescription: key.key_description,
-        //             rkOwnerId: userId,
-        //             rkResponseId: response.responseId,
-        //         }
-        //     })
-        // }
+        await DatabaseFunctions.insert({
+            tableName: 'responses',
+            data: {
+                responseType: response_type,
+                responseSchema: response_schema,
+                responseDescription: response_description,
+                responseOwnerId: userId,
+                responseApiId: api_id,
+                responseProjectId: api.apiProjectId
+            }
+        })
     }
     
 }

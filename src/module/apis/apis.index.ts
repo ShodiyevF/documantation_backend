@@ -59,7 +59,7 @@ app.delete('/api/apis/payloads/delete/:payload_id',
     ApisCtrl.deleteApiPayload
 )
 
-app.post('/api/apis/response',
+app.post('/api/apis/responses/create',
     authorizationMiddleware,
     validationMiddleware(ApisDto.createApiResponseBody, 'body'),
     ApisCtrl.createApiResponse

@@ -220,27 +220,33 @@ namespace ApisDto {
             type: 'string',
             pattern: RegexUtil.UUID
         },
-        response_status: {
+        response_type: {
             required: true,
-            type: 'boolean'
+            type: 'string',
+            enum: DbTableSchema.responsesResponseTypeEnumList
         },
-        response_status_code: {
+        response_schema: {
             required: true,
-            type: 'number',
-            min: 100,
-            max: 599
+            type: 'object',
+            custom_validation: (value: any) => {
+                const schemaValidation = SchemaLib.schemaValidator(value)
+                if (schemaValidation.error) {
+                    return {
+                        error: true,
+                        message: schemaValidation.message
+                    }
+                }
+
+                return {
+                    error: false
+                }
+            }
         },
         response_description: {
             required: false,
             type: 'string',
             min_length: 1,
-            max_length: 128
-        },
-        response_keys: {
-            required: true,
-            type: 'array',
-            element_type: 'object',
-            element_dto: createKey
+            max_length: 512
         },
     }
     
