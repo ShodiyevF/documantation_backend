@@ -42,20 +42,28 @@ namespace ApisInterface {
     
     //! UPDATE_API_END
 
-    export interface IGetApiByRoute {
-        projectId: string;
-        apiRoute: string;
+
+    //! CREATE_API_PAYLOAD_START
+
+    export interface ICreateApiPayloadBody {
+        api_id: string;
+        payload_type: DbTableSchema.TPayloadsPayloadTypeEnum;
+        payload_schema: object;
+        payload_description: string | null;
     }
 
-    export interface IInsertApi {
-        apiName: string;
-        apiMethod: string;
-        apiRoute: string;
-        apiDescription: string;
-        apiOwnerId: string;
-        apiProjectId: string;
-    }
+    //! CREATE_API_PAYLOAD_END
 
+
+    //! UPDATE_API_PAYLOAD_START
+
+    export interface IUpdateApiPayloadBody {
+        payload_type?: DbTableSchema.TPayloadsPayloadTypeEnum;
+        payload_schema?: object;
+        payload_description?: string | null;
+    }
+    
+    //! UPDATE_API_PAYLOAD_END
 
 
     //! RESPONSE_START
@@ -95,49 +103,6 @@ namespace ApisInterface {
     //! RESPONSE_END
 
     
-    //! PAYLOAD_START
-
-    export interface IPayloadKey {
-        key_name: string;
-        key_types: string[];
-        key_mock_data: string | null;
-        key_description: string | null;
-    }
-
-    export interface ICreateApiPayloadBody {
-        api_id: string;
-        payload_type: DbTableSchema.TPayloadsPayloadTypeEnum;
-        payload_schema: object;
-        payload_description: string | null;
-    }
-
-    export interface IInsertPayload {
-        payloadType: string;
-        payloadDescription: string | null;
-        payloadOwnerId: string;
-        payloadApiId: string;
-    }
-
-    export interface IInsertPayloadKey {
-        pkName: string;
-        pkTypes: string[];
-        pkMockData: string | null;
-        pkDescription: string | null;
-        pkOwnerId: string;
-        pkPayloadId: string;
-    }
-
-    //! PAYLOAD_END
-
-    //! UPDATE_API_PAYLOAD_START
-
-    export interface IUpdateApiPayloadBody {
-        payload_type?: DbTableSchema.TPayloadsPayloadTypeEnum;
-        payload_schema?: object;
-        payload_description?: string | null;
-    }
-    
-    //! UPDATE_API_PAYLOAD_END
     
 }
 
