@@ -76,6 +76,17 @@ namespace ApisInterface {
     }
 
     //! CREATE_RESPONSE_END
+
+
+    //! UPDATE_API_RESPONSE_START
+
+    export interface IUpdateApiResponseBody {
+        response_type?: DbTableSchema.TResponsesResponseTypeEnum;
+        response_schema?: object;
+        response_description?: string | null;
+    }
+    
+    //! UPDATE_API_RESPONSE_END
     
 }
 

@@ -123,6 +123,19 @@ namespace ApisCtrl {
         }
     }
     
+    export async function updateApiResponse(req: express.Request, res: express.Response) {
+        try {
+            await ApisModel.updateApiResponse(req.body, req.params.response_id, req.headers.authorization!)
+
+            return res.status(200).json({
+                status: 200,
+                message: 'Response successfully updated'
+            })
+        } catch (error) {
+            ExpressFunctions.controllerError(res, error)
+        }
+    }
+    
 }
 
 export default ApisCtrl

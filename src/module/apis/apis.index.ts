@@ -65,5 +65,11 @@ app.post('/api/apis/responses/create',
     ApisCtrl.createApiResponse
 )
 
+app.patch('/api/apis/responses/update/:response_id',
+    authorizationMiddleware,
+    validationMiddleware(ApisDto.updateApiResponseParams, 'params'),
+    validationMiddleware(ApisDto.updateApiResponseBody, 'body'),
+    ApisCtrl.updateApiResponse
+)
 
 export default app

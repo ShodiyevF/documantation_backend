@@ -454,6 +454,60 @@ namespace ApisModel {
         })
     }
     
+    export async function updateApiResponse(body: ApisInterface.IUpdateApiResponseBody, response_id: string, token: string) {
+        const {
+            response_type,
+            response_schema,
+            response_description
+        } = body
+        
+        const userId = await FinderLib.findUser(token)
+        if (userId === 'ERROR') {
+            throw new Exception.HttpException(401, 'Authorization error', Exception.Errors.AUTHORIZATION_ERROR)
+        }
+        
+        const response = await DatabaseFunctions.select({
+            tableName: 'responses',
+            filter: {
+                responseId: response_id,
+                responseIsDeleted: false
+            }
+        })
+        if (!response) {
+            throw new Exception.HttpException(404, 'Response not found', Exception.Errors.RESPONSE_NOT_FOUND)
+        }
+        
+        const checkUserProject = await DatabaseFunctions.select({
+            tableName: 'projectUsers',
+            filter: {
+                puUserId: userId,
+                puProjectId: response.responseProjectId
+            }
+        })
+        if (!checkUserProject) {
+            throw new Exception.HttpException(404, 'You are not a project user', Exception.Errors.PROJECT_USER_NOT_FOUND)
+        }
+
+        const responseType = response_type || response.responseType
+        const responseSchema = response_schema || response.responseSchema
+        const responseDescription = UsefulfunctionsUtil.isNullableData(response_description, response.responseDescription)
+        
+        await DatabaseFunctions.update({
+            tableName: 'responses',
+            data: {
+                responseType: responseType,
+                responseSchema: responseSchema,
+                responseDescription: responseDescription
+            },
+            targets: [
+                {
+                    targetColumn: 'responseId',
+                    targetValue: response.responseId
+                }
+            ]
+        });
+    }
+    
 }
 
 export default ApisModel

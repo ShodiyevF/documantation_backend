@@ -250,6 +250,45 @@ namespace ApisDto {
         },
     }
     
+    export const updateApiResponseParams: ValidationInterface.DTO = {
+        response_id: {
+            required: true,
+            type: 'string',
+            pattern: RegexUtil.UUID
+        },
+    }
+    
+    export const updateApiResponseBody: ValidationInterface.DTO = {
+        response_type: {
+            required: false,
+            type: 'string',
+            enum: DbTableSchema.responsesResponseTypeEnumList
+        },
+        response_schema: {
+            required: false,
+            type: 'object',
+            custom_validation: (value: any) => {
+                const schemaValidation = SchemaLib.schemaValidator(value)
+                if (schemaValidation.error) {
+                    return {
+                        error: true,
+                        message: schemaValidation.message
+                    }
+                }
+
+                return {
+                    error: false
+                }
+            }
+        },
+        response_description: {
+            required: false,
+            type: 'string',
+            min_length: 1,
+            max_length: 512
+        },
+    }
+    
 }
 
 export default ApisDto
