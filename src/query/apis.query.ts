@@ -36,6 +36,9 @@ namespace ApisQuery {
             `.as('payloads')
         })
         .from(DbTableSchema.payloads)
+        .where(
+            eq(DbTableSchema.payloads.payloadIsDeleted, false)
+        )
         .leftJoin(DbTableSchema.users, eq(DbTableSchema.users.userId, DbTableSchema.payloads.payloadOwnerId))
         .groupBy(DbTableSchema.payloads.payloadApiId)
         .as('api_payloads');
@@ -61,6 +64,9 @@ namespace ApisQuery {
             `.as('responses')
         })
         .from(DbTableSchema.responses)
+        .where(
+            eq(DbTableSchema.responses.responseIsDeleted, false)
+        )
         .leftJoin(DbTableSchema.users, eq(DbTableSchema.users.userId, DbTableSchema.responses.responseOwnerId))
         .groupBy(DbTableSchema.responses.responseApiId)
         .as('api_responses');
