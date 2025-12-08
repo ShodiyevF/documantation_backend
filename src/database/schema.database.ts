@@ -122,6 +122,7 @@ export const payloadsTable = pgTable('payloads', {
     payloadIsDeleted: boolean('payload_is_deleted').notNull().default(false),
     payloadOwnerId: uuid('payload_owner_id').notNull().references(() => usersTable.userId),
     payloadApiId: uuid('payload_api_id').notNull().references(() => apisTable.apiId),
+    payloadProjectId: uuid('payload_project_id').notNull().references(() => projectsTable.projectId),
     payloadCreatedAt: timestamp('payload_created_at', { withTimezone: true }).notNull().defaultNow(),
 })
 
@@ -133,6 +134,7 @@ export const responsesTable = pgTable('responses', {
     responseIsDeleted: boolean('response_is_deleted').notNull().default(false),
     responseOwnerId: uuid('response_owner_id').notNull().references(() => usersTable.userId),
     responseApiId: uuid('response_api_id').notNull().references(() => apisTable.apiId),
+    responseProjectId: uuid('response_project_id').notNull().references(() => projectsTable.projectId),
     responseCreatedAt: timestamp('response_created_at', { withTimezone: true }).notNull().defaultNow(),
 })
 
