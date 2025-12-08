@@ -71,19 +71,6 @@ namespace ApisCtrl {
         }
     }
 
-    export async function createApiResponse(req: express.Request, res: express.Response) {
-        try {
-            await ApisModel.createApiResponse(req.body, req.headers.authorization!)
-
-            return res.status(201).json({
-                status: 201,
-                message: 'Response successfully created'
-            })
-        } catch (error) {
-            ExpressFunctions.controllerError(res, error)
-        }
-    }
-
     export async function createApiPayload(req: express.Request, res: express.Response) {
         try {
             await ApisModel.createApiPayload(req.body, req.headers.authorization!)
@@ -91,6 +78,19 @@ namespace ApisCtrl {
             return res.status(201).json({
                 status: 201,
                 message: 'Payload successfully created'
+            })
+        } catch (error) {
+            ExpressFunctions.controllerError(res, error)
+        }
+    }
+    
+    export async function createApiResponse(req: express.Request, res: express.Response) {
+        try {
+            await ApisModel.createApiResponse(req.body, req.headers.authorization!)
+
+            return res.status(201).json({
+                status: 201,
+                message: 'Response successfully created'
             })
         } catch (error) {
             ExpressFunctions.controllerError(res, error)

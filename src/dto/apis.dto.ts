@@ -1,6 +1,7 @@
 import ValidationInterface from "@shared/validation/validation.interface";
 import DbTableSchema from "@database/schema.database";
 import RegexUtil from "@util/regex.util";
+import SchemaLib from "@lib/schema.lib";
 
 namespace ApisDto {
 
@@ -128,7 +129,43 @@ namespace ApisDto {
             min_length: 1,
             max_length: 128
         },
-    } 
+    }
+    
+    export const createApiPayloadBody: ValidationInterface.DTO = {
+        api_id: {
+            required: true,
+            type: 'string',
+            pattern: RegexUtil.UUID
+        },
+        payload_type: {
+            required: true,
+            type: 'string',
+            enum: DbTableSchema.payloadsPayloadTypeEnumList
+        },
+        payload_schema: {
+            required: true,
+            type: 'object',
+            custom_validation: (value: any) => {
+                const schemaValidation = SchemaLib.schemaValidator(value)
+                if (schemaValidation.error) {
+                    return {
+                        error: true,
+                        message: schemaValidation.message
+                    }
+                }
+
+                return {
+                    error: false
+                }
+            }
+        },
+        payload_description: {
+            required: false,
+            type: 'string',
+            min_length: 1,
+            max_length: 512
+        },
+    }
 
     export const createApiResponseBody: ValidationInterface.DTO = {
         api_id: {
@@ -160,31 +197,9 @@ namespace ApisDto {
         },
     }
     
-    export const createApiPayloadBody: ValidationInterface.DTO = {
-        api_id: {
-            required: true,
-            type: 'string',
-            pattern: RegexUtil.UUID
-        },
-        payload_type: {
-            required: true,
-            type: 'string',
-            enum: DbTableSchema.payloadsPayloadTypeEnumList
-        },
-        payload_description: {
-            required: false,
-            type: 'string',
-            min_length: 1,
-            max_length: 128
-        },
-        payload_keys: {
-            required: true,
-            type: 'array',
-            element_type: 'object',
-            element_dto: createKey
-        },
-    }
-    
 }
 
 export default ApisDto
+
+
+

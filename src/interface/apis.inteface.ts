@@ -106,9 +106,9 @@ namespace ApisInterface {
 
     export interface IApiPayloadBody {
         api_id: string;
-        payload_type: string;
+        payload_type: DbTableSchema.TPayloadsPayloadTypeEnum;
+        payload_schema: object;
         payload_description: string | null;
-        payload_keys: IPayloadKey[];
     }
 
     export interface IInsertPayload {

@@ -322,8 +322,8 @@ namespace ApisModel {
         const {
             api_id,
             payload_type,
-            payload_description,
-            payload_keys
+            payload_schema,
+            payload_description
         } = body
         
         const userId = await FinderLib.findUser(token)
@@ -331,43 +331,37 @@ namespace ApisModel {
             throw new Exception.HttpException(401, 'Authorization error', Exception.Errors.AUTHORIZATION_ERROR)
         }
         
-        const getApi = await DatabaseFunctions.select({
+        const api = await DatabaseFunctions.select({
             tableName: 'apis',
             filter: {
                 apiId: api_id
             }
         })
-        if (!getApi) {
+        if (!api) {
             throw new Exception.HttpException(404, 'Api not found', Exception.Errors.API_NOT_FOUND)
         }
         
-        if (getApi.apiOwnerId !== userId) {
-            throw new Exception.HttpException(404, 'You are not allowed to add api to this api!', Exception.Errors.NO_ACCESS_TO_THIS_API)
+        const checkUserProject = await DatabaseFunctions.select({
+            tableName: 'projectUsers',
+            filter: {
+                puUserId: userId,
+                puProjectId: api.apiProjectId
+            }
+        })
+        if (!checkUserProject) {
+            throw new Exception.HttpException(404, 'You are not a project user', Exception.Errors.PROJECT_USER_NOT_FOUND)
         }
         
-        // const payload = await DatabaseFunctions.insert({
-        //     tableName: 'payloads',
-        //     data: {
-        //         payloadType: payload_type,
-        //         payloadDescription: payload_description,
-        //         payloadOwnerId: userId,
-        //         payloadApiId: api_id,
-        //     }
-        // })
-        
-        // for (const key of payload_keys) {
-        //     await DatabaseFunctions.insert({
-        //         tableName: 'payloadKeys',
-        //         data: {
-        //             pkName: key.key_name,
-        //             pkTypes: key.key_types,
-        //             pkMockData: key.key_mock_data,
-        //             pkDescription: key.key_description,
-        //             pkOwnerId: userId,
-        //             pkPayloadId: payload.payloadId,
-        //         }
-        //     })
-        // }
+        await DatabaseFunctions.insert({
+            tableName: 'payloads',
+            data: {
+                payloadType: payload_type,
+                payloadSchema: payload_schema,
+                payloadDescription: payload_description,
+                payloadApiId: api_id,
+                payloadOwnerId: userId
+            }
+        });
     }
     
 }

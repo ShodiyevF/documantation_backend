@@ -23,7 +23,6 @@ namespace ApisQuery {
                         'payload_id', ${DbTableSchema.payloads.payloadId},
                         'payload_type', ${DbTableSchema.payloads.payloadType},
                         'payload_schema', ${DbTableSchema.payloads.payloadSchema},
-                        'payload_example', ${DbTableSchema.payloads.payloadExample},
                         'payload_description', ${DbTableSchema.payloads.payloadDescription},
                         'payload_owner', jsonb_build_object(
                             'user_id', ${DbTableSchema.users.userId},

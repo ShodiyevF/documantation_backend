@@ -40,16 +40,16 @@ app.delete('/api/apis/delete/:api_id',
     ApisCtrl.deleteApi
 )
 
+app.post('/api/apis/payloads/create',
+    authorizationMiddleware,
+    validationMiddleware(ApisDto.createApiPayloadBody, 'body'),
+    ApisCtrl.createApiPayload
+)
+
 app.post('/api/apis/response',
     authorizationMiddleware,
     validationMiddleware(ApisDto.createApiResponseBody, 'body'),
     ApisCtrl.createApiResponse
-)
-
-app.post('/api/apis/payload',
-    authorizationMiddleware,
-    validationMiddleware(ApisDto.createApiPayloadBody, 'body'),
-    ApisCtrl.createApiPayload
 )
 
 
