@@ -364,6 +364,48 @@ namespace ApisModel {
             ]
         });
     }
+
+    export async function deleteApiPayload(payload_id: string, token: string) {
+        const userId = await FinderLib.findUser(token)
+        if (userId === 'ERROR') {
+            throw new Exception.HttpException(401, 'Authorization error', Exception.Errors.AUTHORIZATION_ERROR)
+        }
+        
+        const payload = await DatabaseFunctions.select({
+            tableName: 'payloads',
+            filter: {
+                payloadId: payload_id,
+                payloadIsDeleted: false
+            }
+        })
+        if (!payload) {
+            throw new Exception.HttpException(404, 'Payload not found', Exception.Errors.PAYLOAD_NOT_FOUND)
+        }
+        
+        const checkUserProject = await DatabaseFunctions.select({
+            tableName: 'projectUsers',
+            filter: {
+                puUserId: userId,
+                puProjectId: payload.payloadProjectId
+            }
+        })
+        if (!checkUserProject) {
+            throw new Exception.HttpException(404, 'You are not a project user', Exception.Errors.PROJECT_USER_NOT_FOUND)
+        }
+        
+        await DatabaseFunctions.update({
+            tableName: 'payloads',
+            data: {
+                payloadIsDeleted: true
+            },
+            targets: [
+                {
+                    targetColumn: 'payloadId',
+                    targetValue: payload.payloadId
+                }
+            ]
+        });
+    }
     
     export async function createApiResponse(body: ApisInterface.IApiResponseBody, token: string) {
         const {

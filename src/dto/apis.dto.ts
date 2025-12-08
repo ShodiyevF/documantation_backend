@@ -205,6 +205,14 @@ namespace ApisDto {
             max_length: 512
         },
     }
+    
+    export const deleteApiPayloadParams: ValidationInterface.DTO = {
+        payload_id: {
+            required: true,
+            type: 'string',
+            pattern: RegexUtil.UUID
+        },
+    }
 
     export const createApiResponseBody: ValidationInterface.DTO = {
         api_id: {

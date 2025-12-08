@@ -53,6 +53,12 @@ app.patch('/api/apis/payloads/update/:payload_id',
     ApisCtrl.updateApiPayload
 )
 
+app.delete('/api/apis/payloads/delete/:payload_id',
+    authorizationMiddleware,
+    validationMiddleware(ApisDto.deleteApiPayloadParams, 'params'),
+    ApisCtrl.deleteApiPayload
+)
+
 app.post('/api/apis/response',
     authorizationMiddleware,
     validationMiddleware(ApisDto.createApiResponseBody, 'body'),
