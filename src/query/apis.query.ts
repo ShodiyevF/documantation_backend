@@ -48,7 +48,6 @@ namespace ApisQuery {
                         'response_id', ${DbTableSchema.responses.responseId},
                         'response_type', ${DbTableSchema.responses.responseType},
                         'response_schema', ${DbTableSchema.responses.responseSchema},
-                        'response_example', ${DbTableSchema.responses.responseExample},
                         'response_description', ${DbTableSchema.responses.responseDescription},
                         'response_owner', jsonb_build_object(
                             'user_id', ${DbTableSchema.users.userId},
