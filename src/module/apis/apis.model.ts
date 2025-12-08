@@ -507,6 +507,48 @@ namespace ApisModel {
             ]
         });
     }
+
+    export async function deleteApiResponse(response_id: string, token: string) {
+        const userId = await FinderLib.findUser(token)
+        if (userId === 'ERROR') {
+            throw new Exception.HttpException(401, 'Authorization error', Exception.Errors.AUTHORIZATION_ERROR)
+        }
+        
+        const response = await DatabaseFunctions.select({
+            tableName: 'responses',
+            filter: {
+                responseId: response_id,
+                responseIsDeleted: false
+            }
+        })
+        if (!response) {
+            throw new Exception.HttpException(404, 'Response not found', Exception.Errors.RESPONSE_NOT_FOUND)
+        }
+        
+        const checkUserProject = await DatabaseFunctions.select({
+            tableName: 'projectUsers',
+            filter: {
+                puUserId: userId,
+                puProjectId: response.responseProjectId
+            }
+        })
+        if (!checkUserProject) {
+            throw new Exception.HttpException(404, 'You are not a project user', Exception.Errors.PROJECT_USER_NOT_FOUND)
+        }
+        
+        await DatabaseFunctions.update({
+            tableName: 'responses',
+            data: {
+                responseIsDeleted: true
+            },
+            targets: [
+                {
+                    targetColumn: 'responseId',
+                    targetValue: response.responseId
+                }
+            ]
+        });
+    }
     
 }
 

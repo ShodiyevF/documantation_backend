@@ -72,4 +72,10 @@ app.patch('/api/apis/responses/update/:response_id',
     ApisCtrl.updateApiResponse
 )
 
+app.delete('/api/apis/responses/delete/:response_id',
+    authorizationMiddleware,
+    validationMiddleware(ApisDto.deleteApiResponseParams, 'params'),
+    ApisCtrl.deleteApiResponse
+)
+
 export default app

@@ -135,6 +135,19 @@ namespace ApisCtrl {
             ExpressFunctions.controllerError(res, error)
         }
     }
+
+    export async function deleteApiResponse(req: express.Request, res: express.Response) {
+        try {
+            await ApisModel.deleteApiResponse(req.params.response_id, req.headers.authorization!)
+
+            return res.status(200).json({
+                status: 200,
+                message: 'Response successfully delete'
+            })
+        } catch (error) {
+            ExpressFunctions.controllerError(res, error)
+        }
+    }
     
 }
 

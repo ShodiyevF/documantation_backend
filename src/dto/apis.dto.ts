@@ -4,8 +4,6 @@ import RegexUtil from "@util/regex.util";
 import SchemaLib from "@lib/schema.lib";
 
 namespace ApisDto {
-
-    const keyTypes = ['boolean', 'number', 'int', 'object', 'null', 'string']
     
     export const getApisQuery: ValidationInterface.DTO = {
         module_id: {
@@ -102,33 +100,6 @@ namespace ApisDto {
             type: 'string',
             pattern: RegexUtil.UUID
         }
-    }
-
-    export const createKey: ValidationInterface.DTO = {
-        key_name: {
-            required: true,
-            type: 'string',
-            min_length: 3,
-            max_length: 128,
-        },
-        key_types: {
-            required: true,
-            type: 'array',
-            element_type: 'string',
-            element_enum: keyTypes,
-        },
-        key_mock_data: {
-            required: true,
-            type: 'string',
-            min_length: 1,
-            max_length: 128
-        },
-        key_description: {
-            required: false,
-            type: 'string',
-            min_length: 1,
-            max_length: 128
-        },
     }
     
     export const createApiPayloadBody: ValidationInterface.DTO = {
@@ -286,6 +257,14 @@ namespace ApisDto {
             type: 'string',
             min_length: 1,
             max_length: 512
+        },
+    }
+    
+    export const deleteApiResponseParams: ValidationInterface.DTO = {
+        response_id: {
+            required: true,
+            type: 'string',
+            pattern: RegexUtil.UUID
         },
     }
     
