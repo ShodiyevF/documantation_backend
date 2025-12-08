@@ -118,7 +118,6 @@ export const payloadsTable = pgTable('payloads', {
     payloadId: uuid('payload_id').defaultRandom().primaryKey(),
     payloadType: payloadsPayloadTypeEnum('payload_type').notNull(),
     payloadSchema: jsonb('payload_schema').notNull(),
-    payloadExample: text('payload_example'),
     payloadDescription: varchar('payload_description', { length: 512 }),
     payloadIsDeleted: boolean('payload_is_deleted').notNull().default(false),
     payloadOwnerId: uuid('payload_owner_id').notNull().references(() => usersTable.userId),
@@ -126,30 +125,15 @@ export const payloadsTable = pgTable('payloads', {
     payloadCreatedAt: timestamp('payload_created_at', { withTimezone: true }).notNull().defaultNow(),
 })
 
-export const payloadCodesTable = pgTable('payload_codes', {
-    pcId: uuid('pc_id').defaultRandom().primaryKey(),
-    pcPayloadId: uuid('pc_payload_id').notNull().references(() => payloadsTable.payloadId),
-    pcCodeId: uuid('pc_code_id').notNull().references(() => codesTable.codeId),
-    pcCreatedAt: timestamp('pc_created_at', { withTimezone: true }).notNull().defaultNow(),
-})
-
 export const responsesTable = pgTable('responses', {
     responseId: uuid('response_id').defaultRandom().primaryKey(),
     responseType: responsesResponseTypeEnum('response_type').notNull(),
     responseSchema: jsonb('response_schema').notNull(),
-    responseExample: text('response_example'),
     responseDescription: varchar('response_description', { length: 512 }),
     responseIsDeleted: boolean('response_is_deleted').notNull().default(false),
     responseOwnerId: uuid('response_owner_id').notNull().references(() => usersTable.userId),
     responseApiId: uuid('response_api_id').notNull().references(() => apisTable.apiId),
     responseCreatedAt: timestamp('response_created_at', { withTimezone: true }).notNull().defaultNow(),
-})
-
-export const responseCodesTable = pgTable('response_codes', {
-    rcId: uuid('rc_id').defaultRandom().primaryKey(),
-    rcResponseId: uuid('rc_response_id').notNull().references(() => responsesTable.responseId),
-    rcCodeId: uuid('rc_code_id').notNull().references(() => codesTable.codeId),
-    rcCreatedAt: timestamp('rc_created_at', { withTimezone: true }).notNull().defaultNow(),
 })
 
 namespace DbTableSchema {
@@ -165,9 +149,7 @@ namespace DbTableSchema {
     export const modules = modulesTable
     export const apis = apisTable
     export const payloads = payloadsTable
-    export const payloadCodes = payloadCodesTable
     export const responses = responsesTable
-    export const responseCodes = responseCodesTable
 
 
     export const requestLogsRlTypeEnumList = requestLogsRlTypeEnum.enumValues
