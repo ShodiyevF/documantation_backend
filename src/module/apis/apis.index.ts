@@ -46,6 +46,13 @@ app.post('/api/apis/payloads/create',
     ApisCtrl.createApiPayload
 )
 
+app.patch('/api/apis/payloads/update/:payload_id',
+    authorizationMiddleware,
+    validationMiddleware(ApisDto.updateApiPayloadParams, 'params'),
+    validationMiddleware(ApisDto.updateApiPayloadBody, 'body'),
+    ApisCtrl.updateApiPayload
+)
+
 app.post('/api/apis/response',
     authorizationMiddleware,
     validationMiddleware(ApisDto.createApiResponseBody, 'body'),

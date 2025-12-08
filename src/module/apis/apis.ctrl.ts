@@ -83,6 +83,19 @@ namespace ApisCtrl {
             ExpressFunctions.controllerError(res, error)
         }
     }
+
+    export async function updateApiPayload(req: express.Request, res: express.Response) {
+        try {
+            await ApisModel.updateApiPayload(req.body, req.params.payload_id, req.headers.authorization!)
+
+            return res.status(200).json({
+                status: 200,
+                message: 'Payload successfully updated'
+            })
+        } catch (error) {
+            ExpressFunctions.controllerError(res, error)
+        }
+    }
     
     export async function createApiResponse(req: express.Request, res: express.Response) {
         try {

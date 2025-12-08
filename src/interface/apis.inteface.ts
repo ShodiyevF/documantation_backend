@@ -128,6 +128,16 @@ namespace ApisInterface {
     }
 
     //! PAYLOAD_END
+
+    //! UPDATE_API_PAYLOAD_START
+
+    export interface IUpdateApiPayloadBody {
+        payload_type?: DbTableSchema.TPayloadsPayloadTypeEnum;
+        payload_schema?: object;
+        payload_description?: string | null;
+    }
+    
+    //! UPDATE_API_PAYLOAD_END
     
 }
 

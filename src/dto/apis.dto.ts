@@ -166,6 +166,45 @@ namespace ApisDto {
             max_length: 512
         },
     }
+    
+    export const updateApiPayloadParams: ValidationInterface.DTO = {
+        payload_id: {
+            required: true,
+            type: 'string',
+            pattern: RegexUtil.UUID
+        },
+    }
+    
+    export const updateApiPayloadBody: ValidationInterface.DTO = {
+        payload_type: {
+            required: false,
+            type: 'string',
+            enum: DbTableSchema.payloadsPayloadTypeEnumList
+        },
+        payload_schema: {
+            required: false,
+            type: 'object',
+            custom_validation: (value: any) => {
+                const schemaValidation = SchemaLib.schemaValidator(value)
+                if (schemaValidation.error) {
+                    return {
+                        error: true,
+                        message: schemaValidation.message
+                    }
+                }
+
+                return {
+                    error: false
+                }
+            }
+        },
+        payload_description: {
+            required: false,
+            type: 'string',
+            min_length: 1,
+            max_length: 512
+        },
+    }
 
     export const createApiResponseBody: ValidationInterface.DTO = {
         api_id: {

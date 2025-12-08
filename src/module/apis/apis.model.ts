@@ -263,6 +263,60 @@ namespace ApisModel {
             ]
         })
     }
+
+    export async function updateApiPayload(body: ApisInterface.IUpdateApiPayloadBody, payload_id: string, token: string) {
+        const {
+            payload_type,
+            payload_schema,
+            payload_description
+        } = body
+        
+        const userId = await FinderLib.findUser(token)
+        if (userId === 'ERROR') {
+            throw new Exception.HttpException(401, 'Authorization error', Exception.Errors.AUTHORIZATION_ERROR)
+        }
+        
+        const payload = await DatabaseFunctions.select({
+            tableName: 'payloads',
+            filter: {
+                payloadId: payload_id,
+                payloadIsDeleted: false
+            }
+        })
+        if (!payload) {
+            throw new Exception.HttpException(404, 'Payload not found', Exception.Errors.PAYLOAD_NOT_FOUND)
+        }
+        
+        const checkUserProject = await DatabaseFunctions.select({
+            tableName: 'projectUsers',
+            filter: {
+                puUserId: userId,
+                puProjectId: payload.payloadProjectId
+            }
+        })
+        if (!checkUserProject) {
+            throw new Exception.HttpException(404, 'You are not a project user', Exception.Errors.PROJECT_USER_NOT_FOUND)
+        }
+
+        const payloadType = payload_type || payload.payloadType
+        const payloadSchema = payload_schema || payload.payloadSchema
+        const payloadDescription = UsefulfunctionsUtil.isNullableData(payload_description, payload.payloadDescription)
+        
+        await DatabaseFunctions.update({
+            tableName: 'payloads',
+            data: {
+                payloadType: payloadType,
+                payloadSchema: payloadSchema,
+                payloadDescription: payloadDescription
+            },
+            targets: [
+                {
+                    targetColumn: 'payloadId',
+                    targetValue: payload.payloadId
+                }
+            ]
+        });
+    }
     
     export async function createApiResponse(body: ApisInterface.IApiResponseBody, token: string) {
         const {
