@@ -264,6 +264,53 @@ namespace ApisModel {
         })
     }
 
+    export async function createApiPayload(body: ApisInterface.ICreateApiPayloadBody, token: string) {
+        const {
+            api_id,
+            payload_type,
+            payload_schema,
+            payload_description
+        } = body
+        
+        const userId = await FinderLib.findUser(token)
+        if (userId === 'ERROR') {
+            throw new Exception.HttpException(401, 'Authorization error', Exception.Errors.AUTHORIZATION_ERROR)
+        }
+        
+        const api = await DatabaseFunctions.select({
+            tableName: 'apis',
+            filter: {
+                apiId: api_id
+            }
+        })
+        if (!api) {
+            throw new Exception.HttpException(404, 'Api not found', Exception.Errors.API_NOT_FOUND)
+        }
+        
+        const checkUserProject = await DatabaseFunctions.select({
+            tableName: 'projectUsers',
+            filter: {
+                puUserId: userId,
+                puProjectId: api.apiProjectId
+            }
+        })
+        if (!checkUserProject) {
+            throw new Exception.HttpException(404, 'You are not a project user', Exception.Errors.PROJECT_USER_NOT_FOUND)
+        }
+        
+        await DatabaseFunctions.insert({
+            tableName: 'payloads',
+            data: {
+                payloadType: payload_type,
+                payloadSchema: payload_schema,
+                payloadDescription: payload_description,
+                payloadApiId: api_id,
+                payloadOwnerId: userId,
+                payloadProjectId: api.apiProjectId,
+            }
+        });
+    }
+
     export async function updateApiPayload(body: ApisInterface.IUpdateApiPayloadBody, payload_id: string, token: string) {
         const {
             payload_type,
@@ -370,52 +417,6 @@ namespace ApisModel {
         //         }
         //     })
         // }
-    }
-    
-    export async function createApiPayload(body: ApisInterface.IApiPayloadBody, token: string) {
-        const {
-            api_id,
-            payload_type,
-            payload_schema,
-            payload_description
-        } = body
-        
-        const userId = await FinderLib.findUser(token)
-        if (userId === 'ERROR') {
-            throw new Exception.HttpException(401, 'Authorization error', Exception.Errors.AUTHORIZATION_ERROR)
-        }
-        
-        const api = await DatabaseFunctions.select({
-            tableName: 'apis',
-            filter: {
-                apiId: api_id
-            }
-        })
-        if (!api) {
-            throw new Exception.HttpException(404, 'Api not found', Exception.Errors.API_NOT_FOUND)
-        }
-        
-        const checkUserProject = await DatabaseFunctions.select({
-            tableName: 'projectUsers',
-            filter: {
-                puUserId: userId,
-                puProjectId: api.apiProjectId
-            }
-        })
-        if (!checkUserProject) {
-            throw new Exception.HttpException(404, 'You are not a project user', Exception.Errors.PROJECT_USER_NOT_FOUND)
-        }
-        
-        await DatabaseFunctions.insert({
-            tableName: 'payloads',
-            data: {
-                payloadType: payload_type,
-                payloadSchema: payload_schema,
-                payloadDescription: payload_description,
-                payloadApiId: api_id,
-                payloadOwnerId: userId
-            }
-        });
     }
     
 }
