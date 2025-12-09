@@ -120,7 +120,7 @@ export const payloadsTable = pgTable('payloads', {
     payloadSchema: jsonb('payload_schema').notNull(),
     payloadDescription: varchar('payload_description', { length: 512 }),
     payloadIsDeleted: boolean('payload_is_deleted').notNull().default(false),
-    payloadOwnerId: uuid('payload_owner_id').notNull().references(() => usersTable.userId),
+    payloadUserId: uuid('payload_user_id').notNull().references(() => usersTable.userId),
     payloadApiId: uuid('payload_api_id').notNull().references(() => apisTable.apiId),
     payloadProjectId: uuid('payload_project_id').notNull().references(() => projectsTable.projectId),
     payloadCreatedAt: timestamp('payload_created_at', { withTimezone: true }).notNull().defaultNow(),

@@ -305,7 +305,7 @@ namespace ApisModel {
                 payloadSchema: payload_schema,
                 payloadDescription: payload_description,
                 payloadApiId: api_id,
-                payloadOwnerId: userId,
+                payloadUserId: userId,
                 payloadProjectId: api.apiProjectId,
             }
         });

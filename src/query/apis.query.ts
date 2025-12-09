@@ -39,7 +39,7 @@ namespace ApisQuery {
         .where(
             eq(DbTableSchema.payloads.payloadIsDeleted, false)
         )
-        .leftJoin(DbTableSchema.users, eq(DbTableSchema.users.userId, DbTableSchema.payloads.payloadOwnerId))
+        .leftJoin(DbTableSchema.users, eq(DbTableSchema.users.userId, DbTableSchema.payloads.payloadUserId))
         .groupBy(DbTableSchema.payloads.payloadApiId)
         .as('api_payloads');
 
