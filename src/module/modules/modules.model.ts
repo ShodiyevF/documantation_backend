@@ -176,7 +176,7 @@ namespace ModulesModel {
             throw new Exception.HttpException(404, 'You are not a project user', Exception.Errors.PROJECT_USER_NOT_FOUND)
         }
 
-        const moduleName = module_name ? module_name : module.moduleName
+        const moduleName = module_name || module.moduleName
         const moduleDescription = UsefulfunctionsUtil.isNullableData(module_description, module.moduleName)
 
         const checkModule = await DatabaseFunctions.select({
