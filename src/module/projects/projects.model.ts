@@ -104,7 +104,7 @@ namespace ProjectsModel {
             throw new Exception.HttpException(404, 'Project not found', Exception.Errors.PROJECT_NOT_FOUND)
         }
 
-        const projectName = project_name ? project_name : checkProject.projectName 
+        const projectName = project_name || checkProject.projectName 
         const projectBaseUrl = UsefulfunctionsUtil.isNullableData(project_base_url, checkProject.projectBaseUrl)
         const projectAuthorizationType = UsefulfunctionsUtil.isNullableData(project_authorization_type, checkProject.projectAuthorizationType)
         const projectDescription = UsefulfunctionsUtil.isNullableData(project_description, checkProject.projectDescription)
