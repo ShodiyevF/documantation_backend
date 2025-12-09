@@ -132,7 +132,7 @@ export const responsesTable = pgTable('responses', {
     responseSchema: jsonb('response_schema').notNull(),
     responseDescription: varchar('response_description', { length: 512 }),
     responseIsDeleted: boolean('response_is_deleted').notNull().default(false),
-    responseOwnerId: uuid('response_owner_id').notNull().references(() => usersTable.userId),
+    responseUserId: uuid('response_user_id').notNull().references(() => usersTable.userId),
     responseApiId: uuid('response_api_id').notNull().references(() => apisTable.apiId),
     responseProjectId: uuid('response_project_id').notNull().references(() => projectsTable.projectId),
     responseCreatedAt: timestamp('response_created_at', { withTimezone: true }).notNull().defaultNow(),

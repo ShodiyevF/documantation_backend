@@ -67,7 +67,7 @@ namespace ApisQuery {
         .where(
             eq(DbTableSchema.responses.responseIsDeleted, false)
         )
-        .leftJoin(DbTableSchema.users, eq(DbTableSchema.users.userId, DbTableSchema.responses.responseOwnerId))
+        .leftJoin(DbTableSchema.users, eq(DbTableSchema.users.userId, DbTableSchema.responses.responseUserId))
         .groupBy(DbTableSchema.responses.responseApiId)
         .as('api_responses');
         

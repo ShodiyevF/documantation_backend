@@ -447,7 +447,7 @@ namespace ApisModel {
                 responseType: response_type,
                 responseSchema: response_schema,
                 responseDescription: response_description,
-                responseOwnerId: userId,
+                responseUserId: userId,
                 responseApiId: api_id,
                 responseProjectId: api.apiProjectId
             }
