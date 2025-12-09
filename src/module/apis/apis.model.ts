@@ -186,10 +186,10 @@ namespace ApisModel {
             throw new Exception.HttpException(404, 'You are not a project user', Exception.Errors.PROJECT_USER_NOT_FOUND)
         }
 
-        const apiName = api_name ? api_name : api.apiName
-        const apiRoute = api_route ? api_route : api.apiRoute
-        const apiMethod = api_method ? api_method : api.apiMethod
-        const apiAuthorization = api_authorization ? api_authorization : api.apiAuthorization
+        const apiName = api_name || api.apiName
+        const apiRoute = api_route || api.apiRoute
+        const apiMethod = api_method || api.apiMethod
+        const apiAuthorization = api_authorization || api.apiAuthorization
         const apiDescription = UsefulfunctionsUtil.isNullableData(api_description, api.apiDescription)
         
         const checkApi = await DatabaseFunctions.select({
