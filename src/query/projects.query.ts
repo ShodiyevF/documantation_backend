@@ -45,7 +45,7 @@ namespace ProjectsQuery {
         })
         .from(DbTableSchema.projectUsers)
         .leftJoin(DbTableSchema.projects, eq(DbTableSchema.projects.projectId, DbTableSchema.projectUsers.puProjectId))
-        .leftJoin(DbTableSchema.users, eq(DbTableSchema.users.userId, DbTableSchema.projects.projectOwnerId))
+        .leftJoin(DbTableSchema.users, eq(DbTableSchema.users.userId, DbTableSchema.projects.projectUserId))
         .leftJoin(projectUsers, eq(projectUsers.projectId, DbTableSchema.projects.projectId))
         .where(
             and(
@@ -100,7 +100,7 @@ namespace ProjectsQuery {
         })
         .from(DbTableSchema.projectUsers)
         .leftJoin(DbTableSchema.projects, eq(DbTableSchema.projects.projectId, DbTableSchema.projectUsers.puProjectId))
-        .leftJoin(DbTableSchema.users, eq(DbTableSchema.users.userId, DbTableSchema.projects.projectOwnerId))
+        .leftJoin(DbTableSchema.users, eq(DbTableSchema.users.userId, DbTableSchema.projects.projectUserId))
         .leftJoin(projectUsers, eq(projectUsers.projectId, DbTableSchema.projects.projectId))
         .where(
             and(

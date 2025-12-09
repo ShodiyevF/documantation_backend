@@ -137,7 +137,7 @@ namespace ModulesModel {
             data: {
                 moduleName: module_name,
                 moduleDescription: module_description,
-                moduleOwnerId: userId,
+                moduleUserId: userId,
                 moduleProjectId: project_id
             }
         })

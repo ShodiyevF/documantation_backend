@@ -53,7 +53,7 @@ export const projectsTable = pgTable('projects', {
     projectAuthorizationType: projectsProjectAuthorizationTypeEnum('project_authorization_type'),
     projectDescription: varchar('project_description', { length: 512 }),
     projectIsDeleted: boolean('project_is_deleted').notNull().default(false),
-    projectOwnerId: uuid('project_owner_id').notNull().references(() => usersTable.userId),
+    projectUserId: uuid('project_user_id').notNull().references(() => usersTable.userId),
     projectCreatedAt: timestamp('project_created_at', { withTimezone: true }).notNull().defaultNow(),
 })
 
@@ -93,7 +93,7 @@ export const modulesTable = pgTable('modules', {
     moduleName: varchar('module_name', { length: 32 }).notNull(),
     moduleDescription: varchar('module_description', { length: 512 }),
     moduleIsDeleted: boolean('module_is_deleted').notNull().default(false),
-    moduleOwnerId: uuid('module_owner_id').notNull().references(() => usersTable.userId),
+    moduleUserId: uuid('module_user_id').notNull().references(() => usersTable.userId),
     moduleProjectId: uuid('module_project_id').notNull().references(() => projectsTable.projectId),
     moduleCreatedAt: timestamp('module_created_at', { withTimezone: true }).notNull().defaultNow(),
 })

@@ -26,7 +26,7 @@ namespace ModulesQuery {
             module_created_at: DbTableSchema.modules.moduleCreatedAt,
         })
         .from(DbTableSchema.modules)
-        .leftJoin(DbTableSchema.users, eq(DbTableSchema.users.userId, DbTableSchema.modules.moduleOwnerId))
+        .leftJoin(DbTableSchema.users, eq(DbTableSchema.users.userId, DbTableSchema.modules.moduleUserId))
         .where(
             and(
                 eq(DbTableSchema.modules.moduleIsDeleted, false),
@@ -69,7 +69,7 @@ namespace ModulesQuery {
             module_created_at: DbTableSchema.modules.moduleCreatedAt,
         })
         .from(DbTableSchema.modules)
-        .leftJoin(DbTableSchema.users, eq(DbTableSchema.users.userId, DbTableSchema.modules.moduleOwnerId))
+        .leftJoin(DbTableSchema.users, eq(DbTableSchema.users.userId, DbTableSchema.modules.moduleUserId))
         .where(
             eq(DbTableSchema.modules.moduleId, moduleId)
         )

@@ -51,7 +51,7 @@ namespace ProjectsModel {
         const checkProject = await DatabaseFunctions.select({
             tableName: 'projects',
             filter: {
-                projectOwnerId: userId,
+                projectUserId: userId,
                 projectName: project_name,
                 projectIsDeleted: false,
             }
@@ -67,7 +67,7 @@ namespace ProjectsModel {
                 projectBaseUrl: project_base_url,
                 projectAuthorizationType: project_authorization_type,
                 projectDescription: project_description,
-                projectOwnerId: userId
+                projectUserId: userId
             }
         })
 
@@ -97,7 +97,7 @@ namespace ProjectsModel {
             tableName: 'projects',
             filter: {
                 projectId: projectId,
-                projectOwnerId: userId
+                projectUserId: userId
             }
         })
         if (!checkProject) {
@@ -112,7 +112,7 @@ namespace ProjectsModel {
         const checkProjectName = await DatabaseFunctions.select({
             tableName: 'projects',
             filter: {
-                projectOwnerId: userId,
+                projectUserId: userId,
                 projectName: projectName,
                 projectIsDeleted: false,
             }
@@ -149,7 +149,7 @@ namespace ProjectsModel {
             filter: {
                 projectId: projectId,
                 projectIsDeleted: false,
-                projectOwnerId: userId
+                projectUserId: userId
             }
         })
         if (!checkProject) {
@@ -186,7 +186,7 @@ namespace ProjectsModel {
             filter: {
                 projectId: project_id,
                 projectIsDeleted: false,
-                projectOwnerId: userId
+                projectUserId: userId
             }
         })
         if (!project) {
@@ -207,7 +207,7 @@ namespace ProjectsModel {
         await DatabaseFunctions.update({
             tableName: 'projects',
             data: {
-                projectOwnerId: user_id
+                projectUserId: user_id
             },
             targets: [
                 {
@@ -241,7 +241,7 @@ namespace ProjectsModel {
         const project = await DatabaseFunctions.select({
             tableName: 'projects',
             filter: {
-                projectOwnerId: userId,
+                projectUserId: userId,
                 projectId: project_id,
                 projectIsDeleted: false,
             }
@@ -359,7 +359,7 @@ namespace ProjectsModel {
             throw new Exception.HttpException(404, 'Project not found', Exception.Errors.PROJECT_NOT_FOUND)
         }
 
-        if (project.projectOwnerId === userId) {
+        if (project.projectUserId === userId) {
             throw new Exception.HttpException(404, 'You are the project owner. Please transfer ownership of the project to another user to leave the project.', Exception.Errors.PLEASE_TRANSFER_PROJECT_OWNERSHIP)
         }
 
@@ -402,7 +402,7 @@ namespace ProjectsModel {
             filter: {
                 projectId: project_id,
                 projectIsDeleted: false,
-                projectOwnerId: userId
+                projectUserId: userId
             }
         })
         if (!project) {
