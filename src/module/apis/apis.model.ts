@@ -143,7 +143,7 @@ namespace ApisModel {
                 apiMethod: api_method,
                 apiAuthorization: api_authorization,
                 apiDescription: api_description,
-                apiOwnerId: userId,
+                apiUserId: userId,
                 apiModuleId: module_id,
                 apiProjectId: module.moduleProjectId
             }

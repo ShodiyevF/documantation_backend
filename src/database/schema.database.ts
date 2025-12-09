@@ -106,7 +106,7 @@ export const apisTable = pgTable('apis', {
     apiAuthorization: boolean('api_authorization').notNull(),
     apiDescription: varchar('api_description', { length: 512 }),
     apiIsDeleted: boolean('api_is_deleted').notNull().default(false),
-    apiOwnerId: uuid('api_owner_id').notNull().references(() => usersTable.userId),
+    apiUserId: uuid('api_user_id').notNull().references(() => usersTable.userId),
     apiModuleId: uuid('api_module_id').notNull().references(() => modulesTable.moduleId),
     apiProjectId: uuid('api_project_id').notNull().references(() => projectsTable.projectId),
     apiCreatedAt: timestamp('api_created_at', { withTimezone: true }).notNull().defaultNow(),

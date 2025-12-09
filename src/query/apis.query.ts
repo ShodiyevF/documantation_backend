@@ -104,7 +104,7 @@ namespace ApisQuery {
         })
         .from(DbTableSchema.apis)
         .leftJoin(DbTableSchema.modules, eq(DbTableSchema.modules.moduleId, DbTableSchema.apis.apiModuleId))
-        .leftJoin(DbTableSchema.users, eq(DbTableSchema.users.userId, DbTableSchema.apis.apiOwnerId))
+        .leftJoin(DbTableSchema.users, eq(DbTableSchema.users.userId, DbTableSchema.apis.apiUserId))
         .leftJoin(apiPayloads, eq(apiPayloads.api_id, DbTableSchema.apis.apiId))
         .leftJoin(apiResponses, eq(apiResponses.api_id, DbTableSchema.apis.apiId))
         .where(
@@ -158,7 +158,7 @@ namespace ApisQuery {
         })
         .from(DbTableSchema.apis)
         .leftJoin(DbTableSchema.modules, eq(DbTableSchema.modules.moduleId, DbTableSchema.apis.apiModuleId))
-        .leftJoin(DbTableSchema.users, eq(DbTableSchema.users.userId, DbTableSchema.apis.apiOwnerId))
+        .leftJoin(DbTableSchema.users, eq(DbTableSchema.users.userId, DbTableSchema.apis.apiUserId))
         .where(
             eq(DbTableSchema.apis.apiId, apiId),
         )
