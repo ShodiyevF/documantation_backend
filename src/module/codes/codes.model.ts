@@ -164,8 +164,8 @@ namespace CodesModel {
             throw new Exception.HttpException(404, 'Code not found', Exception.Errors.CODE_NOT_FOUND)
         }
         
-        const codeValue = code_value ? code_value : code.codeValue
-        const codeDescription = code_description ? code_description : code.codeDescription
+        const codeValue = code_value || code.codeValue
+        const codeDescription = code_description || code.codeDescription
         
         const checkCodeValue = await DatabaseFunctions.select({
             tableName: 'codes',
