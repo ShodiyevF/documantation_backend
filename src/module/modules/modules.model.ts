@@ -234,6 +234,16 @@ namespace ModulesModel {
             throw new Exception.HttpException(404, 'You are not a project user', Exception.Errors.PROJECT_USER_NOT_FOUND)
         }
 
+        const checkApi = await DatabaseFunctions.select({
+            tableName: 'apis',
+            filter: {
+                apiModuleId: module_id
+            }
+        })
+        if (checkApi) {
+            throw new Exception.HttpException(400, 'The module cannot be deleted, some API is attached.', Exception.Errors.MODULE_CANNOT_BE_DELETED)
+        }
+
         await DatabaseFunctions.update({
             tableName: 'modules',
             data: {
