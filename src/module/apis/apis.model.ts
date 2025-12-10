@@ -149,6 +149,68 @@ namespace ApisModel {
             }
         })
     }
+        
+    export async function changeApiModule(body: ApisInterface.IChangeApiModuleBody, token: string) {
+        const {
+            api_id,
+            module_id
+        } = body
+        
+        const userId = await FinderLib.findUser(token)
+        if (userId === 'ERROR') {
+            throw new Exception.HttpException(401, 'Authorization error', Exception.Errors.AUTHORIZATION_ERROR)
+        }
+        
+        const api = await DatabaseFunctions.select({
+            tableName: 'apis',
+            filter: {
+                apiId: api_id,
+                apiIsDeleted: false
+            }
+        })
+        if (!api) {
+            throw new Exception.HttpException(404, 'Api not found', Exception.Errors.API_NOT_FOUND)
+        }
+        
+        const checkUserProject = await DatabaseFunctions.select({
+            tableName: 'projectUsers',
+            filter: {
+                puUserId: userId,
+                puProjectId: api.apiProjectId
+            }
+        })
+        if (!checkUserProject) {
+            throw new Exception.HttpException(404, 'You are not a project user', Exception.Errors.PROJECT_USER_NOT_FOUND)
+        }
+
+        if (api.apiModuleId === module_id) {
+            throw new Exception.HttpException(400, 'It is not possible to enter the old module id.', Exception.Errors.CANNOT_ENTER_OLD_MODULE_ID)
+        }
+        
+        const checkModuleExists = await DatabaseFunctions.select({
+            tableName: 'modules',
+            filter: {
+                moduleId: module_id,
+                moduleProjectId: api.apiProjectId
+            }
+        })
+        if (!checkModuleExists) {
+            throw new Exception.HttpException(404, 'Module not found', Exception.Errors.MODULE_NOT_FOUND)
+        }
+        
+        await DatabaseFunctions.update({
+            tableName: 'apis',
+            data: {
+                apiModuleId: module_id
+            },
+            targets: [
+                {
+                    targetColumn: 'apiId',
+                    targetValue: api_id
+                }
+            ]
+        })
+    }
     
     export async function updateApi(body: ApisInterface.IUpdateApiBody, api_id: string, token: string) {
         const {

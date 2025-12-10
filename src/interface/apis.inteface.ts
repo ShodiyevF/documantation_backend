@@ -30,6 +30,16 @@ namespace ApisInterface {
     //! CREATE_API_END
 
     
+    //! CHANGE_API_MODULE_START
+
+    export interface IChangeApiModuleBody {
+        api_id: string;
+        module_id: string;
+    }
+    
+    //! CHANGE_API_MODULE_END
+
+    
     //! UPDATE_API_START
 
     export interface IUpdateApiBody {

@@ -56,6 +56,19 @@ namespace ApisDto {
         },
     }
 
+    export const changeApiModuleBody: ValidationInterface.DTO = {
+        api_id: {
+            required: true,
+            type: 'string',
+            pattern: RegexUtil.UUID
+        },
+        module_id: {
+            required: true,
+            type: 'string',
+            pattern: RegexUtil.UUID
+        },
+    }
+
     export const updateApiParams: ValidationInterface.DTO = {
         api_id: {
             required: true,

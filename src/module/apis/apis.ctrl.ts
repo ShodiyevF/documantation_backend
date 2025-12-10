@@ -45,6 +45,19 @@ namespace ApisCtrl {
         }
     }
 
+    export async function changeApiModule(req: express.Request, res: express.Response) {
+        try {
+            await ApisModel.changeApiModule(req.body, req.headers.authorization!)
+
+            return res.status(200).json({
+                status: 200,
+                message: 'Api module successfully changed'
+            })
+        } catch (error) {
+            ExpressFunctions.controllerError(res, error)
+        }
+    }
+    
     export async function updateApi(req: express.Request, res: express.Response) {
         try {
             await ApisModel.updateApi(req.body, req.params.api_id, req.headers.authorization!)

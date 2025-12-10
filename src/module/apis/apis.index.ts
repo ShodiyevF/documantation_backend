@@ -27,6 +27,12 @@ app.post('/api/apis/create',
     ApisCtrl.createApi
 )
 
+app.patch('/api/apis/update/change-module',
+    authorizationMiddleware,
+    validationMiddleware(ApisDto.changeApiModuleBody, 'body'),
+    ApisCtrl.changeApiModule
+)
+
 app.patch('/api/apis/update/:api_id',
     authorizationMiddleware,
     validationMiddleware(ApisDto.updateApiParams, 'params'),
