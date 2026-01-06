@@ -66,6 +66,13 @@ namespace Validation {
                                 return validatorResponse
                             }
                         }
+
+                        if (rules.custom_validation) {
+                            const validationResult = rules.custom_validation(value)
+                            if (validationResult.error) {
+                                return { status: 400, error: `${key}: ${validationResult.message}` };
+                            }
+                        }
                     }
 
                     if (rules.type === 'string' || rules.type === 'number') {
@@ -80,8 +87,11 @@ namespace Validation {
                             }
                         }
 
-                        if (rules.custom_validation && !rules.custom_validation[0](value)) {
-                            return { status: 400, error: `${key}: ${rules.custom_validation[1]}` };
+                        if (rules.custom_validation) {
+                            const validationResult = rules.custom_validation(value)
+                            if (validationResult.error) {
+                                return { status: 400, error: `${key}: ${validationResult.message}` };
+                            }
                         }
                     }
 
@@ -173,13 +183,6 @@ namespace Validation {
                                 const checkElementEnum = value.find(element => !rules.element_enum!.includes(element))
                                 if (checkElementEnum) {
                                     return { status: 400, error: `${key} child ${checkElementEnum}: The entered value must match one of the specified values. Specified values: '${rules.element_enum.join(`', '`)}'` };
-                                }
-                            }
-
-                            if (rules.element_custom_validation) {
-                                const checkElementCustomValidation = value.find(element => !rules.element_custom_validation![0](element))
-                                if (checkElementCustomValidation) {
-                                    return { status: 400, error: `${key} child ${checkElementCustomValidation}: ${rules.element_custom_validation[1]}` };
                                 }
                             }
                         }

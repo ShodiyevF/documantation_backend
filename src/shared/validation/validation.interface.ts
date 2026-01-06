@@ -29,6 +29,7 @@ namespace ValidationInterface {
         required: boolean;
         type: 'object';
         dto?: DTO;
+        custom_validation?: CustomValidation;
     }
 
     interface IArrayElementStringType {
@@ -39,7 +40,6 @@ namespace ValidationInterface {
         element_max_length?: number;
         element_pattern?: RegExp;
         element_enum?: any[];
-        element_custom_validation?: CustomValidation;
     }
 
     interface IArrayElementNumberType {
@@ -50,7 +50,6 @@ namespace ValidationInterface {
         element_max?: number;
         element_pattern?: RegExp;
         element_enum?: any[];
-        element_custom_validation?: CustomValidation;
     }
 
     interface IArrayElementBooleanType {
@@ -70,7 +69,13 @@ namespace ValidationInterface {
 
     type ValidationRule = IStringType | INumberType | IBooleanType | IObjectType | IArrayType
     
-    type CustomValidation = [(value: any) => boolean, string];
+    type CustomValidationReturn = {
+        error: true;
+        message: string;
+    } | {
+        error: false;
+    }
+    type CustomValidation = (value: any) => CustomValidationReturn;
     
     export interface DTO {
         [key: string]: ValidationRule;

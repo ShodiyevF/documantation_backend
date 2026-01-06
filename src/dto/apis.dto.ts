@@ -1,14 +1,20 @@
 import ValidationInterface from "@shared/validation/validation.interface";
+import DbTableSchema from "@database/schema.database";
 import RegexUtil from "@util/regex.util";
+import SchemaLib from "@lib/schema.lib";
 
 namespace ApisDto {
-
-    const methods = ["GET", "POST", "PUT", "PATCH", "DELETE", "HEAD", "OPTIONS", "CONNECT", "TRACE"]
-    const payloadType = ['params', 'query', 'form-data', 'body']
-    const keyTypes = ['boolean', 'number', 'int', 'object', 'null', 'string']
     
-    export const getApisParams: ValidationInterface.DTO = {
-        project_id: {
+    export const getApisQuery: ValidationInterface.DTO = {
+        module_id: {
+            required: true,
+            type: 'string',
+            pattern: RegexUtil.UUID
+        }
+    }
+
+    export const getApiByIdParams: ValidationInterface.DTO = {
+        api_id: {
             required: true,
             type: 'string',
             pattern: RegexUtil.UUID
@@ -16,11 +22,6 @@ namespace ApisDto {
     }
 
     export const createApiBody: ValidationInterface.DTO = {
-        project_id: {
-            required: true,
-            type: 'string',
-            pattern: RegexUtil.UUID
-        },
         module_id: {
             required: true,
             type: 'string',
@@ -30,82 +31,88 @@ namespace ApisDto {
             required: true,
             type: 'string',
             min_length: 1,
-            max_length: 64
+            max_length: 128
         },
         api_route: {
             required: true,
             type: 'string',
             min_length: 1,
-            max_length: 128
+            max_length: 256
         },
         api_method: {
             required: true,
             type: 'string',
-            enum: methods,
+            enum: DbTableSchema.apisApiMethodEnumList
+        },
+        api_authorization: {
+            required: true,
+            type: 'boolean'
         },
         api_description: {
             required: false,
             type: 'string',
             min_length: 1,
-            max_length: 128
+            max_length: 512
         },
     }
 
-    export const createKey: ValidationInterface.DTO = {
-        key_name: {
-            required: true,
-            type: 'string',
-            min_length: 3,
-            max_length: 128,
-        },
-        key_types: {
-            required: true,
-            type: 'array',
-            element_type: 'string',
-            element_enum: keyTypes,
-        },
-        key_mock_data: {
-            required: true,
-            type: 'string',
-            min_length: 1,
-            max_length: 128
-        },
-        key_description: {
-            required: false,
-            type: 'string',
-            min_length: 1,
-            max_length: 128
-        },
-    } 
-
-    export const createApiResponseBody: ValidationInterface.DTO = {
+    export const changeApiModuleBody: ValidationInterface.DTO = {
         api_id: {
             required: true,
             type: 'string',
             pattern: RegexUtil.UUID
         },
-        response_status: {
+        module_id: {
             required: true,
-            type: 'boolean'
+            type: 'string',
+            pattern: RegexUtil.UUID
         },
-        response_status_code: {
+    }
+
+    export const updateApiParams: ValidationInterface.DTO = {
+        api_id: {
             required: true,
-            type: 'number',
-            min: 100,
-            max: 599
-        },
-        response_description: {
+            type: 'string',
+            pattern: RegexUtil.UUID
+        }
+    }
+
+    export const updateApiBody: ValidationInterface.DTO = {
+        api_name: {
             required: false,
             type: 'string',
             min_length: 1,
             max_length: 128
         },
-        response_keys: {
-            required: true,
-            type: 'array',
-            element_type: 'object',
-            element_dto: createKey
+        api_route: {
+            required: false,
+            type: 'string',
+            min_length: 1,
+            max_length: 256
         },
+        api_method: {
+            required: false,
+            type: 'string',
+            enum: DbTableSchema.apisApiMethodEnumList
+        },
+        api_authorization: {
+            required: false,
+            type: 'boolean'
+        },
+        api_description: {
+            required: false,
+            type: 'string',
+            min_length: 1,
+            max_length: 512
+        },
+    }
+
+    export const deleteApiParams: ValidationInterface.DTO = {
+        api_id: {
+            required: true,
+            type: 'string',
+            pattern: RegexUtil.UUID
+        }
     }
     
     export const createApiPayloadBody: ValidationInterface.DTO = {
@@ -117,22 +124,166 @@ namespace ApisDto {
         payload_type: {
             required: true,
             type: 'string',
-            enum: payloadType
+            enum: DbTableSchema.payloadsPayloadTypeEnumList
+        },
+        payload_schema: {
+            required: true,
+            type: 'object',
+            custom_validation: (value: any) => {
+                const schemaValidation = SchemaLib.schemaValidator(value)
+                if (schemaValidation.error) {
+                    return {
+                        error: true,
+                        message: schemaValidation.message
+                    }
+                }
+
+                return {
+                    error: false
+                }
+            }
         },
         payload_description: {
             required: false,
             type: 'string',
             min_length: 1,
-            max_length: 128
+            max_length: 512
         },
-        payload_keys: {
+    }
+    
+    export const updateApiPayloadParams: ValidationInterface.DTO = {
+        payload_id: {
             required: true,
-            type: 'array',
-            element_type: 'object',
-            element_dto: createKey
+            type: 'string',
+            pattern: RegexUtil.UUID
+        },
+    }
+    
+    export const updateApiPayloadBody: ValidationInterface.DTO = {
+        payload_type: {
+            required: false,
+            type: 'string',
+            enum: DbTableSchema.payloadsPayloadTypeEnumList
+        },
+        payload_schema: {
+            required: false,
+            type: 'object',
+            custom_validation: (value: any) => {
+                const schemaValidation = SchemaLib.schemaValidator(value)
+                if (schemaValidation.error) {
+                    return {
+                        error: true,
+                        message: schemaValidation.message
+                    }
+                }
+
+                return {
+                    error: false
+                }
+            }
+        },
+        payload_description: {
+            required: false,
+            type: 'string',
+            min_length: 1,
+            max_length: 512
+        },
+    }
+    
+    export const deleteApiPayloadParams: ValidationInterface.DTO = {
+        payload_id: {
+            required: true,
+            type: 'string',
+            pattern: RegexUtil.UUID
+        },
+    }
+
+    export const createApiResponseBody: ValidationInterface.DTO = {
+        api_id: {
+            required: true,
+            type: 'string',
+            pattern: RegexUtil.UUID
+        },
+        response_type: {
+            required: true,
+            type: 'string',
+            enum: DbTableSchema.responsesResponseTypeEnumList
+        },
+        response_schema: {
+            required: true,
+            type: 'object',
+            custom_validation: (value: any) => {
+                const schemaValidation = SchemaLib.schemaValidator(value)
+                if (schemaValidation.error) {
+                    return {
+                        error: true,
+                        message: schemaValidation.message
+                    }
+                }
+
+                return {
+                    error: false
+                }
+            }
+        },
+        response_description: {
+            required: false,
+            type: 'string',
+            min_length: 1,
+            max_length: 512
+        },
+    }
+    
+    export const updateApiResponseParams: ValidationInterface.DTO = {
+        response_id: {
+            required: true,
+            type: 'string',
+            pattern: RegexUtil.UUID
+        },
+    }
+    
+    export const updateApiResponseBody: ValidationInterface.DTO = {
+        response_type: {
+            required: false,
+            type: 'string',
+            enum: DbTableSchema.responsesResponseTypeEnumList
+        },
+        response_schema: {
+            required: false,
+            type: 'object',
+            custom_validation: (value: any) => {
+                const schemaValidation = SchemaLib.schemaValidator(value)
+                if (schemaValidation.error) {
+                    return {
+                        error: true,
+                        message: schemaValidation.message
+                    }
+                }
+
+                return {
+                    error: false
+                }
+            }
+        },
+        response_description: {
+            required: false,
+            type: 'string',
+            min_length: 1,
+            max_length: 512
+        },
+    }
+    
+    export const deleteApiResponseParams: ValidationInterface.DTO = {
+        response_id: {
+            required: true,
+            type: 'string',
+            pattern: RegexUtil.UUID
         },
     }
     
 }
 
 export default ApisDto
+
+
+

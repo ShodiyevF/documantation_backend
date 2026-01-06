@@ -1,5 +1,5 @@
 import DatabaseFunctions from "@database/functions.database"
-import DbTableSchema from "@database/schema.database"
+import UsefulfunctionsUtil from "@util/usefulfunctions.util"
 import ApisInterface from "@interface/apis.inteface"
 import Exception from "@lib/http_exception.lib"
 import ApisQuery from "@query/apis.query"
@@ -7,49 +7,93 @@ import FinderLib from "@lib/finder.lib"
 
 namespace ApisModel {
     
-    export async function getApis(params: ApisInterface.IGetApis, token: string) {
+    export async function getApis(query: ApisInterface.IGetApisQuery, token: string) {
         const {
-            projectId
-        } = params
+            limit,
+            page,
+            module_id
+        } = query
         
         const userId = await FinderLib.findUser(token)
         if (userId === 'ERROR') {
             throw new Exception.HttpException(401, 'Authorization error', Exception.Errors.AUTHORIZATION_ERROR)
         }
         
-        const getProject = await DatabaseFunctions.select({
-            tableName: 'projects',
+        const module = await DatabaseFunctions.select({
+            tableName: 'modules',
             filter: {
-                projectId: projectId,
-                projectOwnerId: userId
+                moduleId: module_id,
+                moduleIsDeleted: false
             }
         })
-        if (!getProject) {
-            throw new Exception.HttpException(404, 'Project not found', Exception.Errors.PROJECT_NOT_FOUND)
+        if (!module) {
+            throw new Exception.HttpException(404, 'Module not found', Exception.Errors.MODULE_NOT_FOUND)
         }
         
         const checkUserProject = await DatabaseFunctions.select({
             tableName: 'projectUsers',
             filter: {
                 puUserId: userId,
-                puProjectId: projectId
+                puProjectId: module.moduleProjectId
             }
         })
         if (!checkUserProject) {
-            throw new Exception.HttpException(404, 'You do not have access to this project', Exception.Errors.NO_ACCESS_TO_THIS_PROJECT)
+            throw new Exception.HttpException(404, 'You are not a project user', Exception.Errors.PROJECT_USER_NOT_FOUND)
         }
         
-        return await ApisQuery.getApisByProjectId(projectId)
+        const result = await ApisQuery.getApisByModuleId({
+            limit: limit,
+            page: page,
+            moduleId: module_id
+        })
+        const totalPages = Math.ceil(result.count / limit);
+
+        return {
+            total_page: totalPages,
+            current_page: page,
+            data: result.data
+        } 
+    }
+    
+    export async function getApiById(api_id: string, token: string) {
+        const userId = await FinderLib.findUser(token)
+        if (userId === 'ERROR') {
+            throw new Exception.HttpException(401, 'Authorization error', Exception.Errors.AUTHORIZATION_ERROR)
+        }
+        
+        const api = await DatabaseFunctions.select({
+            tableName: 'apis',
+            filter: {
+                apiId: api_id,
+                apiIsDeleted: false
+            }
+        })
+        if (!api) {
+            throw new Exception.HttpException(404, 'Api not found', Exception.Errors.API_NOT_FOUND)
+        }
+        
+        const checkUserProject = await DatabaseFunctions.select({
+            tableName: 'projectUsers',
+            filter: {
+                puUserId: userId,
+                puProjectId: api.apiProjectId
+            }
+        })
+        if (!checkUserProject) {
+            throw new Exception.HttpException(404, 'You are not a project user', Exception.Errors.PROJECT_USER_NOT_FOUND)
+        }
+        
+        return await ApisQuery.getApiById(api_id)
     }
     
     export async function createApi(body: ApisInterface.ICreateApiBody, token: string) {
         const {
-            project_id,
             module_id,
             api_name,
             api_route,
             api_method,
-            api_description
+            api_authorization,
+            api_description,
         } = body
         
         const userId = await FinderLib.findUser(token)
@@ -57,19 +101,38 @@ namespace ApisModel {
             throw new Exception.HttpException(401, 'Authorization error', Exception.Errors.AUTHORIZATION_ERROR)
         }
         
-        const getProject = await DatabaseFunctions.select({
-            tableName: 'projects',
+        const module = await DatabaseFunctions.select({
+            tableName: 'modules',
             filter: {
-                projectId: project_id,
-                projectOwnerId: userId
+                moduleId: module_id,
+                moduleIsDeleted: false
             }
         })
-        if (!getProject) {
-            throw new Exception.HttpException(404, 'Project not found', Exception.Errors.PROJECT_NOT_FOUND)
+        if (!module) {
+            throw new Exception.HttpException(404, 'Module not found', Exception.Errors.MODULE_NOT_FOUND)
         }
         
-        if (getProject.projectOwnerId !== userId) {
-            throw new Exception.HttpException(404, 'You are not allowed to add api to this project!', Exception.Errors.NO_ACCESS_TO_THIS_PROJECT)
+        const checkUserProject = await DatabaseFunctions.select({
+            tableName: 'projectUsers',
+            filter: {
+                puUserId: userId,
+                puProjectId: module.moduleProjectId
+            }
+        })
+        if (!checkUserProject) {
+            throw new Exception.HttpException(404, 'You are not a project user', Exception.Errors.PROJECT_USER_NOT_FOUND)
+        }
+        
+        const checkApi = await DatabaseFunctions.select({
+            tableName: 'apis',
+            filter: {
+                apiRoute: api_route,
+                apiMethod: api_method,
+                apiProjectId: module.moduleProjectId
+            }
+        })
+        if (checkApi) {
+            throw new Exception.HttpException(404, 'Api already exists', Exception.Errors.API_ALREADY_EXISTS)
         }
         
         await DatabaseFunctions.insert({
@@ -77,22 +140,20 @@ namespace ApisModel {
             data: {
                 apiName: api_name,
                 apiRoute: api_route,
-                apiMethod: api_method as DbTableSchema.TApisApiMethodEnum,
+                apiMethod: api_method,
+                apiAuthorization: api_authorization,
                 apiDescription: api_description,
-                apiOwnerId: userId,
+                apiUserId: userId,
                 apiModuleId: module_id,
-                apiProjectId: project_id
+                apiProjectId: module.moduleProjectId
             }
         })
     }
-    
-    export async function createApiResponse(body: ApisInterface.IApiResponseBody, token: string) {
+        
+    export async function changeApiModule(body: ApisInterface.IChangeApiModuleBody, token: string) {
         const {
             api_id,
-            response_status,
-            response_status_code,
-            response_description,
-            response_keys
+            module_id
         } = body
         
         const userId = await FinderLib.findUser(token)
@@ -100,52 +161,177 @@ namespace ApisModel {
             throw new Exception.HttpException(401, 'Authorization error', Exception.Errors.AUTHORIZATION_ERROR)
         }
         
-        const getApi = await DatabaseFunctions.select({
+        const api = await DatabaseFunctions.select({
             tableName: 'apis',
             filter: {
-                apiId: api_id
+                apiId: api_id,
+                apiIsDeleted: false
             }
         })
-        if (!getApi) {
+        if (!api) {
             throw new Exception.HttpException(404, 'Api not found', Exception.Errors.API_NOT_FOUND)
         }
         
-        if (getApi.apiOwnerId !== userId) {
-            throw new Exception.HttpException(404, 'You are not allowed to add api to this api!', Exception.Errors.NO_ACCESS_TO_THIS_API)
-        }
-        
-        const response = await DatabaseFunctions.insert({
-            tableName: 'responses',
-            data: {
-                responseStatus: response_status,
-                responseStatusCode: response_status_code,
-                responseDescription: response_description,
-                responseApiId: api_id,
-                responseOwnerId: userId,
+        const checkUserProject = await DatabaseFunctions.select({
+            tableName: 'projectUsers',
+            filter: {
+                puUserId: userId,
+                puProjectId: api.apiProjectId
             }
         })
-        
-        for (const key of response_keys) {
-            await DatabaseFunctions.insert({
-                tableName: 'responseKeys',
-                data: {
-                    rkName: key.key_name,
-                    rkTypes: key.key_types,
-                    rkMockData: key.key_mock_data,
-                    rkDescription: key.key_description,
-                    rkOwnerId: userId,
-                    rkResponseId: response.responseId,
-                }
-            })
+        if (!checkUserProject) {
+            throw new Exception.HttpException(404, 'You are not a project user', Exception.Errors.PROJECT_USER_NOT_FOUND)
         }
+
+        if (api.apiModuleId === module_id) {
+            throw new Exception.HttpException(400, 'It is not possible to enter the old module id.', Exception.Errors.CANNOT_ENTER_OLD_MODULE_ID)
+        }
+        
+        const checkModuleExists = await DatabaseFunctions.select({
+            tableName: 'modules',
+            filter: {
+                moduleId: module_id,
+                moduleProjectId: api.apiProjectId
+            }
+        })
+        if (!checkModuleExists) {
+            throw new Exception.HttpException(404, 'Module not found', Exception.Errors.MODULE_NOT_FOUND)
+        }
+        
+        await DatabaseFunctions.update({
+            tableName: 'apis',
+            data: {
+                apiModuleId: module_id
+            },
+            targets: [
+                {
+                    targetColumn: 'apiId',
+                    targetValue: api_id
+                }
+            ]
+        })
     }
     
-    export async function createApiPayload(body: ApisInterface.IApiPayloadBody, token: string) {
+    export async function updateApi(body: ApisInterface.IUpdateApiBody, api_id: string, token: string) {
+        const {
+            api_name,
+            api_route,
+            api_method,
+            api_authorization,
+            api_description,
+        } = body
+        
+        const userId = await FinderLib.findUser(token)
+        if (userId === 'ERROR') {
+            throw new Exception.HttpException(401, 'Authorization error', Exception.Errors.AUTHORIZATION_ERROR)
+        }
+        
+        const api = await DatabaseFunctions.select({
+            tableName: 'apis',
+            filter: {
+                apiId: api_id,
+                apiIsDeleted: false
+            }
+        })
+        if (!api) {
+            throw new Exception.HttpException(404, 'Api not found', Exception.Errors.API_NOT_FOUND)
+        }
+        
+        const checkUserProject = await DatabaseFunctions.select({
+            tableName: 'projectUsers',
+            filter: {
+                puUserId: userId,
+                puProjectId: api.apiProjectId
+            }
+        })
+        if (!checkUserProject) {
+            throw new Exception.HttpException(404, 'You are not a project user', Exception.Errors.PROJECT_USER_NOT_FOUND)
+        }
+
+        const apiName = api_name || api.apiName
+        const apiRoute = api_route || api.apiRoute
+        const apiMethod = api_method || api.apiMethod
+        const apiAuthorization = api_authorization || api.apiAuthorization
+        const apiDescription = UsefulfunctionsUtil.isNullableData(api_description, api.apiDescription)
+        
+        const checkApi = await DatabaseFunctions.select({
+            tableName: 'apis',
+            filter: {
+                apiRoute: apiRoute,
+                apiMethod: apiMethod,
+                apiProjectId: api.apiProjectId
+            }
+        })
+        if (checkApi && checkApi.apiId !== api_id) {
+            throw new Exception.HttpException(404, 'Api already exists', Exception.Errors.API_ALREADY_EXISTS)
+        }
+        
+        await DatabaseFunctions.update({
+            tableName: 'apis',
+            data: {
+                apiName: apiName,
+                apiRoute: apiRoute,
+                apiMethod: apiMethod,
+                apiAuthorization: apiAuthorization,
+                apiDescription: apiDescription,
+            },
+            targets: [
+                {
+                    targetColumn: 'apiId',
+                    targetValue: api_id
+                }
+            ]
+        })
+    }
+    
+    export async function deleteApi(api_id: string, token: string) {
+        const userId = await FinderLib.findUser(token)
+        if (userId === 'ERROR') {
+            throw new Exception.HttpException(401, 'Authorization error', Exception.Errors.AUTHORIZATION_ERROR)
+        }
+        
+        const api = await DatabaseFunctions.select({
+            tableName: 'apis',
+            filter: {
+                apiId: api_id,
+                apiIsDeleted: false
+            }
+        })
+        if (!api) {
+            throw new Exception.HttpException(404, 'Api not found', Exception.Errors.API_NOT_FOUND)
+        }
+        
+        const checkUserProject = await DatabaseFunctions.select({
+            tableName: 'projectUsers',
+            filter: {
+                puUserId: userId,
+                puProjectId: api.apiProjectId
+            }
+        })
+        if (!checkUserProject) {
+            throw new Exception.HttpException(404, 'You are not a project user', Exception.Errors.PROJECT_USER_NOT_FOUND)
+        }
+
+        await DatabaseFunctions.update({
+            tableName: 'apis',
+            data: {
+                apiIsDeleted: true
+            },
+            targets: [
+                {
+                    targetColumn: 'apiId',
+                    targetValue: api_id
+                }
+            ]
+        })
+    }
+
+    export async function createApiPayload(body: ApisInterface.ICreateApiPayloadBody, token: string) {
         const {
             api_id,
             payload_type,
-            payload_description,
-            payload_keys
+            payload_schema,
+            payload_description
         } = body
         
         const userId = await FinderLib.findUser(token)
@@ -153,43 +339,277 @@ namespace ApisModel {
             throw new Exception.HttpException(401, 'Authorization error', Exception.Errors.AUTHORIZATION_ERROR)
         }
         
-        const getApi = await DatabaseFunctions.select({
+        const api = await DatabaseFunctions.select({
             tableName: 'apis',
             filter: {
                 apiId: api_id
             }
         })
-        if (!getApi) {
+        if (!api) {
             throw new Exception.HttpException(404, 'Api not found', Exception.Errors.API_NOT_FOUND)
         }
         
-        if (getApi.apiOwnerId !== userId) {
-            throw new Exception.HttpException(404, 'You are not allowed to add api to this api!', Exception.Errors.NO_ACCESS_TO_THIS_API)
+        const checkUserProject = await DatabaseFunctions.select({
+            tableName: 'projectUsers',
+            filter: {
+                puUserId: userId,
+                puProjectId: api.apiProjectId
+            }
+        })
+        if (!checkUserProject) {
+            throw new Exception.HttpException(404, 'You are not a project user', Exception.Errors.PROJECT_USER_NOT_FOUND)
         }
         
-        const payload = await DatabaseFunctions.insert({
+        await DatabaseFunctions.insert({
             tableName: 'payloads',
             data: {
                 payloadType: payload_type,
+                payloadSchema: payload_schema,
                 payloadDescription: payload_description,
-                payloadOwnerId: userId,
                 payloadApiId: api_id,
+                payloadUserId: userId,
+                payloadProjectId: api.apiProjectId,
+            }
+        });
+    }
+
+    export async function updateApiPayload(body: ApisInterface.IUpdateApiPayloadBody, payload_id: string, token: string) {
+        const {
+            payload_type,
+            payload_schema,
+            payload_description
+        } = body
+        
+        const userId = await FinderLib.findUser(token)
+        if (userId === 'ERROR') {
+            throw new Exception.HttpException(401, 'Authorization error', Exception.Errors.AUTHORIZATION_ERROR)
+        }
+        
+        const payload = await DatabaseFunctions.select({
+            tableName: 'payloads',
+            filter: {
+                payloadId: payload_id,
+                payloadIsDeleted: false
             }
         })
-        
-        for (const key of payload_keys) {
-            await DatabaseFunctions.insert({
-                tableName: 'payloadKeys',
-                data: {
-                    pkName: key.key_name,
-                    pkTypes: key.key_types,
-                    pkMockData: key.key_mock_data,
-                    pkDescription: key.key_description,
-                    pkOwnerId: userId,
-                    pkPayloadId: payload.payloadId,
-                }
-            })
+        if (!payload) {
+            throw new Exception.HttpException(404, 'Payload not found', Exception.Errors.PAYLOAD_NOT_FOUND)
         }
+        
+        const checkUserProject = await DatabaseFunctions.select({
+            tableName: 'projectUsers',
+            filter: {
+                puUserId: userId,
+                puProjectId: payload.payloadProjectId
+            }
+        })
+        if (!checkUserProject) {
+            throw new Exception.HttpException(404, 'You are not a project user', Exception.Errors.PROJECT_USER_NOT_FOUND)
+        }
+
+        const payloadType = payload_type || payload.payloadType
+        const payloadSchema = payload_schema || payload.payloadSchema
+        const payloadDescription = UsefulfunctionsUtil.isNullableData(payload_description, payload.payloadDescription)
+        
+        await DatabaseFunctions.update({
+            tableName: 'payloads',
+            data: {
+                payloadType: payloadType,
+                payloadSchema: payloadSchema,
+                payloadDescription: payloadDescription
+            },
+            targets: [
+                {
+                    targetColumn: 'payloadId',
+                    targetValue: payload.payloadId
+                }
+            ]
+        });
+    }
+
+    export async function deleteApiPayload(payload_id: string, token: string) {
+        const userId = await FinderLib.findUser(token)
+        if (userId === 'ERROR') {
+            throw new Exception.HttpException(401, 'Authorization error', Exception.Errors.AUTHORIZATION_ERROR)
+        }
+        
+        const payload = await DatabaseFunctions.select({
+            tableName: 'payloads',
+            filter: {
+                payloadId: payload_id,
+                payloadIsDeleted: false
+            }
+        })
+        if (!payload) {
+            throw new Exception.HttpException(404, 'Payload not found', Exception.Errors.PAYLOAD_NOT_FOUND)
+        }
+        
+        const checkUserProject = await DatabaseFunctions.select({
+            tableName: 'projectUsers',
+            filter: {
+                puUserId: userId,
+                puProjectId: payload.payloadProjectId
+            }
+        })
+        if (!checkUserProject) {
+            throw new Exception.HttpException(404, 'You are not a project user', Exception.Errors.PROJECT_USER_NOT_FOUND)
+        }
+        
+        await DatabaseFunctions.update({
+            tableName: 'payloads',
+            data: {
+                payloadIsDeleted: true
+            },
+            targets: [
+                {
+                    targetColumn: 'payloadId',
+                    targetValue: payload.payloadId
+                }
+            ]
+        });
+    }
+    
+    export async function createApiResponse(body: ApisInterface.ICreateApiResponseBody, token: string) {
+        const {
+            api_id,
+            response_type,
+            response_schema,
+            response_description
+        } = body
+        
+        const userId = await FinderLib.findUser(token)
+        if (userId === 'ERROR') {
+            throw new Exception.HttpException(401, 'Authorization error', Exception.Errors.AUTHORIZATION_ERROR)
+        }
+        
+        const api = await DatabaseFunctions.select({
+            tableName: 'apis',
+            filter: {
+                apiId: api_id
+            }
+        })
+        if (!api) {
+            throw new Exception.HttpException(404, 'Api not found', Exception.Errors.API_NOT_FOUND)
+        }
+        
+        const checkUserProject = await DatabaseFunctions.select({
+            tableName: 'projectUsers',
+            filter: {
+                puUserId: userId,
+                puProjectId: api.apiProjectId
+            }
+        })
+        if (!checkUserProject) {
+            throw new Exception.HttpException(404, 'You are not a project user', Exception.Errors.PROJECT_USER_NOT_FOUND)
+        }
+        
+        await DatabaseFunctions.insert({
+            tableName: 'responses',
+            data: {
+                responseType: response_type,
+                responseSchema: response_schema,
+                responseDescription: response_description,
+                responseUserId: userId,
+                responseApiId: api_id,
+                responseProjectId: api.apiProjectId
+            }
+        })
+    }
+    
+    export async function updateApiResponse(body: ApisInterface.IUpdateApiResponseBody, response_id: string, token: string) {
+        const {
+            response_type,
+            response_schema,
+            response_description
+        } = body
+        
+        const userId = await FinderLib.findUser(token)
+        if (userId === 'ERROR') {
+            throw new Exception.HttpException(401, 'Authorization error', Exception.Errors.AUTHORIZATION_ERROR)
+        }
+        
+        const response = await DatabaseFunctions.select({
+            tableName: 'responses',
+            filter: {
+                responseId: response_id,
+                responseIsDeleted: false
+            }
+        })
+        if (!response) {
+            throw new Exception.HttpException(404, 'Response not found', Exception.Errors.RESPONSE_NOT_FOUND)
+        }
+        
+        const checkUserProject = await DatabaseFunctions.select({
+            tableName: 'projectUsers',
+            filter: {
+                puUserId: userId,
+                puProjectId: response.responseProjectId
+            }
+        })
+        if (!checkUserProject) {
+            throw new Exception.HttpException(404, 'You are not a project user', Exception.Errors.PROJECT_USER_NOT_FOUND)
+        }
+
+        const responseType = response_type || response.responseType
+        const responseSchema = response_schema || response.responseSchema
+        const responseDescription = UsefulfunctionsUtil.isNullableData(response_description, response.responseDescription)
+        
+        await DatabaseFunctions.update({
+            tableName: 'responses',
+            data: {
+                responseType: responseType,
+                responseSchema: responseSchema,
+                responseDescription: responseDescription
+            },
+            targets: [
+                {
+                    targetColumn: 'responseId',
+                    targetValue: response.responseId
+                }
+            ]
+        });
+    }
+
+    export async function deleteApiResponse(response_id: string, token: string) {
+        const userId = await FinderLib.findUser(token)
+        if (userId === 'ERROR') {
+            throw new Exception.HttpException(401, 'Authorization error', Exception.Errors.AUTHORIZATION_ERROR)
+        }
+        
+        const response = await DatabaseFunctions.select({
+            tableName: 'responses',
+            filter: {
+                responseId: response_id,
+                responseIsDeleted: false
+            }
+        })
+        if (!response) {
+            throw new Exception.HttpException(404, 'Response not found', Exception.Errors.RESPONSE_NOT_FOUND)
+        }
+        
+        const checkUserProject = await DatabaseFunctions.select({
+            tableName: 'projectUsers',
+            filter: {
+                puUserId: userId,
+                puProjectId: response.responseProjectId
+            }
+        })
+        if (!checkUserProject) {
+            throw new Exception.HttpException(404, 'You are not a project user', Exception.Errors.PROJECT_USER_NOT_FOUND)
+        }
+        
+        await DatabaseFunctions.update({
+            tableName: 'responses',
+            data: {
+                responseIsDeleted: true
+            },
+            targets: [
+                {
+                    targetColumn: 'responseId',
+                    targetValue: response.responseId
+                }
+            ]
+        });
     }
     
 }
