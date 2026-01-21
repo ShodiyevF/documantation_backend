@@ -312,6 +312,30 @@ namespace ProjectsModel {
             throw new Exception.HttpException(404, 'Project invitation not found', Exception.Errors.PROJECT_INVITATION_NOT_FOUND)
         }
 
+        const checkAlreadyExist = await DatabaseFunctions.select({
+            tableName: 'projectUsers',
+            filter: {
+                puProjectId: invitation.piProjectId,
+                puUserId: userId
+            }
+        })
+        if (checkAlreadyExist) {
+            await DatabaseFunctions.update({
+                tableName: 'projectInvitations',
+                data: {
+                    piAccepted: true
+                },
+                targets: [
+                    {
+                        targetColumn: 'piId',
+                        targetValue: invitation_id
+                    }
+                ]
+            })
+
+            return ''
+        }
+
         await DatabaseFunctions.insert({
             tableName: 'projectUsers',
             data: {
