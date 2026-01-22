@@ -336,13 +336,15 @@ namespace ProjectsModel {
             return ''
         }
 
-        await DatabaseFunctions.insert({
-            tableName: 'projectUsers',
-            data: {
-                puProjectId: invitation.piProjectId,
-                puUserId: userId
-            }
-        })
+        if (is_confirmed) {
+            await DatabaseFunctions.insert({
+                tableName: 'projectUsers',
+                data: {
+                    puProjectId: invitation.piProjectId,
+                    puUserId: userId
+                }
+            })
+        }
         
         const data = is_confirmed ? {
             piAccepted: true
