@@ -3,8 +3,8 @@ import fs from 'fs'
 
 import type { EnvVariables } from "@customTypes/env_variables";
 
-const envExample = dotenv.config({ path: '.env.example' });
 const env = dotenv.config({ path: '.env' });
+const envExample = dotenv.config({ path: '.env.example' });
 
 const envs: Record<string, string> = {};
 

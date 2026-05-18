@@ -6,7 +6,6 @@ const CORS_OPTIONS: cors.CorsOptions = {
     origin: allowlist,
     methods: ['GET', 'HEAD', 'POST', 'PATCH', 'DELETE', 'PUT'],
     credentials: process.env.CREDENTIALS === 'true',
-    preflightContinue: true,
     optionsSuccessStatus: 200,
 };
 

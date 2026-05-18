@@ -1,0 +1,76 @@
+import express from 'express'
+
+import ModulesInterface from '@interface/modules.interface'
+import ExpressFunctions from '@lib/express_functions.lib'
+import ModulesModel from './modules.model'
+
+namespace ModulesCtrl {
+
+    export async function getModules(req: express.Request, res: express.Response) {
+        try {
+            const query: ModulesInterface.IGetModulesQuery = {
+                limit: +req.query.limit!,
+                page: +req.query.page!,
+                project_id: req.query.project_id! as string
+            }
+            
+            const model = await ModulesModel.getModules(query, req.headers.authorization!)
+
+            return res.status(200).json(model)
+        } catch (error) {
+            ExpressFunctions.controllerError(res, error)
+        }
+    }
+
+    export async function getModuleById(req: express.Request, res: express.Response) {
+        try {
+            const model = await ModulesModel.getModuleById(req.params.module_id, req.headers.authorization!)
+
+            return res.status(200).json(model)
+        } catch (error) {
+            ExpressFunctions.controllerError(res, error)
+        }
+    }
+
+    export async function createModule(req: express.Request, res: express.Response) {
+        try {
+            await ModulesModel.createModule(req.body, req.headers.authorization!)
+
+            return res.status(201).json({
+                status: 201,
+                message: 'Module successfully created'
+            })
+        } catch (error) {
+            ExpressFunctions.controllerError(res, error)
+        }
+    }
+
+    export async function updateModule(req: express.Request, res: express.Response) {
+        try {
+            await ModulesModel.updateModule(req.body, req.params.module_id, req.headers.authorization!)
+
+            return res.status(200).json({
+                status: 200,
+                message: 'Module successfully updated'
+            })
+        } catch (error) {
+            ExpressFunctions.controllerError(res, error)
+        }
+    }
+
+    export async function deleteModule(req: express.Request, res: express.Response) {
+        try {
+            await ModulesModel.deleteModule(req.params.module_id, req.headers.authorization!)
+
+            return res.status(200).json({
+                status: 200,
+                message: 'Module successfully deleted'
+            })
+        } catch (error) {
+            ExpressFunctions.controllerError(res, error)
+        }
+    }
+    
+}
+
+export default ModulesCtrl

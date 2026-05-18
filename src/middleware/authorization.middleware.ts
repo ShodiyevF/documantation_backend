@@ -12,15 +12,21 @@ async function authorizationMiddleware(req: express.Request, res: express.Respon
             return ExpressFunctions.returnResponse(res, 401, 'AUTHORIZATION ERROR', Exception.Errors.AUTHORIZATION_ERROR)
         }
         
-        const authorization = headers.authorization
-        if (!authorization) {
+        const token = headers.authorization
+        if (!token) {
             return ExpressFunctions.returnResponse(res, 401, 'AUTHORIZATION ERROR', Exception.Errors.AUTHORIZATION_ERROR)
         }
 
-        const verifedToken = JWT.verifyJwtToken(authorization)
+        const splitToken = token.split(' ')[1]
+        if (!splitToken) {
+            return ExpressFunctions.returnResponse(res, 401, 'Authorization error!', Exception.Errors.AUTHORIZATION_ERROR);
+        }
+
+        const verifedToken = JWT.verifyJwtToken(splitToken)
         if (verifedToken.result !== 'VERIFIED') {
             return ExpressFunctions.returnResponse(res, 401, 'AUTHORIZATION ERROR', Exception.Errors.AUTHORIZATION_ERROR)
         }
+        
         return next()
     } catch (error) {
         internalErrorCatcher(error)

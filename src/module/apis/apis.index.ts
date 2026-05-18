@@ -2,34 +2,86 @@ import express from 'express'
 
 import authorizationMiddleware from '@middleware/authorization.middleware'
 import validationMiddleware from '@middleware/validator.middleware'
+import GlobalDto from '@dto/global.dto'
 import ApisDto from '@dto/apis.dto'
 import ApisCtrl from './apis.ctrl'
 
 const app = express.Router()
 
-app.get('/api/apis/:project_id',
+app.get('/api/apis/get',
     authorizationMiddleware,
-    validationMiddleware(ApisDto.getApisParams, 'params'),
+    validationMiddleware(GlobalDto.paginationQuery, 'query'),
+    validationMiddleware(ApisDto.getApisQuery, 'query'),
     ApisCtrl.getApis
 )
 
-app.post('/api/apis/',
+app.get('/api/apis/get/by-id/:api_id',
+    authorizationMiddleware,
+    validationMiddleware(ApisDto.getApiByIdParams, 'params'),
+    ApisCtrl.getApiById
+)
+
+app.post('/api/apis/create',
     authorizationMiddleware,
     validationMiddleware(ApisDto.createApiBody, 'body'),
     ApisCtrl.createApi
 )
 
-app.post('/api/apis/response',
+app.patch('/api/apis/update/change-module',
     authorizationMiddleware,
-    validationMiddleware(ApisDto.createApiResponseBody, 'body'),
-    ApisCtrl.createApiResponse
+    validationMiddleware(ApisDto.changeApiModuleBody, 'body'),
+    ApisCtrl.changeApiModule
 )
 
-app.post('/api/apis/payload',
+app.patch('/api/apis/update/:api_id',
+    authorizationMiddleware,
+    validationMiddleware(ApisDto.updateApiParams, 'params'),
+    validationMiddleware(ApisDto.updateApiBody, 'body'),
+    ApisCtrl.updateApi
+)
+
+app.delete('/api/apis/delete/:api_id',
+    authorizationMiddleware,
+    validationMiddleware(ApisDto.deleteApiParams, 'params'),
+    ApisCtrl.deleteApi
+)
+
+app.post('/api/apis/payloads/create',
     authorizationMiddleware,
     validationMiddleware(ApisDto.createApiPayloadBody, 'body'),
     ApisCtrl.createApiPayload
 )
 
+app.patch('/api/apis/payloads/update/:payload_id',
+    authorizationMiddleware,
+    validationMiddleware(ApisDto.updateApiPayloadParams, 'params'),
+    validationMiddleware(ApisDto.updateApiPayloadBody, 'body'),
+    ApisCtrl.updateApiPayload
+)
+
+app.delete('/api/apis/payloads/delete/:payload_id',
+    authorizationMiddleware,
+    validationMiddleware(ApisDto.deleteApiPayloadParams, 'params'),
+    ApisCtrl.deleteApiPayload
+)
+
+app.post('/api/apis/responses/create',
+    authorizationMiddleware,
+    validationMiddleware(ApisDto.createApiResponseBody, 'body'),
+    ApisCtrl.createApiResponse
+)
+
+app.patch('/api/apis/responses/update/:response_id',
+    authorizationMiddleware,
+    validationMiddleware(ApisDto.updateApiResponseParams, 'params'),
+    validationMiddleware(ApisDto.updateApiResponseBody, 'body'),
+    ApisCtrl.updateApiResponse
+)
+
+app.delete('/api/apis/responses/delete/:response_id',
+    authorizationMiddleware,
+    validationMiddleware(ApisDto.deleteApiResponseParams, 'params'),
+    ApisCtrl.deleteApiResponse
+)
 
 export default app
