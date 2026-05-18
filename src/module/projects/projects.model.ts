@@ -346,10 +346,10 @@ namespace ProjectsModel {
             })
         }
         
-        const data = is_confirmed ? {
+        const data = is_confirmed === true ? {
             piAccepted: true
         } : {
-            piIsDeleted: false
+            piIsDeleted: true
         }
         
         await DatabaseFunctions.update({
@@ -435,7 +435,7 @@ namespace ProjectsModel {
             throw new Exception.HttpException(404, 'Project not found', Exception.Errors.PROJECT_NOT_FOUND)
         }
 
-        if (project.projectUserId === userId) {
+        if (project.projectUserId === user_id) {
             throw new Exception.HttpException(400, 'The project owner cannot remove himself.', Exception.Errors.PROJECT_OWNER_CANNOT_REMOVE_HIMSELF)
         }
 
