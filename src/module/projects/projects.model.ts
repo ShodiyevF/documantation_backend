@@ -312,18 +312,44 @@ namespace ProjectsModel {
             throw new Exception.HttpException(404, 'Project invitation not found', Exception.Errors.PROJECT_INVITATION_NOT_FOUND)
         }
 
-        await DatabaseFunctions.insert({
+        const checkAlreadyExist = await DatabaseFunctions.select({
             tableName: 'projectUsers',
-            data: {
+            filter: {
                 puProjectId: invitation.piProjectId,
                 puUserId: userId
             }
         })
+        if (checkAlreadyExist) {
+            await DatabaseFunctions.update({
+                tableName: 'projectInvitations',
+                data: {
+                    piAccepted: true
+                },
+                targets: [
+                    {
+                        targetColumn: 'piId',
+                        targetValue: invitation_id
+                    }
+                ]
+            })
+
+            return ''
+        }
+
+        if (is_confirmed) {
+            await DatabaseFunctions.insert({
+                tableName: 'projectUsers',
+                data: {
+                    puProjectId: invitation.piProjectId,
+                    puUserId: userId
+                }
+            })
+        }
         
-        const data = is_confirmed ? {
+        const data = is_confirmed === true ? {
             piAccepted: true
         } : {
-            piIsDeleted: false
+            piIsDeleted: true
         }
         
         await DatabaseFunctions.update({
@@ -407,6 +433,10 @@ namespace ProjectsModel {
         })
         if (!project) {
             throw new Exception.HttpException(404, 'Project not found', Exception.Errors.PROJECT_NOT_FOUND)
+        }
+
+        if (project.projectUserId === user_id) {
+            throw new Exception.HttpException(400, 'The project owner cannot remove himself.', Exception.Errors.PROJECT_OWNER_CANNOT_REMOVE_HIMSELF)
         }
 
         const projectUser = await DatabaseFunctions.select({

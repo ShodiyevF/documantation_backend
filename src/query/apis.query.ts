@@ -5,7 +5,7 @@ import ApisInterface from "@interface/apis.inteface"
 import { db } from "@database/pg.database"
 
 namespace ApisQuery {
-
+    
     //! APIS_START
     
     export async function getApisByModuleId(payloads: ApisInterface.IGetApisPayloads) {
@@ -42,7 +42,7 @@ namespace ApisQuery {
         .leftJoin(DbTableSchema.users, eq(DbTableSchema.users.userId, DbTableSchema.payloads.payloadUserId))
         .groupBy(DbTableSchema.payloads.payloadApiId)
         .as('api_payloads');
-
+        
         const apiResponses = db.select({
             api_id: DbTableSchema.responses.responseApiId,
             responses: sql`
@@ -116,7 +116,7 @@ namespace ApisQuery {
         .orderBy(DbTableSchema.apis.apiCreatedAt)
         .offset((page - 1) * limit)
         .limit(limit)
-
+        
         const totalCount = await db.select({
             count: count()
         })
@@ -133,10 +133,66 @@ namespace ApisQuery {
             data: data,
             count: totalCount
         }
-
+        
     }
-
+    
     export async function getApiById(apiId: string) {
+        const apiPayloads = db.select({
+            api_id: DbTableSchema.payloads.payloadApiId,
+            payloads: sql`
+                json_agg(
+                    jsonb_build_object(
+                        'payload_id', ${DbTableSchema.payloads.payloadId},
+                        'payload_type', ${DbTableSchema.payloads.payloadType},
+                        'payload_schema', ${DbTableSchema.payloads.payloadSchema},
+                        'payload_description', ${DbTableSchema.payloads.payloadDescription},
+                        'payload_owner', jsonb_build_object(
+                            'user_id', ${DbTableSchema.users.userId},
+                            'user_first_name', ${DbTableSchema.users.userFirstName},
+                            'user_last_name', ${DbTableSchema.users.userLastName},
+                            'user_email', ${DbTableSchema.users.userEmail}
+                        ),
+                        'payload_created_at', ${DbTableSchema.payloads.payloadCreatedAt}
+                    )
+                ) FILTER (WHERE ${DbTableSchema.payloads.payloadId} IS NOT NULL)
+            `.as('payloads')
+        })
+        .from(DbTableSchema.payloads)
+        .where(
+            eq(DbTableSchema.payloads.payloadIsDeleted, false)
+        )
+        .leftJoin(DbTableSchema.users, eq(DbTableSchema.users.userId, DbTableSchema.payloads.payloadUserId))
+        .groupBy(DbTableSchema.payloads.payloadApiId)
+        .as('api_payloads');
+        
+        const apiResponses = db.select({
+            api_id: DbTableSchema.responses.responseApiId,
+            responses: sql`
+                json_agg(
+                    jsonb_build_object(
+                        'response_id', ${DbTableSchema.responses.responseId},
+                        'response_type', ${DbTableSchema.responses.responseType},
+                        'response_schema', ${DbTableSchema.responses.responseSchema},
+                        'response_description', ${DbTableSchema.responses.responseDescription},
+                        'response_owner', jsonb_build_object(
+                            'user_id', ${DbTableSchema.users.userId},
+                            'user_first_name', ${DbTableSchema.users.userFirstName},
+                            'user_last_name', ${DbTableSchema.users.userLastName},
+                            'user_email', ${DbTableSchema.users.userEmail}
+                        ),
+                        'response_created_at', ${DbTableSchema.responses.responseCreatedAt}
+                    )
+                ) FILTER (WHERE ${DbTableSchema.responses.responseId} IS NOT NULL)
+            `.as('responses')
+        })
+        .from(DbTableSchema.responses)
+        .where(
+            eq(DbTableSchema.responses.responseIsDeleted, false)
+        )
+        .leftJoin(DbTableSchema.users, eq(DbTableSchema.users.userId, DbTableSchema.responses.responseUserId))
+        .groupBy(DbTableSchema.responses.responseApiId)
+        .as('api_responses');
+        
         return await db.select({
             api_id: DbTableSchema.apis.apiId,
             api_name: DbTableSchema.apis.apiName,
@@ -154,20 +210,37 @@ namespace ApisQuery {
                 user_last_name: DbTableSchema.users.userLastName,
                 user_email: DbTableSchema.users.userEmail,
             },
-            api_created_at: DbTableSchema.apis.apiCreatedAt
+            api_created_at: DbTableSchema.apis.apiCreatedAt,
+            api_payloads: sql`
+                coalesce(
+                    ${apiPayloads.payloads},
+                    '[]'
+                )
+            `,
+            api_responses: sql`
+                coalesce(
+                    ${apiResponses.responses},
+                    '[]'
+                )
+            `,
         })
         .from(DbTableSchema.apis)
         .leftJoin(DbTableSchema.modules, eq(DbTableSchema.modules.moduleId, DbTableSchema.apis.apiModuleId))
         .leftJoin(DbTableSchema.users, eq(DbTableSchema.users.userId, DbTableSchema.apis.apiUserId))
+        .leftJoin(apiPayloads, eq(apiPayloads.api_id, DbTableSchema.apis.apiId))
+        .leftJoin(apiResponses, eq(apiResponses.api_id, DbTableSchema.apis.apiId))
         .where(
-            eq(DbTableSchema.apis.apiId, apiId),
+            and(
+                eq(DbTableSchema.apis.apiId, apiId),
+                eq(DbTableSchema.apis.apiIsDeleted, false),
+            )
         )
         .orderBy(DbTableSchema.apis.apiCreatedAt)
         .then(data => data[0])
     }
-
+    
     //! APIS_END
-
+    
     
 }
 
